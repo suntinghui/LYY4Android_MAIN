@@ -1,4 +1,4 @@
-package com.people.activity;
+package com.people.lyy.activity;
 
 import java.util.ArrayList;
 import java.util.Stack;
@@ -12,11 +12,9 @@ import android.view.Gravity;
 import android.view.Window;
 import android.widget.Toast;
 
-import com.baidu.mobstat.StatService;
-import com.people.client.ApplicationEnvironment;
+import com.people.lyy.view.LKAlertDialog;
+import com.people.lyy.view.LKProgressDialog;
 import com.people.network.LKHttpRequestQueue;
-import com.people.view.LKAlertDialog;
-import com.people.view.LKProgressDialog;
 
 public class BaseActivity extends Activity {
 
@@ -38,9 +36,6 @@ public class BaseActivity extends Activity {
 
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 
-		// 更新超时时间
-		TimeoutService.LastSystemTimeMillis = System.currentTimeMillis();
-		
 		stack.push(this);
 	}
 
@@ -54,18 +49,13 @@ public class BaseActivity extends Activity {
 	@Override
 	protected void onResume() {
 		super.onResume();
-		
-		StatService.onResume(this);
-
 	}
 
 	@Override
 	protected void onPause() {
 		super.onPause();
-		
-		StatService.onPause(this);
 	}
-	
+
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (resultCode == Activity.RESULT_OK) {
@@ -161,13 +151,7 @@ public class BaseActivity extends Activity {
 
 			progressDialog.setMessage(null == message ? "" : message);
 			/***
-			 * Activity activity = (Activity)
-			 * ((ContextThemeWrapper)progressDialog
-			 * .getContext()).getBaseContext();
-			 * //android.view.WindowManager$BadTokenException: Unable to add
-			 * window -- token android.os.BinderProxy@438e7108 is not valid; is
-			 * your activity running? if (!activity.isFinishing()){
-			 * progressDialog.create().show(); }
+			 * Activity activity = (Activity) ((ContextThemeWrapper)progressDialog .getContext()).getBaseContext(); //android.view.WindowManager$BadTokenException: Unable to add window -- token android.os.BinderProxy@438e7108 is not valid; is your activity running? if (!activity.isFinishing()){ progressDialog.create().show(); }
 			 ***/
 			progressDialog.create().show();
 
@@ -185,12 +169,7 @@ public class BaseActivity extends Activity {
 
 			alertDialog.setMessage(null == message ? "" : message);
 			/*
-			 * Activity act = (Activity)
-			 * ((ContextThemeWrapper)alertDialog.getContext()).getBaseContext();
-			 * // android.view.WindowManager$BadTokenException: Unable to add
-			 * window -- token android.os.BinderProxy@438e7108 is not valid; is
-			 * your activity running? if (!act.isFinishing()){
-			 * alertDialog.create().show(); }
+			 * Activity act = (Activity) ((ContextThemeWrapper)alertDialog.getContext()).getBaseContext(); // android.view.WindowManager$BadTokenException: Unable to add window -- token android.os.BinderProxy@438e7108 is not valid; is your activity running? if (!act.isFinishing()){ alertDialog.create().show(); }
 			 */
 			alertDialog.create().show();
 		} catch (Exception e) {
@@ -230,19 +209,16 @@ public class BaseActivity extends Activity {
 		progressDialog.setCancelable(false);
 		progressDialog.setTitle("请稍候");
 
-		progressDialog.setNegativeButton("取消",
-				new android.content.DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int which) {
-						dialog.dismiss();
+		progressDialog.setNegativeButton("取消", new android.content.DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int which) {
+				dialog.dismiss();
 
-						if (!LKHttpRequestQueue.queueList.isEmpty()) {
-							LKHttpRequestQueue.queueList.get(
-									LKHttpRequestQueue.queueList.size() - 1)
-									.cancel();
-						}
+				if (!LKHttpRequestQueue.queueList.isEmpty()) {
+					LKHttpRequestQueue.queueList.get(LKHttpRequestQueue.queueList.size() - 1).cancel();
+				}
 
-					}
-				});
+			}
+		});
 	}
 
 	private void createAlertDialog() {
@@ -250,17 +226,15 @@ public class BaseActivity extends Activity {
 
 		alertDialog.setTitle("提示");
 		alertDialog.setCancelable(false);
-		alertDialog.setPositiveButton("确定",
-				new android.content.DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int which) {
-						dialog.dismiss();
-					}
-				});
+		alertDialog.setPositiveButton("确定", new android.content.DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int which) {
+				dialog.dismiss();
+			}
+		});
 	}
 
 	public void showToast(String message) {
-		Toast toast = Toast.makeText(getApplicationContext(), message,
-				Toast.LENGTH_SHORT);
+		Toast toast = Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT);
 		toast.setGravity(Gravity.CENTER, 0, 0);
 		toast.show();
 	}
