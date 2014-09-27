@@ -1,0 +1,56 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/gesture_bg"
+    android:orientation="vertical"
+    tools:context=".MainActivity" >
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dip" >
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_gravity="center_horizontal" >
+
+            <ImageView
+                android:layout_width="140.0dip"
+                android:layout_height="140.0dip"
+                android:layout_centerInParent="true"
+                android:contentDescription="@null"
+                android:src="@drawable/head_image" />
+        </RelativeLayout>
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/layout_lock"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_marginTop="15dip"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/tv_tips"
+            style="@style/white_17"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/clear"
+            android:gravity="center"
+            android:text="@string/draw_lock_tips"
+            android:textColor="@color/white" />
+
+        <com.people.lyy.view.GestureLockView
+            android:id="@+id/gv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="10dip"
+            android:background="#0000" />
+    </LinearLayout>
+
+</LinearLayout>

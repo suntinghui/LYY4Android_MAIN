@@ -1,5 +1,14 @@
 <resources>
 
     <string name="app_name">LYY4Android_SCAN</string>
+    <string name="str_login">登    录</string>
+    <string name="str_user_hint">请输入账号</string>
+    <string name="str_pwd_hint">请输入密码</string>
+    <string name="noNetTips">请您确认已开通手机上网功能，并在手机上设置正确的上网方式</string>
+    <string name="consume">消费</string>
+    <string name="binding">绑定</string>
+    <string name="gesture">手势</string>
+    <string name="draw_lock_tips">绘制解锁图案</string>
+    <string name="gesture_forget">忘记手势？</string>
 
 </resources>

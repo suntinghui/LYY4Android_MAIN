@@ -1,0 +1,54 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/gesture_bg"
+    android:orientation="vertical"
+    tools:context=".MainActivity" >
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dip" >
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_gravity="center_horizontal" >
+
+            <ImageView
+                android:layout_width="140.0dip"
+                android:layout_height="140.0dip"
+                android:layout_centerInParent="true"
+                android:contentDescription="@null"
+                android:src="@drawable/head_image" />
+        </RelativeLayout>
+    </RelativeLayout>
+
+    <com.people.view.GestureLockView
+        android:id="@+id/gv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:background="#0000" />
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/gv" >
+
+        <Button
+            android:id="@+id/btn_forget"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginRight="15dip"
+            android:background="@color/clear"
+            android:text="@string/gesture_forget"
+            android:textColor="@drawable/text_white_blue"
+            android:textSize="17sp" />
+    </RelativeLayout>
+
+</LinearLayout>

@@ -21,7 +21,7 @@ public class ParseResponseXML {
 
 	public static Object parseXML(int reqType, String responseStr) {
 		Log.e("response:", responseStr);
-		
+
 		try {
 			inStream = new ByteArrayInputStream(responseStr.getBytes("UTF-8"));
 		} catch (UnsupportedEncodingException e1) {
@@ -55,7 +55,8 @@ public class ParseResponseXML {
 	}
 
 	// 登录
-	private static HashMap<String, Object> login() throws XmlPullParserException, IOException {
+	private static HashMap<String, Object> login()
+			throws XmlPullParserException, IOException {
 		HashMap<String, Object> respMap = null;
 
 		XmlPullParser parser = Xml.newPullParser();
@@ -86,5 +87,4 @@ public class ParseResponseXML {
 		return respMap;
 	}
 
-	
 }
