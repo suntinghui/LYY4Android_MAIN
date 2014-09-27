@@ -16,6 +16,7 @@ import android.widget.TextView;
 import com.people.lyy.R;
 import com.people.lyy.client.ApplicationEnvironment;
 import com.people.lyy.client.Constants;
+import com.people.lyy.sqlite.DataDao;
 import com.people.lyy.view.GestureLockView;
 import com.people.lyy.view.GestureLockView.OnGestureFinishListener;
 import com.people.lyy.view.LKAlertDialog;
@@ -113,13 +114,13 @@ public class LockScreenSettingActivity extends Activity {
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if (keyCode == KeyEvent.KEYCODE_BACK
 				&& event.getAction() == KeyEvent.ACTION_DOWN) {
-			Intent it = new Intent(LockScreenSettingActivity.this,
-					MainActivity.class);
+			Intent it = new Intent();
+			DataDao dao = new DataDao(getApplication());
+			dao.add(Constants.kGESTRUECLOSE, 0);
 			it.putExtra("isOpen",
 					ApplicationEnvironment.getInstance().getPreferences(this)
 							.getBoolean(Constants.kGESTRUECLOSE, false));
-			// setResult(Activity.RESULT_OK, it);
-			startActivity(it);
+			setResult(Activity.RESULT_OK, it);
 			LockScreenSettingActivity.this.finish();
 			return true;
 		}

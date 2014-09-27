@@ -6,6 +6,7 @@ import com.people.lyy.R;
 import com.people.lyy.client.ApplicationEnvironment;
 import com.people.lyy.client.Constants;
 import com.people.lyy.client.TransferRequestTag;
+import com.people.lyy.sqlite.DataDao;
 import com.people.network.LKAsyncHttpResponseHandler;
 import com.people.network.LKHttpRequest;
 import com.people.network.LKHttpRequestQueue;
@@ -29,6 +30,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 	private ImageView logoImageView = null;
 	private EditText usernameEdit = null;
 	private EditText passwordEdit = null;
+	private DataDao dao = null;
 
 	// private SharedPreferences preferences = ApplicationEnvironment
 	// .getInstance().getPreferences();
@@ -53,6 +55,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 		Button btn_login = (Button) this.findViewById(R.id.btn_login);
 		btn_login.setOnClickListener(this);
 
+		dao = new DataDao(getApplication());
 	}
 
 	@Override
@@ -127,9 +130,15 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 				// editor.putString(Constants.kPASSWORD, passwordEdit
 				// .getText().toString().trim());
 				// editor.commit();
-				Intent intent0 = new Intent(LoginActivity.this,
-						LockScreenSettingActivity.class);
-				LoginActivity.this.startActivity(intent0);
+				if (dao.find(Constants.kGESTRUECLOSE)) {
+					Intent intent1 = new Intent(LoginActivity.this,
+							LockScreenActivity.class);
+					LoginActivity.this.startActivity(intent1);
+				} else {
+					Intent intent0 = new Intent(LoginActivity.this,
+							LockScreenSettingActivity.class);
+					LoginActivity.this.startActivity(intent0);
+				}
 				// } else {
 				// Toast.makeText(LoginActivity.this, RSPMSG,
 				// Toast.LENGTH_SHORT).show();
@@ -139,5 +148,4 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 
 		};
 	}
-
 }

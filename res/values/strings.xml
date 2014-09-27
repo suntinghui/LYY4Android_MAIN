@@ -6,9 +6,14 @@
     <string name="str_pwd_hint">请输入密码</string>
     <string name="noNetTips">请您确认已开通手机上网功能，并在手机上设置正确的上网方式</string>
     <string name="consume">消费</string>
-    <string name="binding">绑定</string>
-    <string name="gesture">手势</string>
+    <string name="binding">添加新卡</string>
+    <string name="gesture">修改手势</string>
     <string name="draw_lock_tips">绘制解锁图案</string>
     <string name="gesture_forget">忘记手势？</string>
+    <string name="bind_card">绑定银行卡</string>
+    <string name="card_code">银行卡号</string>
+    <string name="card_codehint">请输入银行卡号</string>
+    <string name="card_pwd">密码</string>
+    <string name="card_pwdhint">请输入密码</string>
 
 </resources>

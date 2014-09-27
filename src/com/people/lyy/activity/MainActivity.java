@@ -1,6 +1,7 @@
 package com.people.lyy.activity;
 
 import java.util.Hashtable;
+import java.util.Iterator;
 
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.EncodeHintType;
@@ -9,6 +10,7 @@ import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 import com.people.lyy.R;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.KeyEvent;
@@ -19,8 +21,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 public class MainActivity extends BaseActivity implements OnClickListener {
-	private Button btn_consume, btn_binding, btn_gesture = null;
-	private LinearLayout lay_consume = null;
+	private LinearLayout lay_consume, lay_consume2, lay_binding,
+			lay_gesture = null;
 	private ImageView iv_consume = null;
 	private boolean isShow = false;
 	public static final int FROM_SETTINGACTIVITY = 1;
@@ -36,18 +38,22 @@ public class MainActivity extends BaseActivity implements OnClickListener {
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
-		case R.id.btn_consume:
+		case R.id.lay_consume:
 			createImage();
-			lay_consume.setVisibility(0);
+			lay_consume2.setVisibility(0);
 			isShow = true;
 			break;
 
-		case R.id.btn_binding:
-			showToast("binding");
+		case R.id.lay_binding:
+			Intent intent0 = new Intent(BaseActivity.getTopActivity(),
+					BindActivity.class);
+			startActivity(intent0);
 			break;
 
-		case R.id.btn_gesture:
-			showToast("gesture");
+		case R.id.lay_gesture:
+			Intent intent1 = new Intent(MainActivity.this,
+					LockScreenSettingActivity.class);
+			MainActivity.this.startActivity(intent1);
 			break;
 
 		default:
@@ -57,13 +63,13 @@ public class MainActivity extends BaseActivity implements OnClickListener {
 	}
 
 	public void initview() {
-		btn_consume = (Button) findViewById(R.id.btn_consume);
-		btn_consume.setOnClickListener(this);
-		btn_binding = (Button) findViewById(R.id.btn_binding);
-		btn_binding.setOnClickListener(this);
-		btn_gesture = (Button) findViewById(R.id.btn_gesture);
-		btn_gesture.setOnClickListener(this);
 		lay_consume = (LinearLayout) findViewById(R.id.lay_consume);
+		lay_consume.setOnClickListener(this);
+		lay_binding = (LinearLayout) findViewById(R.id.lay_binding);
+		lay_binding.setOnClickListener(this);
+		lay_gesture = (LinearLayout) findViewById(R.id.lay_gesture);
+		lay_gesture.setOnClickListener(this);
+		lay_consume2 = (LinearLayout) findViewById(R.id.lay_consume2);
 		iv_consume = (ImageView) findViewById(R.id.iv_consume);
 	}
 
@@ -116,7 +122,7 @@ public class MainActivity extends BaseActivity implements OnClickListener {
 			if (event.getAction() == KeyEvent.ACTION_DOWN
 					&& event.getRepeatCount() == 0) {
 				if (isShow) {
-					lay_consume.setVisibility(8);
+					lay_consume2.setVisibility(8);
 					isShow = false;
 				} else {
 					exitApp();
@@ -133,8 +139,9 @@ public class MainActivity extends BaseActivity implements OnClickListener {
 			showToast("再按一次退出程序");
 			exitTime = System.currentTimeMillis();
 		} else {
-			finish();
+			for (BaseActivity activity : BaseActivity.getAllActiveActivity()) {
+				activity.finish();
+			}
 		}
 	}
-
 }

@@ -35,8 +35,8 @@ public class LockScreenActivity extends BaseActivity implements OnClickListener 
 					LockScreenActivity.this.finish();
 					// 启动超时退出服务
 					Intent intent = new Intent(BaseActivity.getTopActivity(),
-							TimeoutService.class);
-					BaseActivity.getTopActivity().startService(intent);
+							MainActivity.class);
+					BaseActivity.getTopActivity().startActivity(intent);
 				}
 			}
 		});

@@ -26,7 +26,7 @@
         </RelativeLayout>
     </RelativeLayout>
 
-    <com.people.view.GestureLockView
+    <com.people.lyy.view.GestureLockView
         android:id="@+id/gv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
