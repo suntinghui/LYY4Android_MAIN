@@ -3,7 +3,7 @@ package com.people.lyy.activity;
 import java.util.HashMap;
 
 import com.people.lyy.R;
-import com.people.lyy.client.ApplicationEnvironment;
+
 import com.people.lyy.client.Constants;
 import com.people.lyy.client.TransferRequestTag;
 import com.people.lyy.sqlite.DataDao;
@@ -13,8 +13,6 @@ import com.people.network.LKHttpRequestQueue;
 import com.people.network.LKHttpRequestQueueDone;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;

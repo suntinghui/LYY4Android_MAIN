@@ -2,6 +2,7 @@ package com.people.lyy.activity;
 
 import com.people.lyy.R;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -35,8 +36,10 @@ public class BindActivity extends BaseActivity implements OnClickListener {
 			finish();
 			break;
 		case R.id.btn_confirm:
-			if(checkValue()){
-				//银行帐号和密码不为空时进行的操作
+			if (checkValue()) {
+				Intent intent = new Intent(BindActivity.this,
+						DetailsActivity.class);
+				startActivity(intent);
 			}
 			break;
 		default:
@@ -44,12 +47,13 @@ public class BindActivity extends BaseActivity implements OnClickListener {
 		}
 
 	}
-	private Boolean checkValue(){
-		if(et_card_code.getText().toString().length() == 0){
+
+	private Boolean checkValue() {
+		if (et_card_code.getText().toString().length() == 0) {
 			showToast("银行卡号不能为空");
 			return false;
-		}		
-		if(et_card_pwd.getText().toString().length() == 0){
+		}
+		if (et_card_pwd.getText().toString().length() == 0) {
 			showToast("密码不能为空");
 			return false;
 		}

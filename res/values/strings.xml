@@ -10,10 +10,17 @@
     <string name="gesture">修改手势</string>
     <string name="draw_lock_tips">绘制解锁图案</string>
     <string name="gesture_forget">忘记手势？</string>
-    <string name="bind_card">绑定银行卡</string>
-    <string name="card_code">银行卡号</string>
+    <string name="bind_card">绑定虚拟卡</string>
+    <string name="card_code">虚拟卡号</string>
     <string name="card_codehint">请输入银行卡号</string>
     <string name="card_pwd">密码</string>
     <string name="card_pwdhint">请输入密码</string>
+    <string name="balance">卡内余额:</string>
+    <string name="can_cost">可支付金额:</string>
+    <string name="tag_code">尾号(9527)</string>
+    <string name="next">下一步</string>
+    <string name="tip">每笔订单最多试用10张礼品卡</string>
+    <string name="details">详情</string>
+    <string name="ok">确定</string>
 
 </resources>

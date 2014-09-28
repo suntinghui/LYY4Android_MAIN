@@ -29,14 +29,11 @@ public class LockScreenSettingActivity extends Activity {
 	private int drawCount = 0;
 	private String firstKey = "";
 	private String secondKey = "";
-	private LinearLayout layout_lock;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_lock_screen_setting);
-
-		layout_lock = (LinearLayout) findViewById(R.id.layout_lock);
 
 		tv_tips = (TextView) findViewById(R.id.tv_tips);
 		tv_tips.setText("请绘制新手势");

@@ -123,16 +123,16 @@
             android:layout_marginTop="12dip"
             android:background="@color/gray" />
     </LinearLayout>
-
-    <Button
-        android:id="@+id/btn_confirm"
-        style="@style/white_20"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="25dip"
-        android:layout_marginRight="25dip"
-        android:layout_marginTop="35dip"
-        android:background="@drawable/btn"
-        android:text="确 定" />
+<Button
+            android:id="@+id/btn_confirm"
+            style="@style/white_20"
+            android:layout_width="fill_parent"
+            android:layout_height="45dp"
+            android:layout_marginLeft="15dip"
+            android:layout_marginRight="15dip"
+            android:layout_marginTop="20dip"
+            android:background="@drawable/btn"
+            android:text="@string/ok" />
+    
 
 </LinearLayout>

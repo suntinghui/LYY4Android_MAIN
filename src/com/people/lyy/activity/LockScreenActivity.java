@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.Window;
 import android.widget.Button;
 
 import com.people.lyy.R;
@@ -32,11 +31,11 @@ public class LockScreenActivity extends BaseActivity implements OnClickListener 
 			@Override
 			public void OnGestureFinish(boolean success) {
 				if (success) {
-					LockScreenActivity.this.finish();
 					// 启动超时退出服务
 					Intent intent = new Intent(BaseActivity.getTopActivity(),
 							MainActivity.class);
 					BaseActivity.getTopActivity().startActivity(intent);
+					LockScreenActivity.this.finish();
 				}
 			}
 		});
