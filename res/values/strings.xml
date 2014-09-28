@@ -22,5 +22,8 @@
     <string name="tip">每笔订单最多试用10张礼品卡</string>
     <string name="details">详情</string>
     <string name="ok">确定</string>
+    <string name="title_progressbar">正在下载文件</string>
+    <string name="cancel">取消</string>
+    <string name="download_app">下载加密APP</string>
 
 </resources>

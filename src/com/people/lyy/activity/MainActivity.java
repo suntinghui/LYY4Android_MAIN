@@ -3,6 +3,7 @@ package com.people.lyy.activity;
 import com.people.lyy.R;
 import com.people.lyy.client.ApplicationEnvironment;
 import com.people.lyy.client.Constants;
+import com.people.lyy.client.DownloadFileRequest;
 import com.people.lyy.sqlite.DataDao;
 
 import android.content.Context;
@@ -17,20 +18,23 @@ import android.widget.LinearLayout;
 
 public class MainActivity extends BaseActivity implements OnClickListener {
 	private DataDao dao = null;
-	private LinearLayout lay_consume, lay_binding, lay_gesture = null;
+	private LinearLayout lay_consume, lay_binding, lay_gesture,
+			lay_download = null;
 	public static final int FROM_SETTINGACTIVITY = 1;
 	private long exitTime = 0;
+
+	private String downloadAPKURL = "http://apk.r1.market.hiapk.com/data/upload/apkres/2014/9_25/16/com.ovilex.motodriving_040432062.apk";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		
+
 		SharedPreferences preferences = getPreferences(Context.MODE_PRIVATE);
 		Editor editor = preferences.edit();
 		editor.putBoolean(Constants.LOGGED, true);
 		editor.commit();
-		
+
 		initview();
 		ApplicationEnvironment.getInstance().getPreferences().edit();
 		if (!dao.find(Constants.LOGGED)) {
@@ -56,6 +60,9 @@ public class MainActivity extends BaseActivity implements OnClickListener {
 					LockScreenSettingActivity.class);
 			MainActivity.this.startActivity(intent1);
 			break;
+		case R.id.lay_download:
+			download();
+			break;
 
 		default:
 			break;
@@ -71,6 +78,8 @@ public class MainActivity extends BaseActivity implements OnClickListener {
 		lay_binding.setOnClickListener(this);
 		lay_gesture = (LinearLayout) findViewById(R.id.lay_gesture);
 		lay_gesture.setOnClickListener(this);
+		lay_download = (LinearLayout) findViewById(R.id.lay_download);
+		lay_download.setOnClickListener(this);
 	}
 
 	@Override
@@ -95,5 +104,10 @@ public class MainActivity extends BaseActivity implements OnClickListener {
 				activity.finish();
 			}
 		}
+	}
+	// 下载的类
+	private void download() {
+		DownloadFileRequest.sharedInstance().downloadAndOpen(MainActivity.this,
+				downloadAPKURL, "download.apk");
 	}
 }

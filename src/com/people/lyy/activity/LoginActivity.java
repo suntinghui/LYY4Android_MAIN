@@ -28,7 +28,6 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 	private ImageView logoImageView = null;
 	private EditText usernameEdit = null;
 	private EditText passwordEdit = null;
-	private DataDao dao = null;
 
 	// private SharedPreferences preferences = ApplicationEnvironment
 	// .getInstance().getPreferences();
@@ -53,7 +52,6 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 		Button btn_login = (Button) this.findViewById(R.id.btn_login);
 		btn_login.setOnClickListener(this);
 
-		dao = new DataDao(getApplication());
 	}
 
 	@Override
@@ -128,15 +126,11 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 				// editor.putString(Constants.kPASSWORD, passwordEdit
 				// .getText().toString().trim());
 				// editor.commit();
-				if (dao.find(Constants.kGESTRUECLOSE)) {
-					Intent intent1 = new Intent(LoginActivity.this,
-							LockScreenActivity.class);
-					LoginActivity.this.startActivity(intent1);
-				} else {
-					Intent intent0 = new Intent(LoginActivity.this,
-							LockScreenSettingActivity.class);
-					LoginActivity.this.startActivity(intent0);
-				}
+
+				Intent intent0 = new Intent(LoginActivity.this,
+						LockScreenSettingActivity.class);
+				LoginActivity.this.startActivity(intent0);
+
 				// } else {
 				// Toast.makeText(LoginActivity.this, RSPMSG,
 				// Toast.LENGTH_SHORT).show();

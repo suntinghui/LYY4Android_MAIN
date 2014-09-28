@@ -59,8 +59,7 @@ public class LockScreenActivity extends BaseActivity implements OnClickListener 
 	}
 
 	public void goLoginActivity() {
-		while (!(BaseActivity.getTopActivity() instanceof LoginActivity)) {
-			BaseActivity.getTopActivity().finish();
-		}
+		Intent intent = new Intent(LockScreenActivity.this,LoginActivity.class);
+		startActivity(intent);
 	}
 }
