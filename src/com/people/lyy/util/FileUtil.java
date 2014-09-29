@@ -37,7 +37,7 @@ public class FileUtil {
 	// 判断文件是否存在
 	public static boolean fileExists(String fileName) {
 		File file = new File(getDownloadPath() + fileName);
-		return file.exists();
+		return false;
 	}
 
 	// 删除目录下的所有文件

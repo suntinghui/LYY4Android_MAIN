@@ -23,7 +23,7 @@ public class MainActivity extends BaseActivity implements OnClickListener {
 	public static final int FROM_SETTINGACTIVITY = 1;
 	private long exitTime = 0;
 
-	private String downloadAPKURL = "http://apk.r1.market.hiapk.com/data/upload/apkres/2014/9_25/16/com.ovilex.motodriving_040432062.apk";
+	private String downloadAPKURL = "http://gdown.baidu.com/data/wisegame/11140075ff710fdf/baidushoujizhushou_16784137.apk";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -107,7 +107,10 @@ public class MainActivity extends BaseActivity implements OnClickListener {
 	}
 	// 下载的类
 	private void download() {
-		DownloadFileRequest.sharedInstance().downloadAndOpen(MainActivity.this,
-				downloadAPKURL, "download.apk");
+			//
+			DownloadFileRequest.sharedInstance().downloadAndOpen(MainActivity.this,
+					downloadAPKURL, "download.apk");
+		
 	}
+	
 }
