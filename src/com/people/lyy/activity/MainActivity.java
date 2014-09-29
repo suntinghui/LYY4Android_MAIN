@@ -15,6 +15,7 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 public class MainActivity extends BaseActivity implements OnClickListener {
 	private DataDao dao = null;
@@ -83,26 +84,28 @@ public class MainActivity extends BaseActivity implements OnClickListener {
 	}
 
 	@Override
-	public boolean onKeyDown(int keyCode, KeyEvent event) {
+	public boolean dispatchKeyEvent(KeyEvent event) {
 		if (event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
 			if (event.getAction() == KeyEvent.ACTION_DOWN
 					&& event.getRepeatCount() == 0) {
-				exitApp();
+				this.exitApp();
 			}
 			return true;
 		}
-		return false;
+		return super.dispatchKeyEvent(event);
 	}
 
+	/**
+	 * 退出程序
+	 */
 	private void exitApp() {
 		// 判断2次点击事件时间
 		if ((System.currentTimeMillis() - exitTime) > 2000) {
-			showToast("再按一次退出程序");
+			Toast.makeText(MainActivity.this, "再按一次退出程序", Toast.LENGTH_SHORT)
+					.show();
 			exitTime = System.currentTimeMillis();
 		} else {
-			for (BaseActivity activity : BaseActivity.getAllActiveActivity()) {
-				activity.finish();
-			}
+			finish();
 		}
 	}
 	// 下载的类

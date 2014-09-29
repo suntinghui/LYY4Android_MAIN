@@ -39,6 +39,8 @@
         </activity>
         <activity android:name="com.people.lyy.activity.DetailsActivity" >
         </activity>
+                <activity android:name="com.people.lyy.activity.RegisterActivity" >
+        </activity>
 
         <service
             android:name=".activity.TimeoutService"
