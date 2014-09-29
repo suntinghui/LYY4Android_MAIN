@@ -122,6 +122,7 @@ public class FileUtil {
 					intent = getApkFileIntent(file);
 					BaseActivity.getTopActivity().startActivity(intent);
 
+
 				} else if (checkEndsWithInStringArray(fileName,
 						res.getStringArray(R.array.fileEndingAudio))) {
 					intent = getAudioFileIntent(file);

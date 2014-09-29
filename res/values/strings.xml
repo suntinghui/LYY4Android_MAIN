@@ -25,5 +25,10 @@
     <string name="title_progressbar">正在下载文件</string>
     <string name="cancel">取消</string>
     <string name="download_app">下载加密APP</string>
+    <string name="register">注册</string>
+    <string name="password">密码</string>
+    <string name="pwd_in">请输入密码</string>
+    <string name="accounts">帐号</string>
+    <string name="accountsin">请输入帐号</string>
 
 </resources>

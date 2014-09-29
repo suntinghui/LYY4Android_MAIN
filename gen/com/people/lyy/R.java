@@ -173,40 +173,43 @@ public final class R {
     }
     public static final class id {
         public static final int balance_radioButton=0x7f090005;
-        public static final int bottomLayout=0x7f090020;
+        public static final int bottomLayout=0x7f090023;
         public static final int btn_back=0x7f090001;
         public static final int btn_confirm=0x7f090006;
         public static final int btn_forget=0x7f09000c;
         public static final int btn_login=0x7f090013;
-        public static final int detail=0x7f090023;
+        public static final int btn_register=0x7f090014;
+        public static final int detail=0x7f090026;
         public static final int et_card_code=0x7f090009;
         public static final int et_card_pwd=0x7f09000a;
+        public static final int et_confirm_pwd=0x7f09001e;
+        public static final int et_new_pwd=0x7f09001d;
         public static final int et_pwd=0x7f090012;
         public static final int et_user=0x7f090011;
         public static final int gv=0x7f09000b;
         public static final int iv_consume=0x7f090008;
-        public static final int lay_binding=0x7f090016;
-        public static final int lay_consume=0x7f090014;
+        public static final int lay_binding=0x7f090017;
+        public static final int lay_consume=0x7f090015;
         public static final int lay_consume2=0x7f090007;
-        public static final int lay_download=0x7f09001a;
-        public static final int lay_gesture=0x7f090018;
+        public static final int lay_download=0x7f09001b;
+        public static final int lay_gesture=0x7f090019;
         public static final int lay_item=0x7f090004;
         public static final int layout=0x7f09000d;
         public static final int layout_lock=0x7f09000e;
         public static final int logoImageView=0x7f090010;
-        public static final int message=0x7f09001d;
-        public static final int negativeButton=0x7f09001f;
-        public static final int positiveButton=0x7f09001e;
-        public static final int progress=0x7f090022;
-        public static final int progressBar=0x7f090021;
-        public static final int title=0x7f09001c;
+        public static final int message=0x7f090020;
+        public static final int negativeButton=0x7f090022;
+        public static final int positiveButton=0x7f090021;
+        public static final int progress=0x7f090025;
+        public static final int progressBar=0x7f090024;
+        public static final int title=0x7f09001f;
         public static final int topbarLayout=0x7f090000;
         public static final int tv_balance=0x7f090002;
-        public static final int tv_binding=0x7f090017;
+        public static final int tv_binding=0x7f090018;
         public static final int tv_can_cost=0x7f090003;
-        public static final int tv_consume=0x7f090015;
-        public static final int tv_down=0x7f09001b;
-        public static final int tv_gesture=0x7f090019;
+        public static final int tv_consume=0x7f090016;
+        public static final int tv_down=0x7f09001c;
+        public static final int tv_gesture=0x7f09001a;
         public static final int tv_tips=0x7f09000f;
     }
     public static final class layout {
@@ -217,12 +220,15 @@ public final class R {
         public static final int activity_lock_screen_setting=0x7f030004;
         public static final int activity_login=0x7f030005;
         public static final int activity_main=0x7f030006;
-        public static final int activity_splash=0x7f030007;
-        public static final int alert_dialog_layout=0x7f030008;
-        public static final int progress_dialog_layout=0x7f030009;
-        public static final int schedule_dialog_layout=0x7f03000a;
+        public static final int activity_register=0x7f030007;
+        public static final int activity_splash=0x7f030008;
+        public static final int alert_dialog_layout=0x7f030009;
+        public static final int progress_dialog_layout=0x7f03000a;
+        public static final int schedule_dialog_layout=0x7f03000b;
     }
     public static final class string {
+        public static final int accounts=0x7f07001c;
+        public static final int accountsin=0x7f07001d;
         public static final int app_name=0x7f070000;
         public static final int balance=0x7f07000f;
         public static final int bind_card=0x7f07000a;
@@ -242,6 +248,9 @@ public final class R {
         public static final int next=0x7f070012;
         public static final int noNetTips=0x7f070004;
         public static final int ok=0x7f070015;
+        public static final int password=0x7f07001a;
+        public static final int pwd_in=0x7f07001b;
+        public static final int register=0x7f070019;
         public static final int str_login=0x7f070001;
         public static final int str_pwd_hint=0x7f070003;
         public static final int str_user_hint=0x7f070002;

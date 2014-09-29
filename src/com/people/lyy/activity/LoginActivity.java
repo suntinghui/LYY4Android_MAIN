@@ -1,6 +1,8 @@
 package com.people.lyy.activity;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import com.people.lyy.R;
 import com.people.lyy.client.ApplicationEnvironment;
@@ -12,8 +14,12 @@ import com.people.network.LKHttpRequest;
 import com.people.network.LKHttpRequestQueue;
 import com.people.network.LKHttpRequestQueueDone;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.animation.Animation;
@@ -28,6 +34,8 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 	private ImageView logoImageView = null;
 	private EditText usernameEdit = null;
 	private EditText passwordEdit = null;
+	private Button btn_login,btn_register = null;
+	private long exitTime = 0;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -44,9 +52,10 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 		usernameEdit.setSelection(usernameEdit.getText().toString().length());
 		passwordEdit = (EditText) this.findViewById(R.id.et_pwd);
 
-		Button btn_login = (Button) this.findViewById(R.id.btn_login);
+		btn_login = (Button) this.findViewById(R.id.btn_login);
 		btn_login.setOnClickListener(this);
-
+		btn_register = (Button) this.findViewById(R.id.btn_register);
+		btn_register.setOnClickListener(this);
 	}
 
 	@Override
@@ -54,10 +63,17 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 		switch (v.getId()) {
 		case R.id.btn_login:
 			if (checkValue()) {
-				login();
+				if(isAvilible(this, "com.example.photoactivity")){					
+					login();
+				}else{
+					showToast("请先注册");
+				}
 			}
 			break;
-
+		case R.id.btn_register:
+			Intent intent = new Intent(LoginActivity.this,RegisterActivity.class);
+			startActivityForResult(intent,0);
+			break;
 		default:
 			break;
 		}
@@ -129,4 +145,44 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 
 		};
 	}
+	@Override
+	public boolean dispatchKeyEvent(KeyEvent event) {
+		if (event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
+			if (event.getAction() == KeyEvent.ACTION_DOWN
+					&& event.getRepeatCount() == 0) {
+				this.exitApp();
+			}
+			return true;
+		}
+		return super.dispatchKeyEvent(event);
+	}
+
+	/**
+	 * 退出程序
+	 */
+	private void exitApp() {
+		// 判断2次点击事件时间
+		if ((System.currentTimeMillis() - exitTime) > 2000) {
+			Toast.makeText(LoginActivity.this, "再按一次退出程序", Toast.LENGTH_SHORT)
+					.show();
+			exitTime = System.currentTimeMillis();
+		} else {
+			finish();
+		}
+	}
+
+	//用于判断程序是否安装
+	private boolean isAvilible(Context context, String packageName){ 
+        final PackageManager packageManager = context.getPackageManager();//获取packagemanager 
+        List<PackageInfo> pinfo = packageManager.getInstalledPackages(0);//获取所有已安装程序的包信息 
+        List<String> pName = new ArrayList<String>();//用于存储所有已安装程序的包名 
+       //从pinfo中将包名字逐一取出，压入pName list中 
+            if(pinfo != null){ 
+            for(int i = 0; i < pinfo.size(); i++){ 
+                String pn = pinfo.get(i).packageName; 
+                pName.add(pn); 
+            } 
+        } 
+        return pName.contains(packageName);//判断pName中是否有目标程序的包名，有TRUE，没有FALSE 
+  } 
 }

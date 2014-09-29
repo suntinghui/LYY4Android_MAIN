@@ -101,9 +101,21 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="25dip"
         android:layout_marginRight="25dip"
-        android:layout_marginTop="35dip"
+        android:layout_marginTop="30dip"
         android:background="@drawable/btn"
         android:text="@string/str_login" />
+
+    <Button
+        android:id="@+id/btn_register"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/blue"
+        android:layout_marginTop="10dip"
+        android:layout_marginLeft="250dip"
+        android:textSize="18sp"
+        android:background="@null"
+        android:text="@string/register"
+         />
 
     <RelativeLayout
         android:layout_width="fill_parent"
