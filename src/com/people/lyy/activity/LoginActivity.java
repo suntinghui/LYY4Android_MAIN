@@ -3,7 +3,7 @@ package com.people.lyy.activity;
 import java.util.HashMap;
 
 import com.people.lyy.R;
-
+import com.people.lyy.client.ApplicationEnvironment;
 import com.people.lyy.client.Constants;
 import com.people.lyy.client.TransferRequestTag;
 import com.people.lyy.sqlite.DataDao;
@@ -29,9 +29,6 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 	private EditText usernameEdit = null;
 	private EditText passwordEdit = null;
 
-	// private SharedPreferences preferences = ApplicationEnvironment
-	// .getInstance().getPreferences();
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -39,13 +36,11 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 		setContentView(R.layout.activity_login);
 
 		logoImageView = (ImageView) this.findViewById(R.id.logoImageView);
-		Animation myAnimation = AnimationUtils.loadAnimation(this,
-				R.anim.login_logo_anim);
+		Animation myAnimation = AnimationUtils.loadAnimation(this, R.anim.login_logo_anim);
 		logoImageView.startAnimation(myAnimation);
 
 		usernameEdit = (EditText) this.findViewById(R.id.et_user);
-		// usernameEdit.setText(ApplicationEnvironment.getInstance()
-		// .getPreferences(this).getString(Constants.kUSERNAME, ""));
+		usernameEdit.setText(ApplicationEnvironment.getInstance().getPreferences(this).getString(Constants.kUSERNAME, ""));
 		usernameEdit.setSelection(usernameEdit.getText().toString().length());
 		passwordEdit = (EditText) this.findViewById(R.id.et_pwd);
 
@@ -84,23 +79,19 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 	// 登录
 	private void login() {
 		HashMap<String, Object> tempMap = new HashMap<String, Object>();
-		tempMap.put("TRANCODE", "199002");
-		tempMap.put("PHONENUMBER", usernameEdit.getText().toString().trim());
-		tempMap.put("PASSWORD", passwordEdit.getText().toString().trim());
-		tempMap.put("PCSIM", "不能获取");
+		tempMap.put("login_name", usernameEdit.getText().toString().trim());
+		tempMap.put("login_pwd", passwordEdit.getText().toString().trim());
 
-		LKHttpRequest req1 = new LKHttpRequest(TransferRequestTag.Login,
-				tempMap, getLoginHandler());
+		LKHttpRequest req1 = new LKHttpRequest(TransferRequestTag.Login, tempMap, getLoginHandler());
 
-		new LKHttpRequestQueue().addHttpRequest(req1).executeQueue(
-				"正在登录请稍候...", new LKHttpRequestQueueDone() {
-					// 执行的是登录以后操作的东西
-					@Override
-					public void onComplete() {
-						super.onComplete();
-						passwordEdit.setText("");
-					}
-				});
+		new LKHttpRequestQueue().addHttpRequest(req1).executeQueue("正在登录请稍候...", new LKHttpRequestQueueDone() {
+			// 执行的是登录以后操作的东西
+			@Override
+			public void onComplete() {
+				super.onComplete();
+				passwordEdit.setText("");
+			}
+		});
 	}
 
 	private LKAsyncHttpResponseHandler getLoginHandler() {
@@ -109,8 +100,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 			@Override
 			public void successAction(Object obj) {
 				// 启动超时退出服务
-				Intent intent = new Intent(BaseActivity.getTopActivity(),
-						TimeoutService.class);
+				Intent intent = new Intent(BaseActivity.getTopActivity(), TimeoutService.class);
 				BaseActivity.getTopActivity().startService(intent);
 				// 就是这四行代码不能登陆成功
 				// HashMap<String, Object> map = (HashMap<String, Object>) obj;
@@ -127,8 +117,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 				// .getText().toString().trim());
 				// editor.commit();
 
-				Intent intent0 = new Intent(LoginActivity.this,
-						LockScreenSettingActivity.class);
+				Intent intent0 = new Intent(LoginActivity.this, LockScreenSettingActivity.class);
 				LoginActivity.this.startActivity(intent0);
 
 				// } else {

@@ -6,11 +6,7 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
-
 import android.util.Log;
-import android.util.Xml;
 
 public class ParseResponseXML {
 
@@ -27,15 +23,15 @@ public class ParseResponseXML {
 
 		try {
 			switch (reqType) {
+			case TransferRequestTag.SignUp:
+				return signUp();
+
 			case TransferRequestTag.Login: // 登录
 				return login();
 
 			}
 
-		} catch (XmlPullParserException e) {
-			e.printStackTrace();
-
-		} catch (IOException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 
 		} finally {
@@ -51,35 +47,16 @@ public class ParseResponseXML {
 		return null;
 	}
 
+	// 注册
+	private static HashMap<String, String> signUp() {
+		HashMap<String, String> respMap = null;
+
+		return respMap;
+	}
+
 	// 登录
-	private static HashMap<String, Object> login()
-			throws XmlPullParserException, IOException {
-		HashMap<String, Object> respMap = null;
-
-		XmlPullParser parser = Xml.newPullParser();
-		parser.setInput(inStream, "UTF-8");
-		int eventType = parser.getEventType();
-		while (eventType != XmlPullParser.END_DOCUMENT) {
-			switch (eventType) {
-			case XmlPullParser.START_TAG:
-				if ("EPOSPROTOCOL".equalsIgnoreCase(parser.getName())) {
-					respMap = new HashMap<String, Object>();
-				} else if ("PHONENUMBER".equalsIgnoreCase(parser.getName())) {
-					respMap.put("PHONENUMBER", parser.nextText());
-				} else if ("RSPCOD".equalsIgnoreCase(parser.getName())) {
-					respMap.put("RSPCOD", parser.nextText());
-				} else if ("APPTOKEN".equalsIgnoreCase(parser.getName())) {
-					respMap.put("APPTOKEN", parser.nextText());
-				} else if ("RSPMSG".equalsIgnoreCase(parser.getName())) {
-					respMap.put("RSPMSG", parser.nextText());
-				} else if ("PACKAGEMAC".equalsIgnoreCase(parser.getName())) {
-					respMap.put("PACKAGEMAC", parser.nextText());
-				}
-				break;
-			}
-
-			eventType = parser.next();
-		}
+	private static HashMap<String, String> login() {
+		HashMap<String, String> respMap = null;
 
 		return respMap;
 	}

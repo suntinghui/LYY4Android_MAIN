@@ -3,13 +3,11 @@ package com.people.lyy.client;
 import android.annotation.SuppressLint;
 import java.util.HashMap;
 
-
 @SuppressLint("UseSparseArrays")
 public class TransferRequestTag {
 
-	public static final int Login = 1;// 登录
-
-	public static final int UpdateVersion = 0;
+	public static final int SignUp	= 0; // 注册
+	public static final int Login 	= 1;// 登录
 
 	private static HashMap<Integer, String> requestTagMap = null;
 
@@ -17,12 +15,8 @@ public class TransferRequestTag {
 		if (null == requestTagMap) {
 			requestTagMap = new HashMap<Integer, String>();
 
-			requestTagMap.put(Login, Constants.ip + "199002.tranm");
-			requestTagMap
-					.put(UpdateVersion,
-							"http://"
-									+ Constants.ipCash
-									+ "/zfb/mpos/transProcess.do?operationId=getVersion&type=2");
+			requestTagMap.put(SignUp, Constants.IP + "/sslvpn/index.php/login/register");
+			requestTagMap.put(Login, Constants.IP + "/sslvpn/index.php/login/login_verify");
 
 		}
 

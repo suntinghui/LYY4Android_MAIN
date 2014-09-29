@@ -48,6 +48,12 @@
                 <action android:name="com.people.timeoutService" />
             </intent-filter>
         </service>
+
+        <receiver android:name="com.people.lyy.scan.activity.DemoReceiver" >
+            <intent-filter android:priority="1000" >
+                <action android:name="com.people.sotp.demo" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>
