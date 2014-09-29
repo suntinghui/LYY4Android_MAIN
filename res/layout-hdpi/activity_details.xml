@@ -26,7 +26,7 @@
         android:layout_marginTop="50dp"
         android:background="@drawable/success1" />
 
-    <LinearLayout
+   <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="40dp"
@@ -35,15 +35,9 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="恭喜您成功消费:"
+            android:text="恭喜您成功绑定消费卡"
             android:textSize="16sp" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="xx元"
-            android:textColor="@color/red"
-            android:textSize="16sp" />
     </LinearLayout>
 
     <LinearLayout

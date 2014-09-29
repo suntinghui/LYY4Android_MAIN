@@ -26,7 +26,7 @@ public class FileUtil {
 				+ "/众易付/Attachment/";
 		File file = new File(path);
 		if (!file.exists()) {
-			// file.mkdir();
+			 file.mkdir();
 			// creating missing parent directories if necessary
 			file.mkdirs();
 		}

@@ -23,7 +23,7 @@ import com.people.lyy.view.LKAlertDialog;
 
 // 锁屏 设置
 @SuppressLint("ResourceAsColor")
-public class LockScreenSettingActivity extends Activity {
+public class LockScreenSettingActivity extends BaseActivity {
 	private TextView tv_tips;
 	private GestureLockView gv;
 	private int drawCount = 0;
@@ -66,28 +66,12 @@ public class LockScreenSettingActivity extends Activity {
 						Intent intent = new Intent(BaseActivity
 								.getTopActivity(), TimeoutService.class);
 						BaseActivity.getTopActivity().startService(intent);
-
-						LKAlertDialog dialog1 = new LKAlertDialog(
-								LockScreenSettingActivity.this);
-						dialog1.setTitle("提示");
-						dialog1.setMessage("手势设置成功");
-						dialog1.setCancelable(false);
-						dialog1.setPositiveButton("确定",
-								new DialogInterface.OnClickListener() {
-
-									@Override
-									public void onClick(DialogInterface dialog,
-											int arg1) {
-										dialog.dismiss();
-										Intent it = new Intent(
-												LockScreenSettingActivity.this,
-												MainActivity.class);
-										it.putExtra("isOpen", true);
-										startActivity(it);
-										LockScreenSettingActivity.this.finish();
-									}
-								});
-						dialog1.create().show();
+						showToast("手势设置成功");
+						Intent it = new Intent(LockScreenSettingActivity.this,
+								MainActivity.class);
+						it.putExtra("isOpen", true);
+						startActivity(it);
+						LockScreenSettingActivity.this.finish();
 
 					} else {
 						// 手势设置失败
