@@ -1,5 +1,7 @@
 package com.people.lyy.view;
 
+import com.people.lyy.R;
+
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -10,7 +12,6 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.people.lyy.R;
 
 public class LKProgressDialog extends Dialog {
 	
