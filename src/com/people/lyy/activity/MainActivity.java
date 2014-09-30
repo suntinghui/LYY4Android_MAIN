@@ -6,6 +6,7 @@ import com.people.lyy.client.Constants;
 import com.people.lyy.client.DownloadFileRequest;
 import com.people.lyy.sqlite.DataDao;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -18,9 +19,9 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 public class MainActivity extends BaseActivity implements OnClickListener {
+	
 	private DataDao dao = null;
-	private LinearLayout lay_consume, lay_binding, lay_gesture,
-			lay_download = null;
+	private LinearLayout lay_consume, lay_binding, lay_gesture, lay_download = null;
 	public static final int FROM_SETTINGACTIVITY = 1;
 	private long exitTime = 0;
 
@@ -57,8 +58,7 @@ public class MainActivity extends BaseActivity implements OnClickListener {
 			break;
 
 		case R.id.lay_gesture:
-			Intent intent1 = new Intent(MainActivity.this,
-					LockScreenSettingActivity.class);
+			Intent intent1 = new Intent(MainActivity.this, LockScreenSettingActivity.class);
 			MainActivity.this.startActivity(intent1);
 			break;
 		case R.id.lay_download:
@@ -86,8 +86,7 @@ public class MainActivity extends BaseActivity implements OnClickListener {
 	@Override
 	public boolean dispatchKeyEvent(KeyEvent event) {
 		if (event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
-			if (event.getAction() == KeyEvent.ACTION_DOWN
-					&& event.getRepeatCount() == 0) {
+			if (event.getAction() == KeyEvent.ACTION_DOWN && event.getRepeatCount() == 0) {
 				this.exitApp();
 			}
 			return true;
@@ -101,19 +100,20 @@ public class MainActivity extends BaseActivity implements OnClickListener {
 	private void exitApp() {
 		// 判断2次点击事件时间
 		if ((System.currentTimeMillis() - exitTime) > 2000) {
-			Toast.makeText(MainActivity.this, "再按一次退出程序", Toast.LENGTH_SHORT)
-					.show();
+			Toast.makeText(MainActivity.this, "再按一次退出程序", Toast.LENGTH_SHORT).show();
 			exitTime = System.currentTimeMillis();
 		} else {
-			finish();
+			for (Activity a : BaseActivity.getAllActiveActivity()){
+				a.finish();
+			}
 		}
 	}
+
 	// 下载的类
 	private void download() {
-			//
-			DownloadFileRequest.sharedInstance().downloadAndOpen(MainActivity.this,
-					downloadAPKURL, "download.apk");
-		
+		//
+		DownloadFileRequest.sharedInstance().downloadAndOpen(MainActivity.this, downloadAPKURL, "download.apk");
+
 	}
-	
+
 }

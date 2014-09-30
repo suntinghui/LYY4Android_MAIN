@@ -52,8 +52,7 @@ public class DownloadFileRequest {
 			FileUtil.openFile(fileName);
 		} else {
 
-			if (!ApplicationEnvironment.getInstance().checkNetworkAvailable(
-					context)) {
+			if (!ApplicationEnvironment.getInstance().checkNetworkAvailable(context)) {
 				BaseActivity.getTopActivity().showToast("网络连接不可用，请稍候重试");
 			} else {
 				new DownloadFileTask().execute();
@@ -191,8 +190,7 @@ public class DownloadFileRequest {
 			int downloadedSize = (Integer) values[0];
 			int schedule = downloadedSize * 100 / totalSize;
 			StringBuffer sb = new StringBuffer();
-			sb.append(format(downloadedSize)).append("M/").append(totalMB)
-					.append("M");
+			sb.append(format(downloadedSize)).append("M/").append(totalMB).append("M");
 
 			dialog.setDetail(sb.toString());
 			dialog.setProgress(schedule);
@@ -206,11 +204,7 @@ public class DownloadFileRequest {
 				Log.e("download", "下载完成，打开文件");
 
 				FileUtil.openFile(fileName);
-				
-				Intent intent = new Intent(BaseActivity.getTopActivity(),MainActivity.class);
-				BaseActivity.getTopActivity().startActivity(intent);
-				BaseActivity.getTopActivity().finish();
-				
+
 			} else {
 				// 下载失败要删除已创建的缓存文件
 				FileUtil.deleteFile(fileName);
@@ -218,21 +212,18 @@ public class DownloadFileRequest {
 				LKAlertDialog tempDialog = new LKAlertDialog(context);
 				tempDialog.setTitle("提示");
 				tempDialog.setMessage((String) result);
-				tempDialog.setPositiveButton("确定",
-						new android.content.DialogInterface.OnClickListener() {
-							public void onClick(DialogInterface dialog,
-									int which) {
-								dialog.dismiss();
-							}
-						});
+				tempDialog.setPositiveButton("确定", new android.content.DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int which) {
+						dialog.dismiss();
+					}
+				});
 
 				tempDialog.create().show();
 			}
 		}
 
 		private float format(int l) {
-			return Float.valueOf(new DecimalFormat("#.00")
-					.format(l * 1.0f / MB));
+			return Float.valueOf(new DecimalFormat("#.00").format(l * 1.0f / MB));
 		}
 
 	}

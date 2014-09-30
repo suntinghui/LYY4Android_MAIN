@@ -73,9 +73,7 @@ public class LKHttpRequest {
 	private HttpEntity getHttpEntity(LKHttpRequest request) {
 
 		StringBuffer bodySB = new StringBuffer();
-		bodySB.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?><EPOSPROTOCOL>");
 		bodySB.append(this.param2String(request.getRequestDataMap()));
-		bodySB.append("</EPOSPROTOCOL>");
 
 		request.getClient().addHeader("Content-Length", bodySB.length() + "");
 

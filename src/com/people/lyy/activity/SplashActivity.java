@@ -62,18 +62,20 @@ public class SplashActivity extends BaseActivity {
 
 		@Override
 		protected void onPostExecute(Object result) {
-			if (dao.find(Constants.LOGGED)) {
-				// if (preferences.getBoolean(Constants.LOGGED, false)) {
-				Intent intent = new Intent(SplashActivity.this,
-						LockScreenActivity.class);
-				SplashActivity.this.startActivity(intent);
-				SplashActivity.this.finish();
-			} else {
-				Intent intent0 = new Intent(SplashActivity.this,
-						LoginActivity.class);
-				SplashActivity.this.startActivity(intent0);
-				SplashActivity.this.finish();
-			}
+//			if (dao.find(Constants.LOGGED)) {
+//				// if (preferences.getBoolean(Constants.LOGGED, false)) {
+//				Intent intent = new Intent(SplashActivity.this, LockScreenActivity.class);
+//				SplashActivity.this.startActivity(intent);
+//				SplashActivity.this.finish();
+//			} else {
+//				Intent intent0 = new Intent(SplashActivity.this, LoginActivity.class);
+//				SplashActivity.this.startActivity(intent0);
+//				SplashActivity.this.finish();
+//			}
+			
+			Intent intent0 = new Intent(SplashActivity.this, LoginActivity.class);
+			SplashActivity.this.startActivity(intent0);
+			SplashActivity.this.finish();
 
 		}
 
