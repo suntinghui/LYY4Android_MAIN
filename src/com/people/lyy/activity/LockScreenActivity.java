@@ -25,16 +25,13 @@ public class LockScreenActivity extends BaseActivity implements OnClickListener 
 		btn_forget.setOnClickListener(this);
 
 		GestureLockView gv = (GestureLockView) findViewById(R.id.gv);
-		gv.setKey(ApplicationEnvironment.getInstance().getPreferences()
-				.getString(Constants.kLOCKKEY, "")); // Z 字型
+		gv.setKey(ApplicationEnvironment.getInstance().getPreferences().getString(Constants.kLOCKKEY, "")); // Z 字型
 		gv.setOnGestureFinishListener(new OnGestureFinishListener() {
 			@Override
 			public void OnGestureFinish(boolean success) {
 				if (success) {
-					// 启动超时退出服务
-					Intent intent = new Intent(LockScreenActivity.this,
-							MainActivity.class);
-					startActivity(intent);
+					Intent intent = new Intent(BaseActivity.getTopActivity(), MainActivity.class);
+					BaseActivity.getTopActivity().startActivity(intent);
 					LockScreenActivity.this.finish();
 				}
 			}
@@ -59,7 +56,7 @@ public class LockScreenActivity extends BaseActivity implements OnClickListener 
 	}
 
 	public void goLoginActivity() {
-		Intent intent = new Intent(LockScreenActivity.this,LoginActivity.class);
+		Intent intent = new Intent(LockScreenActivity.this, LoginActivity.class);
 		startActivity(intent);
 		LockScreenActivity.this.finish();
 	}

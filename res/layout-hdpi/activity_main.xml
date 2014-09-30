@@ -79,7 +79,7 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/gesture" />
+                android:background="@drawable/download3" />
 
             <TextView
                 android:id="@+id/tv_gesture"
@@ -99,13 +99,14 @@
             android:background="@drawable/title"
             android:clickable="true"
             android:gravity="center_vertical"
-            android:orientation="horizontal" >
+            android:orientation="horizontal"
+            android:visibility="gone" >
 
             <ImageView
                 android:layout_width="38dp"
                 android:layout_height="38dp"
                 android:layout_marginLeft="10dp"
-                android:background="@drawable/download3" />
+                android:background="@drawable/gesture" />
 
             <TextView
                 android:id="@+id/tv_down"

@@ -1,6 +1,6 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <resources>
-
-    <string name="app_name">LYY4Android_SCAN</string>
+    <string name="app_name">众易付虚拟卡</string>
     <string name="str_login">登    录</string>
     <string name="str_user_hint">请输入账号</string>
     <string name="str_pwd_hint">请输入密码</string>
@@ -30,5 +30,4 @@
     <string name="pwd_in">请输入密码</string>
     <string name="accounts">帐号</string>
     <string name="accountsin">请输入帐号</string>
-
 </resources>

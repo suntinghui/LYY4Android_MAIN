@@ -73,10 +73,8 @@ public class LKHttpRequest {
 	private HttpEntity getHttpEntity(LKHttpRequest request) {
 
 		StringBuffer bodySB = new StringBuffer();
-		bodySB.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?><EPOSPROTOCOL>");
 		bodySB.append(this.param2String(request.getRequestDataMap()));
-		bodySB.append("</EPOSPROTOCOL>");
-		
+
 		request.getClient().addHeader("Content-Length", bodySB.length() + "");
 
 		Log.i("request body:", bodySB.toString());
@@ -97,28 +95,11 @@ public class LKHttpRequest {
 
 		for (String key : paramMap.keySet()) {
 			Object obj = paramMap.get(key);
-			if (obj instanceof String) {
-				sb.append("<").append(key).append(">").append(obj).append("</").append(key).append(">");
-			} else {
-				sb.append("<").append(key).append(">").append(this.hashMap2XML((HashMap<String, Object>) obj)).append("</").append(key).append(">");
-			}
+			sb.append(key).append("=").append(obj).append("&");
 		}
+
+		sb.deleteCharAt(sb.length() - 1);
 
 		return sb.toString();
 	}
-
-	@SuppressWarnings("unchecked")
-	private String hashMap2XML(HashMap<String, Object> paramMap) {
-		StringBuffer sb = new StringBuffer();
-		for (String key : paramMap.keySet()) {
-			Object obj = paramMap.get(key);
-			if (obj instanceof String) {
-				sb.append("<").append(key).append(">").append(obj).append("</").append(key).append(">");
-			} else {
-				sb.append("<").append(key).append(">").append(this.hashMap2XML((HashMap<String, Object>) obj)).append("</").append(key).append(">");
-			}
-		}
-		return sb.toString();
-	}
-
 }

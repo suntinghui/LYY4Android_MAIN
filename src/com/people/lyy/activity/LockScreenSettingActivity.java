@@ -51,24 +51,20 @@ public class LockScreenSettingActivity extends BaseActivity {
 					secondKey = gv.getCurrentKey();
 					if (firstKey.equals(secondKey)) {
 						// 手势设置成功
-						SharedPreferences pre = ApplicationEnvironment
-								.getInstance().getPreferences();
+						SharedPreferences pre = ApplicationEnvironment.getInstance().getPreferences();
 						Editor editor = pre.edit();
 						editor.putString(Constants.kLOCKKEY, secondKey);
 						editor.putBoolean(Constants.kGESTRUECLOSE, true);
 						editor.commit();
 						gv.setKey(secondKey);
 						tv_tips.setText("修改成功");
-						tv_tips.setTextColor(LockScreenSettingActivity.this
-								.getResources().getColor(R.color.white));
+						tv_tips.setTextColor(LockScreenSettingActivity.this.getResources().getColor(R.color.white));
 
 						// 启动超时退出服务
-						Intent intent = new Intent(BaseActivity
-								.getTopActivity(), TimeoutService.class);
+						Intent intent = new Intent(BaseActivity.getTopActivity(), TimeoutService.class);
 						BaseActivity.getTopActivity().startService(intent);
 						showToast("手势设置成功");
-						Intent it = new Intent(LockScreenSettingActivity.this,
-								MainActivity.class);
+						Intent it = new Intent(LockScreenSettingActivity.this, MainActivity.class);
 						it.putExtra("isOpen", true);
 						startActivity(it);
 						LockScreenSettingActivity.this.finish();
@@ -76,10 +72,8 @@ public class LockScreenSettingActivity extends BaseActivity {
 					} else {
 						// 手势设置失败
 						tv_tips.setText("与上一次绘制不一致，请重新绘制");
-						tv_tips.setTextColor(LockScreenSettingActivity.this
-								.getResources().getColor(R.color.red));
-						Animation shakeAnim = AnimationUtils.loadAnimation(
-								LockScreenSettingActivity.this, R.anim.shake_x);
+						tv_tips.setTextColor(LockScreenSettingActivity.this.getResources().getColor(R.color.red));
+						Animation shakeAnim = AnimationUtils.loadAnimation(LockScreenSettingActivity.this, R.anim.shake_x);
 						shakeAnim.setDuration(700);
 						tv_tips.startAnimation(shakeAnim);
 					}
@@ -93,14 +87,11 @@ public class LockScreenSettingActivity extends BaseActivity {
 	// 获取返回键的响应事件
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
-		if (keyCode == KeyEvent.KEYCODE_BACK
-				&& event.getAction() == KeyEvent.ACTION_DOWN) {
+		if (keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN) {
 			Intent it = new Intent();
 			DataDao dao = new DataDao(getApplication());
 			dao.add(Constants.kGESTRUECLOSE, 0);
-			it.putExtra("isOpen",
-					ApplicationEnvironment.getInstance().getPreferences(this)
-							.getBoolean(Constants.kGESTRUECLOSE, false));
+			it.putExtra("isOpen", ApplicationEnvironment.getInstance().getPreferences(this).getBoolean(Constants.kGESTRUECLOSE, false));
 			setResult(Activity.RESULT_OK, it);
 			LockScreenSettingActivity.this.finish();
 			return true;

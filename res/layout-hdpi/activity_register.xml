@@ -56,9 +56,9 @@
                 android:text="@string/accounts" />
 
             <EditText
-                android:id="@+id/et_new_pwd"
+                android:id="@+id/et_username"
                 style="@style/black_17"
-                android:layout_width="wrap_content"
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:layout_marginLeft="18dip"
@@ -93,9 +93,9 @@
                 android:text="@string/password" />
 
             <EditText
-                android:id="@+id/et_confirm_pwd"
+                android:id="@+id/et_pwd"
                 style="@style/black_17"
-                android:layout_width="wrap_content"
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:layout_marginLeft="18dip"
