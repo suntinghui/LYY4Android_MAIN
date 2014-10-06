@@ -21,6 +21,7 @@ import com.people.network.LKHttpRequestQueue;
 import com.people.network.LKHttpRequestQueueDone;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences.Editor;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -44,7 +45,7 @@ public class AccountsInfoActivity extends BaseActivity implements OnClickListene
 	private Button btn_back, btn_confirm = null;
 	private ListView lv_balance = null;
 	private List<AccountInfo> list_balance = null;
-	private myAdapter adapter = null;
+	private MyAdapter adapter = null;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +55,14 @@ public class AccountsInfoActivity extends BaseActivity implements OnClickListene
 		initview();
 		
 		getAccounts();
+	}
+	
+	protected void onNewIntent(Intent i){
+		createImage(i.getStringExtra("token"));
+		isShow = true;
+		lay_consume2.setVisibility(View.VISIBLE);
+		
+		this.hideDialog(BaseActivity.PROGRESS_DIALOG);
 	}
 
 	public void initview() {
@@ -69,7 +78,7 @@ public class AccountsInfoActivity extends BaseActivity implements OnClickListene
 		list_balance = new ArrayList<AccountInfo>();
 
 		lv_balance = (ListView) findViewById(R.id.lv_balance);
-		adapter = new myAdapter(AccountsInfoActivity.this);
+		adapter = new MyAdapter(AccountsInfoActivity.this);
 		lv_balance.setAdapter(adapter);
 		lv_balance.setOnItemClickListener(mLeftListOnItemClick);
 	}
@@ -98,10 +107,16 @@ public class AccountsInfoActivity extends BaseActivity implements OnClickListene
 			break;
 
 		case R.id.btn_confirm:
-
-			createImage();
-			isShow = true;
-			lay_consume2.setVisibility(0);
+			this.showDialog(BaseActivity.PROGRESS_DIALOG, "正在加密请稍候");
+			
+			String selectedAccountNo = list_balance.get(((MyAdapter)lv_balance.getAdapter()).getSelectItem()).getBalance();
+			String tempStr = ApplicationEnvironment.getInstance().getPreferences().getString(Constants.kUSERNAME, "")+":"+selectedAccountNo;
+			
+			Intent serviceIntent = new Intent("com.people.sotp.lyyservice");
+			serviceIntent.putExtra("SOTP", "genTOKEN");
+			serviceIntent.putExtra("key", tempStr);
+			startService(serviceIntent);
+			
 			break;
 
 		default:
@@ -111,12 +126,10 @@ public class AccountsInfoActivity extends BaseActivity implements OnClickListene
 	}
 
 	// 创建二维码
-	private void createImage() {
+	private void createImage(String text) {
 		try {
 			// 需要引入core包
 			QRCodeWriter writer = new QRCodeWriter();
-
-			String text = "http://www.apk.anzhi.com/data2/apk/201409/22/com.people_00825300.apk";
 
 			if (text == null || "".equals(text) || text.length() < 1) {
 				return;
@@ -151,18 +164,16 @@ public class AccountsInfoActivity extends BaseActivity implements OnClickListene
 
 	AdapterView.OnItemClickListener mLeftListOnItemClick = new AdapterView.OnItemClickListener() {
 		public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-
 			adapter.setSelectItem(arg2);
-			adapter.notifyDataSetInvalidated();
 			adapter.notifyDataSetChanged();
 		}
 
 	};
 
-	public class myAdapter extends BaseAdapter {
+	public class MyAdapter extends BaseAdapter {
 		private LayoutInflater mInflater;
 
-		public myAdapter(Context context) {
+		public MyAdapter(Context context) {
 			this.mInflater = LayoutInflater.from(context);
 		}
 
@@ -208,6 +219,10 @@ public class AccountsInfoActivity extends BaseActivity implements OnClickListene
 
 		public void setSelectItem(int selectItem) {
 			this.selectItem = selectItem;
+		}
+		
+		public int getSelectItem(){
+			return selectItem;
 		}
 
 		private int selectItem = -1;

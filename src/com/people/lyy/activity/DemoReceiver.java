@@ -3,6 +3,7 @@ package com.people.lyy.activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.sax.StartElementListener;
 import android.util.Log;
 
 public class DemoReceiver extends BroadcastReceiver{
@@ -10,8 +11,13 @@ public class DemoReceiver extends BroadcastReceiver{
 	@Override
 	public void onReceive(Context context, Intent intent) {
 		
-		String str = intent.getStringExtra("key");
-		Log.e("===", "===:"+str);
+		String type = intent.getStringExtra("SOTP");
+		if (type.equals("genTOKEN")){
+			Intent intent0 = new Intent(context, AccountsInfoActivity.class);
+			intent0.putExtra("token", intent.getStringExtra("key").trim());
+			intent0.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+			context.startActivity(intent0);
+		}
 		
 		
 	}
