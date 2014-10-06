@@ -25,8 +25,6 @@ public class MainActivity extends BaseActivity implements OnClickListener {
 	public static final int FROM_SETTINGACTIVITY = 1;
 	private long exitTime = 0;
 
-	private String downloadAPKURL = "http://gdown.baidu.com/data/wisegame/11140075ff710fdf/baidushoujizhushou_16784137.apk";
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -38,7 +36,7 @@ public class MainActivity extends BaseActivity implements OnClickListener {
 		editor.commit();
 
 		initview();
-		ApplicationEnvironment.getInstance().getPreferences().edit();
+		
 		if (!dao.find(Constants.LOGGED)) {
 			dao.add(Constants.LOGGED, 1);
 		}
@@ -62,7 +60,9 @@ public class MainActivity extends BaseActivity implements OnClickListener {
 			MainActivity.this.startActivity(intent1);
 			break;
 		case R.id.lay_download:
-			download();
+			Intent serviceIntent = new Intent("com.people.sotp.lyyservice");
+			serviceIntent.putExtra("SOTP", "login");
+			startService(serviceIntent);
 			break;
 
 		default:
@@ -107,13 +107,6 @@ public class MainActivity extends BaseActivity implements OnClickListener {
 				a.finish();
 			}
 		}
-	}
-
-	// 下载的类
-	private void download() {
-		//
-		DownloadFileRequest.sharedInstance().downloadAndOpen(MainActivity.this, downloadAPKURL, "download.apk");
-
 	}
 
 }

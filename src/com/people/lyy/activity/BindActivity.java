@@ -37,8 +37,7 @@ public class BindActivity extends BaseActivity implements OnClickListener {
 			break;
 		case R.id.btn_confirm:
 			if (checkValue()) {
-				Intent intent = new Intent(BindActivity.this,
-						DetailsActivity.class);
+				Intent intent = new Intent(BindActivity.this, DetailsActivity.class);
 				startActivity(intent);
 			}
 			break;

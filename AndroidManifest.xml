@@ -51,7 +51,7 @@
             </intent-filter>
         </service>
 
-        <receiver android:name="com.people.lyy.scan.activity.DemoReceiver" >
+        <receiver android:name="com.people.lyy.activity.DemoReceiver" >
             <intent-filter android:priority="1000" >
                 <action android:name="com.people.sotp.demo" />
             </intent-filter>
