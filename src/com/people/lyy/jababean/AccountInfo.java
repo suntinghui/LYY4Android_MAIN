@@ -2,11 +2,11 @@ package com.people.lyy.jababean;
 
 import java.io.Serializable;
 
-public class Balance implements Serializable {
+public class AccountInfo implements Serializable {
 	public String balance;
 	private String can_cost;
 	
-	public Balance(String balance,String can_cost){
+	public AccountInfo(String balance,String can_cost){
 		this.balance = balance;
 		this.can_cost = can_cost;
 	}
