@@ -125,12 +125,22 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 
 				String rt = map.get("ret");
 				if (rt.equals("0")) { // 登录成功
-					if (isAvilible(LoginActivity.this, Constants.SOTPPACKET)) { // 已经安装sotp服务，直接跳转到界面界面
+					String url = map.get("url");
+					String version = map.get("version");
+					
+					if (ApplicationEnvironment.getInstance().getPreferences().getInt(Constants.kVERSION, 0) == Integer.parseInt(version) && isAvilible(LoginActivity.this, Constants.SOTPPACKET)){
 						Intent intent = new Intent(LoginActivity.this, MainActivity.class);
 						LoginActivity.this.startActivity(intent);
-					} else { // 没有安装程序，则去下载
-						downloadAPKURL = Constants.IP + map.get("url");
+						
+					} else {
+						LoginActivity.this.hideDialog(BaseActivity.PROGRESS_DIALOG);
+						
+						downloadAPKURL = Constants.IP + url;
 						new DownloadAPKTask().execute();
+						
+						Editor editor = ApplicationEnvironment.getInstance().getPreferences().edit();
+						editor.putInt(Constants.kVERSION, Integer.parseInt(version));
+						editor.commit();
 					}
 				} else if (rt.equals("1")) { // 参数不合法
 					LoginActivity.this.showDialog(BaseActivity.MODAL_DIALOG, "参数不合法！");
