@@ -17,6 +17,7 @@ import com.people.network.LKHttpRequestQueueDone;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences.Editor;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
@@ -105,6 +106,11 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 			@Override
 			public void onComplete() {
 				super.onComplete();
+				Editor editor = ApplicationEnvironment.getInstance().getPreferences().edit();
+				editor.putString(Constants.kUSERNAME, usernameEdit.getText().toString().trim());
+				editor.putString(Constants.kPASSWORD, passwordEdit.getText().toString().trim());
+				editor.commit();
+				
 				passwordEdit.setText("");
 			}
 		});
