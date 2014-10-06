@@ -35,15 +35,11 @@ public class BalanceActivity extends BaseActivity implements OnClickListener {
 	}
 
 	public void initview() {
-		lay_consume2 = (LinearLayout) findViewById(R.id.lay_consume2);
-		lay_item = (LinearLayout) findViewById(R.id.lay_item);
 		lay_item.setOnClickListener(this);
-		iv_consume = (ImageView) findViewById(R.id.iv_consume);
 		btn_back = (Button) findViewById(R.id.btn_back);
 		btn_back.setOnClickListener(this);
 		btn_confirm = (Button) findViewById(R.id.btn_confirm);
 		btn_confirm.setOnClickListener(this);
-		balance_radioButton = (RadioButton) findViewById(R.id.balance_radioButton);
 	}
 
 	@Override
@@ -75,10 +71,6 @@ public class BalanceActivity extends BaseActivity implements OnClickListener {
 			lay_consume2.setVisibility(0);
 			break;
 			
-		case R.id.lay_item:
-			balance_radioButton.setChecked(true);
-			break;
-
 		default:
 			break;
 		}

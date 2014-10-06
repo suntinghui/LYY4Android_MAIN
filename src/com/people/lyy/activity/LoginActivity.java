@@ -8,8 +8,8 @@ import com.people.lyy.R;
 import com.people.lyy.client.ApplicationEnvironment;
 import com.people.lyy.client.Constants;
 import com.people.lyy.client.DownloadFileRequest;
+
 import com.people.lyy.client.TransferRequestTag;
-import com.people.lyy.sqlite.DataDao;
 import com.people.network.LKAsyncHttpResponseHandler;
 import com.people.network.LKHttpRequest;
 import com.people.network.LKHttpRequestQueue;

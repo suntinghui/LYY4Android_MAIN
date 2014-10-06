@@ -30,7 +30,6 @@ public class LockScreenActivity extends BaseActivity implements OnClickListener 
 			@Override
 			public void OnGestureFinish(boolean success) {
 				if (success) {
-					// 启动超时退出服务
 					Intent intent = new Intent(BaseActivity.getTopActivity(), MainActivity.class);
 					BaseActivity.getTopActivity().startActivity(intent);
 					LockScreenActivity.this.finish();
