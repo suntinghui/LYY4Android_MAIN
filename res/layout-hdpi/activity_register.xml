@@ -64,7 +64,6 @@
                 android:layout_marginLeft="18dip"
                 android:background="@null"
                 android:hint="@string/accountsin"
-                android:password="true"
                 android:singleLine="true" />
         </LinearLayout>
 

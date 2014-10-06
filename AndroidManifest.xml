@@ -25,7 +25,7 @@
         </activity>
         <activity android:name="com.people.lyy.activity.LoginActivity" >
         </activity>
-        <activity android:name="com.people.lyy.activity.BalanceActivity" >
+        <activity android:name="com.people.lyy.activity.AccountsInfoActivity" >
         </activity>
         <activity android:name="com.people.lyy.activity.LockScreenSettingActivity" >
         </activity>
@@ -39,7 +39,7 @@
         </activity>
         <activity android:name="com.people.lyy.activity.DetailsActivity" >
         </activity>
-                <activity android:name="com.people.lyy.activity.RegisterActivity" >
+        <activity android:name="com.people.lyy.activity.RegisterActivity" >
         </activity>
 
         <service

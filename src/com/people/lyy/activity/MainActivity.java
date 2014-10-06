@@ -48,7 +48,7 @@ public class MainActivity extends BaseActivity implements OnClickListener {
 	public void onClick(View v) {
 		switch (v.getId()) {
 		case R.id.lay_consume:
-			Intent intent = new Intent(MainActivity.this, BalanceActivity.class);
+			Intent intent = new Intent(MainActivity.this, AccountsInfoActivity.class);
 			startActivity(intent);
 			break;
 
