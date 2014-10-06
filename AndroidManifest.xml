@@ -19,13 +19,15 @@
         <activity android:name="com.people.lyy.activity.SplashActivity" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity android:name="com.people.lyy.activity.LoginActivity" >
         </activity>
-        <activity android:name="com.people.lyy.activity.AccountsInfoActivity" >
+        <activity android:name="com.people.lyy.activity.AccountsInfoActivity" android:launchMode="singleTask">
+            <intent-filter>
+                <action android:name="com.people.AccountsInfoActivity" />
+            </intent-filter>
         </activity>
         <activity android:name="com.people.lyy.activity.LockScreenSettingActivity" >
         </activity>
