@@ -40,7 +40,7 @@ import android.widget.TextView;
 public class AccountsInfoActivity extends BaseActivity implements OnClickListener {
 	private LinearLayout lay_consume2 = null;
 	private ImageView iv_consume = null;
-	private boolean isShow = true;
+	private boolean isShow = false;
 	private Button btn_back, btn_confirm = null;
 	private ListView lv_balance = null;
 	private List<AccountInfo> list_balance = null;

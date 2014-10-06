@@ -81,6 +81,7 @@ public class MainActivity extends BaseActivity implements OnClickListener {
 		lay_gesture.setOnClickListener(this);
 		lay_download = (LinearLayout) findViewById(R.id.lay_download);
 		lay_download.setOnClickListener(this);
+		lay_download.setVisibility(View.GONE);
 	}
 
 	@Override
