@@ -221,7 +221,7 @@ public class BaseActivity extends Activity {
 			break;
 
 		case PROGRESS_DIALOG:
-			if (null != progressDialog && ADprogressDialog.isShowing()) {
+			if (null != progressDialog && progressDialog.isShowing()) {
 				progressDialog.dismiss();
 			}
 			break;

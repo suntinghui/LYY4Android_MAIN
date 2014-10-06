@@ -21,7 +21,6 @@ import com.people.network.LKHttpRequestQueue;
 import com.people.network.LKHttpRequestQueueDone;
 
 import android.content.Context;
-import android.content.SharedPreferences.Editor;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.KeyEvent;
@@ -51,13 +50,14 @@ public class AccountsInfoActivity extends BaseActivity implements OnClickListene
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_balance);
 
+		getAccounts();
+		
 		initview();
 		
-		getAccounts();
 	}
 
 	public void initview() {
-
+		
 		lay_consume2 = (LinearLayout) findViewById(R.id.lay_consume2);
 		iv_consume = (ImageView) findViewById(R.id.iv_consume);
 
@@ -229,7 +229,7 @@ public class AccountsInfoActivity extends BaseActivity implements OnClickListene
 			@Override
 			public void onComplete() {
 				super.onComplete();
-
+				
 			}
 
 		});
