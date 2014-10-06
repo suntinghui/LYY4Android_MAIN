@@ -12,6 +12,7 @@ import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 import com.people.lyy.R;
 import com.people.lyy.client.ApplicationEnvironment;
+import com.people.lyy.client.Constants;
 import com.people.lyy.client.TransferRequestTag;
 import com.people.lyy.jababean.Balance;
 import com.people.network.LKAsyncHttpResponseHandler;
@@ -231,9 +232,9 @@ public class AccountsInfoActivity extends BaseActivity implements
 	private void accounts() {
 		HashMap<String, Object> tempMap = new HashMap<String, Object>();
 		tempMap.put("username", ApplicationEnvironment.getInstance()
-				.getPreferences().getString("username",""));
+				.getPreferences().getString(Constants.kUSERNAME,""));
 		tempMap.put("password", ApplicationEnvironment.getInstance()
-				.getPreferences().getString("password",""));
+				.getPreferences().getString(Constants.kPASSWORD,""));
 
 		LKHttpRequest req1 = new LKHttpRequest(TransferRequestTag.Accounts,
 				tempMap, getAccountsHandler());
