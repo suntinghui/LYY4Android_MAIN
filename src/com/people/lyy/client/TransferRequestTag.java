@@ -7,7 +7,8 @@ import java.util.HashMap;
 public class TransferRequestTag {
 
 	public static final int SignUp	= 0; // 注册
-	public static final int Login 	= 1;// 登录
+	public static final int Login 	= 1; // 登录
+	public static final int Consume = 2; // 消费
 
 	private static HashMap<Integer, String> requestTagMap = null;
 
@@ -17,6 +18,7 @@ public class TransferRequestTag {
 
 			requestTagMap.put(SignUp, Constants.IP + "/sslvpn/index.php/login/register");
 			requestTagMap.put(Login, Constants.IP + "/sslvpn/index.php/login/login_verify");
+			requestTagMap.put(Consume, Constants.IP + "/list");
 
 		}
 
