@@ -28,7 +28,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
-                android:text="@string/balance" />
+                android:text="离线消费" />
         </RelativeLayout>
 
         <LinearLayout
@@ -38,7 +38,7 @@
             android:layout_marginRight="15dip"
             android:orientation="vertical" >
 
-            <LinearLayout
+            <RelativeLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
@@ -50,20 +50,21 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@null"
-                    android:text="@string/balance" />
+                    android:text="卡 包 余 额： " />
 
                 <TextView
                     android:id="@+id/tv_balance"
                     style="@style/black_17"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
                     android:layout_gravity="center_vertical"
                     android:singleLine="true"
                     android:text="5000.00元"
                     android:textColor="@color/red" />
-            </LinearLayout>
+            </RelativeLayout>
 
-            <LinearLayout
+            <RelativeLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
@@ -82,10 +83,19 @@
                     style="@style/black_17"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
                     android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="100dip"
                     android:singleLine="true"
-                    android:text="2.00元" />
-            </LinearLayout>
+                    android:text="0元" />
+            </RelativeLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dip"
+                android:layout_marginBottom="5dip"
+                android:layout_marginTop="10dip"
+                android:background="@color/gray" />
 
             <ListView
                 android:id="@+id/lv_balance"
@@ -98,11 +108,17 @@
                 android:cacheColorHint="#00000000"
                 android:choiceMode="singleChoice"
                 android:clickable="true"
-                android:divider="#00000000"
-                android:dividerHeight="13dip"
+                android:divider="@color/gray"
+                android:dividerHeight="1dip"
                 android:focusable="true"
                 android:listSelector="@android:color/transparent"
                 android:scrollbars="none" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dip"
+                android:layout_marginTop="10dip"
+                android:background="@color/gray" />
 
             <Button
                 android:id="@+id/btn_confirm"
@@ -111,8 +127,8 @@
                 android:layout_height="45dp"
                 android:layout_marginBottom="10dip"
                 android:layout_marginTop="10dip"
-                android:background="@drawable/btn"
-                android:visibility="gone"
+                android:clickable="false"
+                android:focusable="false"
                 android:text="@string/next" />
         </LinearLayout>
     </LinearLayout>

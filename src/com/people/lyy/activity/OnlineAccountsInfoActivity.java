@@ -11,10 +11,14 @@ import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 import com.people.lyy.R;
+import com.people.lyy.activity.AccountsInfoActivity.MyAdapter;
+import com.people.lyy.activity.AccountsInfoActivity.ViewHolder;
+import com.people.lyy.activity.LoginActivity.DownloadAPKTask;
 import com.people.lyy.client.ApplicationEnvironment;
 import com.people.lyy.client.Constants;
 import com.people.lyy.client.TransferRequestTag;
 import com.people.lyy.jababean.AccountInfo;
+import com.people.lyy.util.ActivityUtil;
 import com.people.network.LKAsyncHttpResponseHandler;
 import com.people.network.LKHttpRequest;
 import com.people.network.LKHttpRequestQueue;
@@ -22,7 +26,9 @@ import com.people.network.LKHttpRequestQueueDone;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences.Editor;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -48,8 +54,8 @@ public class OnlineAccountsInfoActivity extends BaseActivity implements
 	private ListView lv_balance = null;
 	private List<AccountInfo> list_balance = null;
 	private MyAdapter adapter = null;
-	private boolean isClick = true;
-	private int item_index = -1;
+	private TextView tv_can_cost, tv_balance = null;
+	private int total_cash = 0;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -79,6 +85,9 @@ public class OnlineAccountsInfoActivity extends BaseActivity implements
 		btn_back.setOnClickListener(this);
 		btn_confirm = (Button) findViewById(R.id.btn_confirm);
 		btn_confirm.setOnClickListener(this);
+		btn_confirm.setClickable(false);
+		btn_confirm.setFocusable(false);
+		btn_confirm.setBackgroundColor(Color.GRAY);
 
 		list_balance = new ArrayList<AccountInfo>();
 
@@ -86,6 +95,10 @@ public class OnlineAccountsInfoActivity extends BaseActivity implements
 		adapter = new MyAdapter(OnlineAccountsInfoActivity.this);
 		lv_balance.setAdapter(adapter);
 		lv_balance.setOnItemClickListener(mLeftListOnItemClick);
+
+		tv_can_cost = (TextView) findViewById(R.id.tv_can_cost);
+		tv_balance = (TextView) findViewById(R.id.tv_balance);
+
 	}
 
 	@Override
@@ -113,26 +126,46 @@ public class OnlineAccountsInfoActivity extends BaseActivity implements
 			break;
 
 		case R.id.btn_confirm:
-			this.showDialog(BaseActivity.PROGRESS_DIALOG, "正在加密请稍候");
+			HashMap<String, Object> tempMap = new HashMap<String, Object>();
+			tempMap.put("data", ApplicationEnvironment.getInstance().getPreferences().getString(Constants.kUSERNAME, "")+":"+list_balance.get(adapter.getSelectItem()).getBalance());
 
-			String selectedAccountNo = list_balance.get(
-					((MyAdapter) lv_balance.getAdapter()).getSelectItem())
-					.getBalance();
-			String tempStr = ApplicationEnvironment.getInstance()
-					.getPreferences().getString(Constants.kUSERNAME, "")
-					+ ":" + selectedAccountNo;
+			LKHttpRequest req1 = new LKHttpRequest(TransferRequestTag.Generate, tempMap, getGenerateHandler());
 
-			Intent serviceIntent = new Intent("com.people.sotp.lyyservice");
-			serviceIntent.putExtra("SOTP", "genTOKEN");
-			serviceIntent.putExtra("key", tempStr);
-			startService(serviceIntent);
+			new LKHttpRequestQueue().addHttpRequest(req1).executeQueue("正在处理请稍候...", new LKHttpRequestQueueDone() {
+				@Override
+				public void onComplete() {
+					super.onComplete();
+				}
+			});
 
 			break;
 
 		default:
 			break;
 		}
+	}
+	
+	private LKAsyncHttpResponseHandler getGenerateHandler() {
+		return new LKAsyncHttpResponseHandler() {
 
+			@Override
+			public void successAction(Object obj) {
+				HashMap<String, String> map = (HashMap<String, String>) obj;
+				int ret = Integer.parseInt(map.get("ret"));
+				if (ret == 0){
+					createImage(map.get("token"));
+					isShow = true;
+					lay_consume2.setVisibility(View.VISIBLE);
+					
+				} else if (ret == 10) {
+					OnlineAccountsInfoActivity.this.showDialog(BaseActivity.MODAL_DIALOG, "用户不存在！");
+				} else if (ret == 13) {
+					OnlineAccountsInfoActivity.this.showDialog(BaseActivity.MODAL_DIALOG, "帐号不存在！");
+				}
+				
+			}
+
+		};
 	}
 
 	// 创建二维码
@@ -179,9 +212,14 @@ public class OnlineAccountsInfoActivity extends BaseActivity implements
 	AdapterView.OnItemClickListener mLeftListOnItemClick = new AdapterView.OnItemClickListener() {
 		public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
 				long arg3) {
+
 			adapter.setSelectItem(arg2);
 			adapter.notifyDataSetChanged();
-			item_index = arg2;
+			btn_confirm.setClickable(true);
+			btn_confirm.setFocusable(true);
+			btn_confirm.setBackgroundResource(R.drawable.btn);
+			tv_can_cost.setText(list_balance.get(arg2).getCan_cost() + "元");
+
 		}
 
 	};
@@ -228,12 +266,8 @@ public class OnlineAccountsInfoActivity extends BaseActivity implements
 			holder.tv_cardbalance.setText(list_balance.get(position)
 					.getCan_cost());
 
-			if (selectItem == item_index) {
-				holder.imageView.setBackgroundResource(R.drawable.remeberpwd_n);
-				btn_confirm.setVisibility(View.GONE);
-			} else if (position == selectItem) {
+			if (position == selectItem) {
 				holder.imageView.setBackgroundResource(R.drawable.remeberpwd_s);
-				btn_confirm.setVisibility(View.VISIBLE);
 			} else {
 				holder.imageView.setBackgroundResource(R.drawable.remeberpwd_n);
 			}
@@ -285,6 +319,11 @@ public class OnlineAccountsInfoActivity extends BaseActivity implements
 			@Override
 			public void successAction(Object obj) {
 				list_balance = (List<AccountInfo>) obj;
+				for (int i = 0; i < list_balance.size(); i++) {
+					total_cash = Integer.parseInt(total_cash
+							+ list_balance.get(i).getCan_cost());
+				}
+				tv_balance.setText(total_cash + "元");
 
 			}
 		};
