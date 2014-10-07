@@ -49,6 +49,7 @@ public class AccountsInfoActivity extends BaseActivity implements
 	private List<AccountInfo> list_balance = null;
 	private MyAdapter adapter = null;
 	private boolean isClick = true;
+	private int item_index;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -178,8 +179,16 @@ public class AccountsInfoActivity extends BaseActivity implements
 	AdapterView.OnItemClickListener mLeftListOnItemClick = new AdapterView.OnItemClickListener() {
 		public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
 				long arg3) {
-			adapter.setSelectItem(arg2);
-			adapter.notifyDataSetChanged();
+			if (isClick) {
+				adapter.setSelectItem(arg2);
+				adapter.notifyDataSetChanged();
+				isClick = false;
+			} else {
+				adapter.setSelectItem(-1);
+				adapter.notifyDataSetChanged();
+				isClick = true;
+				btn_confirm.setVisibility(View.GONE);
+			}
 		}
 
 	};
@@ -228,7 +237,7 @@ public class AccountsInfoActivity extends BaseActivity implements
 
 			if (position == selectItem) {
 				holder.imageView.setBackgroundResource(R.drawable.remeberpwd_s);
-
+				btn_confirm.setVisibility(View.VISIBLE);
 			} else {
 				holder.imageView.setBackgroundResource(R.drawable.remeberpwd_n);
 			}
