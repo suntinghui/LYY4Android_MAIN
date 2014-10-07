@@ -50,6 +50,7 @@ public class MainActivity extends BaseActivity implements OnClickListener {
 			Intent intent = new Intent(MainActivity.this, OnlineAccountsInfoActivity.class);
 			startActivity(intent);
 			break;
+			
 		case R.id.lay_consume:
 			if (ActivityUtil.isAvilible(this, Constants.SOTPPACKET)){
 				Intent intent3 = new Intent(MainActivity.this, AccountsInfoActivity.class);
