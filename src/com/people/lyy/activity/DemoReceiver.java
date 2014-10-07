@@ -10,6 +10,7 @@ public class DemoReceiver extends BroadcastReceiver{
 
 	@Override
 	public void onReceive(Context context, Intent intent) {
+		Log.e("SOTP", "收到回应。。。");
 		
 		String type = intent.getStringExtra("SOTP");
 		if (type.equals("genTOKEN")){

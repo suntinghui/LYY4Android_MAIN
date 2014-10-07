@@ -5,6 +5,7 @@ import com.people.lyy.client.ApplicationEnvironment;
 import com.people.lyy.client.Constants;
 import com.people.lyy.client.DownloadFileRequest;
 import com.people.lyy.sqlite.DataDao;
+import com.people.lyy.util.ActivityUtil;
 
 import android.app.Activity;
 import android.content.Context;
@@ -50,8 +51,13 @@ public class MainActivity extends BaseActivity implements OnClickListener {
 			startActivity(intent);
 			break;
 		case R.id.lay_consume:
-			Intent intent3 = new Intent(MainActivity.this, AccountsInfoActivity.class);
-			startActivity(intent3);
+			if (ActivityUtil.isAvilible(this, Constants.SOTPPACKET)){
+				Intent intent3 = new Intent(MainActivity.this, AccountsInfoActivity.class);
+				startActivity(intent3);
+			} else {
+				this.showDialog(BaseActivity.MODAL_DIALOG, "您尚未安装安全插件，请重新登录并选择安装插件。");
+			}
+			
 			break;
 
 		case R.id.lay_binding:

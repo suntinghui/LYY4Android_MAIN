@@ -8,8 +8,8 @@ import com.people.lyy.R;
 import com.people.lyy.client.ApplicationEnvironment;
 import com.people.lyy.client.Constants;
 import com.people.lyy.client.DownloadFileRequest;
-
 import com.people.lyy.client.TransferRequestTag;
+import com.people.lyy.util.ActivityUtil;
 import com.people.network.LKAsyncHttpResponseHandler;
 import com.people.network.LKHttpRequest;
 import com.people.network.LKHttpRequestQueue;
@@ -110,7 +110,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 				editor.putString(Constants.kUSERNAME, usernameEdit.getText().toString().trim());
 				editor.putString(Constants.kPASSWORD, passwordEdit.getText().toString().trim());
 				editor.commit();
-				
+
 				passwordEdit.setText("");
 			}
 		});
@@ -127,20 +127,23 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 				if (rt.equals("0")) { // 登录成功
 					String url = map.get("url");
 					String version = map.get("version");
-					
-					if (ApplicationEnvironment.getInstance().getPreferences().getInt(Constants.kVERSION, 0) == Integer.parseInt(version) && isAvilible(LoginActivity.this, Constants.SOTPPACKET)){
+
+					if (ApplicationEnvironment.getInstance().getPreferences().getInt(Constants.kVERSION, 0) == Integer.parseInt(version) && ActivityUtil.isAvilible(LoginActivity.this, Constants.SOTPPACKET)) {
 						Intent intent = new Intent(LoginActivity.this, MainActivity.class);
 						LoginActivity.this.startActivity(intent);
-						
+
 					} else {
 						LoginActivity.this.hideDialog(BaseActivity.PROGRESS_DIALOG);
-						
+
 						downloadAPKURL = Constants.IP + url;
 						new DownloadAPKTask().execute();
-						
+
 						Editor editor = ApplicationEnvironment.getInstance().getPreferences().edit();
 						editor.putInt(Constants.kVERSION, Integer.parseInt(version));
 						editor.commit();
+
+						Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+						LoginActivity.this.startActivity(intent);
 					}
 				} else if (rt.equals("1")) { // 参数不合法
 					LoginActivity.this.showDialog(BaseActivity.MODAL_DIALOG, "参数不合法！");
@@ -156,25 +159,10 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 		};
 	}
 
-	public void onBackPressed(){
+	public void onBackPressed() {
 		super.onBackPressed();
-		
-		finish();
-	}
 
-	// 用于判断程序是否安装
-	private boolean isAvilible(Context context, String packageName) {
-		final PackageManager packageManager = context.getPackageManager();// 获取packagemanager
-		List<PackageInfo> pinfo = packageManager.getInstalledPackages(0);// 获取所有已安装程序的包信息
-		List<String> pName = new ArrayList<String>();// 用于存储所有已安装程序的包名
-		// 从pinfo中将包名字逐一取出，压入pName list中
-		if (pinfo != null) {
-			for (int i = 0; i < pinfo.size(); i++) {
-				String pn = pinfo.get(i).packageName;
-				pName.add(pn);
-			}
-		}
-		return pName.contains(packageName);// 判断pName中是否有目标程序的包名，有TRUE，没有FALSE
+		finish();
 	}
 
 	public class DownloadAPKTask extends AsyncTask<Object, Object, Object> {
