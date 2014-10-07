@@ -24,8 +24,11 @@ public class ParseResponseXML {
 			case TransferRequestTag.Login: // 登录
 				return parseResponse(responseStr);
 
-			case TransferRequestTag.Accounts: 
+			case TransferRequestTag.Accounts: //离线消费
 				return parseResponse2(responseStr);
+				
+			case TransferRequestTag.OnlineAccounts: //在线消费
+				return parseResponse3(responseStr);
 
 			}
 
@@ -56,6 +59,31 @@ public class ParseResponseXML {
 		List<AccountInfo> accountList = new ArrayList<AccountInfo>();
 		try{
 			String[] ss = str.split(";");
+			if (ss.length==0) 
+				return accountList;
+			
+			for (String temp : ss){
+				String[] s = temp.split(":");
+				AccountInfo ban2 = new AccountInfo(s[0], s[1]);
+				accountList.add(ban2);
+			}
+			
+			return accountList;
+		} catch(Exception e){
+			e.printStackTrace();
+			
+			return accountList;
+		}
+	}
+	//用户名:帐号&money=65
+	//用户名:帐号
+	//money = 65
+	private static List<AccountInfo> parseResponse3(String str) {
+		List<AccountInfo> accountList = new ArrayList<AccountInfo>();
+		
+		
+		try{
+			String[] ss = str.split("&");
 			if (ss.length==0) 
 				return accountList;
 			

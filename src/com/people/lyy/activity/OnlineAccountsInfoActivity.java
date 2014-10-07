@@ -37,9 +37,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
-//10表示用户不存在 11表示二维码超时
-
-public class AccountsInfoActivity extends BaseActivity implements
+public class OnlineAccountsInfoActivity extends BaseActivity implements
 		OnClickListener {
 	private LinearLayout lay_consume2 = null;
 	private ImageView iv_consume = null;
@@ -53,7 +51,7 @@ public class AccountsInfoActivity extends BaseActivity implements
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_accountsinfo);
+		setContentView(R.layout.activity_onlineaccountsinfo);
 
 		getAccounts();
 
@@ -82,7 +80,7 @@ public class AccountsInfoActivity extends BaseActivity implements
 		list_balance = new ArrayList<AccountInfo>();
 
 		lv_balance = (ListView) findViewById(R.id.lv_balance);
-		adapter = new MyAdapter(AccountsInfoActivity.this);
+		adapter = new MyAdapter(OnlineAccountsInfoActivity.this);
 		lv_balance.setAdapter(adapter);
 		lv_balance.setOnItemClickListener(mLeftListOnItemClick);
 	}
@@ -227,8 +225,15 @@ public class AccountsInfoActivity extends BaseActivity implements
 					.getCan_cost());
 
 			if (position == selectItem) {
-				holder.imageView.setBackgroundResource(R.drawable.remeberpwd_s);
-
+				if (isClick) {
+					holder.imageView
+							.setBackgroundResource(R.drawable.remeberpwd_s);
+					isClick = false;
+				} else {
+					holder.imageView
+							.setBackgroundResource(R.drawable.remeberpwd_n);
+					isClick = true;
+				}
 			} else {
 				holder.imageView.setBackgroundResource(R.drawable.remeberpwd_n);
 			}
@@ -259,11 +264,11 @@ public class AccountsInfoActivity extends BaseActivity implements
 		tempMap.put("password", ApplicationEnvironment.getInstance()
 				.getPreferences().getString(Constants.kPASSWORD, ""));
 
-		LKHttpRequest req1 = new LKHttpRequest(TransferRequestTag.Accounts,
+		LKHttpRequest req1 = new LKHttpRequest(TransferRequestTag.OnlineAccounts,
 				tempMap, getAccountsHandler());
 
-		new LKHttpRequestQueue().addHttpRequest(req1).executeQueue(
-				"正在加载数据请稍候。。。", new LKHttpRequestQueueDone() {
+		new LKHttpRequestQueue().addHttpRequest(req1).executeQueue("正在加载数据请稍候。。。",
+				new LKHttpRequestQueueDone() {
 					@Override
 					public void onComplete() {
 						super.onComplete();

@@ -21,7 +21,7 @@ import android.widget.Toast;
 public class MainActivity extends BaseActivity implements OnClickListener {
 	
 	private DataDao dao = null;
-	private LinearLayout lay_consume, lay_binding, lay_gesture, lay_download = null;
+	private LinearLayout lay_consume,lay_consumeonline, lay_binding, lay_gesture, lay_download = null;
 	public static final int FROM_SETTINGACTIVITY = 1;
 	private long exitTime = 0;
 
@@ -45,9 +45,13 @@ public class MainActivity extends BaseActivity implements OnClickListener {
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {
-		case R.id.lay_consume:
-			Intent intent = new Intent(MainActivity.this, AccountsInfoActivity.class);
+		case R.id.lay_consumeonline:
+			Intent intent = new Intent(MainActivity.this, OnlineAccountsInfoActivity.class);
 			startActivity(intent);
+			break;
+		case R.id.lay_consume:
+			Intent intent3 = new Intent(MainActivity.this, AccountsInfoActivity.class);
+			startActivity(intent3);
 			break;
 
 		case R.id.lay_binding:
@@ -73,6 +77,8 @@ public class MainActivity extends BaseActivity implements OnClickListener {
 
 	public void initview() {
 		dao = new DataDao(getApplication());
+		lay_consumeonline = (LinearLayout) findViewById(R.id.lay_consumeonline);
+		lay_consumeonline.setOnClickListener(this);
 		lay_consume = (LinearLayout) findViewById(R.id.lay_consume);
 		lay_consume.setOnClickListener(this);
 		lay_binding = (LinearLayout) findViewById(R.id.lay_binding);
