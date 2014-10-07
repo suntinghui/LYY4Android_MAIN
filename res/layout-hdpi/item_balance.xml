@@ -23,11 +23,18 @@
 
     <TextView
         android:id="@+id/tv_cardbalance"
-        android:textColor="@color/red"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-		android:layout_marginLeft="30dip"
-        android:text="xx元"
+        android:layout_marginLeft="30dip"
+        android:text="xx"
+        android:textColor="@color/red"
+        android:textSize="18sp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="元"
+        android:textColor="@color/red"
         android:textSize="18sp" />
 
 </LinearLayout>

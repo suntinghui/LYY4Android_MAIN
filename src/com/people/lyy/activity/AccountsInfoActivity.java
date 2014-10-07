@@ -23,6 +23,7 @@ import com.people.network.LKHttpRequestQueueDone;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -39,7 +40,8 @@ import android.widget.TextView;
 
 //10表示用户不存在 11表示二维码超时
 
-public class AccountsInfoActivity extends BaseActivity implements OnClickListener {
+public class AccountsInfoActivity extends BaseActivity implements
+		OnClickListener {
 	private LinearLayout lay_consume2 = null;
 	private ImageView iv_consume = null;
 	private boolean isShow = false;
@@ -48,7 +50,8 @@ public class AccountsInfoActivity extends BaseActivity implements OnClickListene
 	private List<AccountInfo> list_balance = null;
 	private MyAdapter adapter = null;
 	private boolean isClick = true;
-	private int item_index;
+	private TextView tv_can_cost, tv_balance = null;
+	private int total_cash = 0;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -78,6 +81,9 @@ public class AccountsInfoActivity extends BaseActivity implements OnClickListene
 		btn_back.setOnClickListener(this);
 		btn_confirm = (Button) findViewById(R.id.btn_confirm);
 		btn_confirm.setOnClickListener(this);
+		btn_confirm.setClickable(false);
+		btn_confirm.setFocusable(false);
+		btn_confirm.setBackgroundColor(Color.GRAY);
 
 		list_balance = new ArrayList<AccountInfo>();
 
@@ -85,12 +91,17 @@ public class AccountsInfoActivity extends BaseActivity implements OnClickListene
 		adapter = new MyAdapter(AccountsInfoActivity.this);
 		lv_balance.setAdapter(adapter);
 		lv_balance.setOnItemClickListener(mLeftListOnItemClick);
+
+		tv_can_cost = (TextView) findViewById(R.id.tv_can_cost);
+		tv_balance = (TextView) findViewById(R.id.tv_balance);
+
 	}
 
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if (event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
-			if (event.getAction() == KeyEvent.ACTION_DOWN && event.getRepeatCount() == 0) {
+			if (event.getAction() == KeyEvent.ACTION_DOWN
+					&& event.getRepeatCount() == 0) {
 				if (isShow) {
 					lay_consume2.setVisibility(View.GONE);
 					isShow = false;
@@ -113,8 +124,12 @@ public class AccountsInfoActivity extends BaseActivity implements OnClickListene
 		case R.id.btn_confirm:
 			this.showDialog(BaseActivity.PROGRESS_DIALOG, "正在加密请稍候");
 
-			String selectedAccountNo = list_balance.get(((MyAdapter) lv_balance.getAdapter()).getSelectItem()).getBalance();
-			String tempStr = ApplicationEnvironment.getInstance().getPreferences().getString(Constants.kUSERNAME, "") + ":" + selectedAccountNo;
+			String selectedAccountNo = list_balance.get(
+					((MyAdapter) lv_balance.getAdapter()).getSelectItem())
+					.getBalance();
+			String tempStr = ApplicationEnvironment.getInstance()
+					.getPreferences().getString(Constants.kUSERNAME, "")
+					+ ":" + selectedAccountNo;
 
 			Intent serviceIntent = new Intent("com.people.sotp.lyyservice");
 			serviceIntent.putExtra("SOTP", "genTOKEN");
@@ -140,13 +155,16 @@ public class AccountsInfoActivity extends BaseActivity implements OnClickListene
 			}
 
 			// 把输入的文本转为二维码
-			BitMatrix martix = writer.encode(text, BarcodeFormat.QR_CODE, 350, 350);
+			BitMatrix martix = writer.encode(text, BarcodeFormat.QR_CODE, 350,
+					350);
 
-			System.out.println("w:" + martix.getWidth() + "h:" + martix.getHeight());
+			System.out.println("w:" + martix.getWidth() + "h:"
+					+ martix.getHeight());
 
 			Hashtable<EncodeHintType, String> hints = new Hashtable<EncodeHintType, String>();
 			hints.put(EncodeHintType.CHARACTER_SET, "utf-8");
-			BitMatrix bitMatrix = new QRCodeWriter().encode(text, BarcodeFormat.QR_CODE, 350, 350, hints);
+			BitMatrix bitMatrix = new QRCodeWriter().encode(text,
+					BarcodeFormat.QR_CODE, 350, 350, hints);
 			int[] pixels = new int[350 * 350];
 			for (int y = 0; y < 350; y++) {
 				for (int x = 0; x < 350; x++) {
@@ -158,7 +176,8 @@ public class AccountsInfoActivity extends BaseActivity implements OnClickListene
 
 				}
 			}
-			Bitmap bitmap = Bitmap.createBitmap(350, 350, Bitmap.Config.ARGB_8888);
+			Bitmap bitmap = Bitmap.createBitmap(350, 350,
+					Bitmap.Config.ARGB_8888);
 			bitmap.setPixels(pixels, 0, 350, 0, 0, 350, 350);
 			iv_consume.setImageBitmap(bitmap);
 		} catch (WriterException e) {
@@ -167,16 +186,25 @@ public class AccountsInfoActivity extends BaseActivity implements OnClickListene
 	}
 
 	AdapterView.OnItemClickListener mLeftListOnItemClick = new AdapterView.OnItemClickListener() {
-		public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
+		public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
+				long arg3) {
 			if (isClick) {
 				adapter.setSelectItem(arg2);
 				adapter.notifyDataSetChanged();
 				isClick = false;
+				btn_confirm.setClickable(true);
+				btn_confirm.setFocusable(true);
+				btn_confirm.setBackgroundResource(R.drawable.btn);
+				tv_can_cost.setText(list_balance.get(arg2).getCan_cost() + "元");
 			} else {
 				adapter.setSelectItem(-1);
 				adapter.notifyDataSetChanged();
 				isClick = true;
-				btn_confirm.setVisibility(View.GONE);
+				btn_confirm.setClickable(false);
+				btn_confirm.setFocusable(false);
+				btn_confirm.setBackgroundColor(Color.GRAY);
+				tv_can_cost.setText("0元");
+
 			}
 		}
 
@@ -210,15 +238,19 @@ public class AccountsInfoActivity extends BaseActivity implements OnClickListene
 			if (convertView == null) {
 				convertView = mInflater.inflate(R.layout.item_balance, null);
 				holder = new ViewHolder();
-				holder.imageView = (ImageView) convertView.findViewById(R.id.imageView1);
-				holder.tv_cardcode = (TextView) convertView.findViewById(R.id.tv_cardcode);
-				holder.tv_cardbalance = (TextView) convertView.findViewById(R.id.tv_cardbalance);
+				holder.imageView = (ImageView) convertView
+						.findViewById(R.id.imageView1);
+				holder.tv_cardcode = (TextView) convertView
+						.findViewById(R.id.tv_cardcode);
+				holder.tv_cardbalance = (TextView) convertView
+						.findViewById(R.id.tv_cardbalance);
 				convertView.setTag(holder);
 			} else {
 				holder = (ViewHolder) convertView.getTag();
 			}
 			holder.tv_cardcode.setText(list_balance.get(position).getBalance());
-			holder.tv_cardbalance.setText(list_balance.get(position).getCan_cost());
+			holder.tv_cardbalance.setText(list_balance.get(position)
+					.getCan_cost());
 
 			if (position == selectItem) {
 				holder.imageView.setBackgroundResource(R.drawable.remeberpwd_s);
@@ -248,19 +280,23 @@ public class AccountsInfoActivity extends BaseActivity implements OnClickListene
 
 	private void getAccounts() {
 		HashMap<String, Object> tempMap = new HashMap<String, Object>();
-		tempMap.put("username", ApplicationEnvironment.getInstance().getPreferences().getString(Constants.kUSERNAME, ""));
-		tempMap.put("password", ApplicationEnvironment.getInstance().getPreferences().getString(Constants.kPASSWORD, ""));
+		tempMap.put("username", ApplicationEnvironment.getInstance()
+				.getPreferences().getString(Constants.kUSERNAME, ""));
+		tempMap.put("password", ApplicationEnvironment.getInstance()
+				.getPreferences().getString(Constants.kPASSWORD, ""));
 
-		LKHttpRequest req1 = new LKHttpRequest(TransferRequestTag.Accounts, tempMap, getAccountsHandler());
+		LKHttpRequest req1 = new LKHttpRequest(TransferRequestTag.Accounts,
+				tempMap, getAccountsHandler());
 
-		new LKHttpRequestQueue().addHttpRequest(req1).executeQueue("正在加载数据请稍候。。。", new LKHttpRequestQueueDone() {
-			@Override
-			public void onComplete() {
-				super.onComplete();
+		new LKHttpRequestQueue().addHttpRequest(req1).executeQueue(
+				"正在加载数据请稍候。。。", new LKHttpRequestQueueDone() {
+					@Override
+					public void onComplete() {
+						super.onComplete();
 
-			}
+					}
 
-		});
+				});
 
 	}
 
@@ -270,6 +306,11 @@ public class AccountsInfoActivity extends BaseActivity implements OnClickListene
 			@Override
 			public void successAction(Object obj) {
 				list_balance = (List<AccountInfo>) obj;
+				for (int i = 0; i < list_balance.size(); i++) {
+					total_cash = Integer.parseInt(total_cash
+							+ list_balance.get(i).getCan_cost());
+				}
+				tv_balance.setText(total_cash + "元");
 
 			}
 		};

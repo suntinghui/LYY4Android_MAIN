@@ -58,7 +58,7 @@ public class ParseResponseXML {
 	private static List<AccountInfo> parseResponse2(String str) {
 		List<AccountInfo> accountList = new ArrayList<AccountInfo>();
 		try{
-			String[] ss = str.split(";");
+			String[] ss = str.trim().split(";");
 			if (ss.length==0) 
 				return accountList;
 			
@@ -75,9 +75,7 @@ public class ParseResponseXML {
 			return accountList;
 		}
 	}
-	//用户名:帐号&money=65
-	//用户名:帐号
-	//money = 65
+	//留给在线的
 	private static List<AccountInfo> parseResponse3(String str) {
 		List<AccountInfo> accountList = new ArrayList<AccountInfo>();
 		
