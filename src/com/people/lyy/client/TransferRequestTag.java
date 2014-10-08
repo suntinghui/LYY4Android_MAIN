@@ -10,6 +10,8 @@ public class TransferRequestTag {
 	public static final int Login 	= 1; // 登录
 	public static final int Accounts = 2; // 消费
 	public static final int Generate = 3; // 生成TOKEN
+	
+	public static final int getAccountStr = 4;
 
 	private static HashMap<Integer, String> requestTagMap = null;
 
@@ -20,6 +22,7 @@ public class TransferRequestTag {
 			requestTagMap.put(SignUp, Constants.IP + "/sslvpn/index.php/login/register");
 			requestTagMap.put(Login, Constants.IP + "/sslvpn/index.php/login/login_verify");
 			requestTagMap.put(Accounts, Constants.IP + "/list");
+			requestTagMap.put(getAccountStr, Constants.IP + "/list");
 			requestTagMap.put(Generate, Constants.IP + "/Generate/");
 
 		}
