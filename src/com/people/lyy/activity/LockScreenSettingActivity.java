@@ -2,7 +2,6 @@ package com.people.lyy.activity;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -10,7 +9,6 @@ import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.people.lyy.R;
@@ -19,7 +17,6 @@ import com.people.lyy.client.Constants;
 import com.people.lyy.sqlite.DataDao;
 import com.people.lyy.view.GestureLockView;
 import com.people.lyy.view.GestureLockView.OnGestureFinishListener;
-import com.people.lyy.view.LKAlertDialog;
 
 // 锁屏 设置
 @SuppressLint("ResourceAsColor")

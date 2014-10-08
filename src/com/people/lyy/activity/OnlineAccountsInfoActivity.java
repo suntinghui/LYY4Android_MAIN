@@ -7,6 +7,7 @@ import java.util.List;
 
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.EncodeHintType;
+import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
@@ -19,6 +20,7 @@ import com.people.lyy.client.Constants;
 import com.people.lyy.client.TransferRequestTag;
 import com.people.lyy.jababean.AccountInfo;
 import com.people.lyy.util.ActivityUtil;
+import com.people.lyy.view.ADProgressDialog;
 import com.people.network.LKAsyncHttpResponseHandler;
 import com.people.network.LKHttpRequest;
 import com.people.network.LKHttpRequestQueue;
@@ -49,13 +51,13 @@ import android.widget.TextView;
 public class OnlineAccountsInfoActivity extends BaseActivity implements
 		OnClickListener {
 	private LinearLayout lay_consume2 = null;
-	private ImageView iv_consume = null;
+	private ImageView iv_consume, iv_consume2 = null;
 	private boolean isShow = false;
 	private Button btn_back, btn_confirm = null;
 	private ListView lv_balance = null;
 	private List<AccountInfo> list_balance = null;
 	private MyAdapter adapter = null;
-	private TextView tv_can_cost, tv_balance = null;
+	private TextView tv_can_cost, tv_balance, tv_code = null;
 	private int total_cash = 0;
 
 	@Override
@@ -65,23 +67,29 @@ public class OnlineAccountsInfoActivity extends BaseActivity implements
 
 		getAccounts();
 
-		initview();
+		initView();
 
 	}
 
 	protected void onNewIntent(Intent i) {
 
-		createImage(i.getStringExtra("token"));
+		try {
+			createOneDCode(i.getStringExtra("token"));
+			createTwoDCode(i.getStringExtra("token"));
+		} catch (WriterException e) {
+			e.printStackTrace();
+		}
 		isShow = true;
 		lay_consume2.setVisibility(View.VISIBLE);
 
 		this.hideDialog(BaseActivity.PROGRESS_DIALOG);
 	}
 
-	public void initview() {
+	public void initView() {
 
 		lay_consume2 = (LinearLayout) findViewById(R.id.lay_consume2);
 		iv_consume = (ImageView) findViewById(R.id.iv_consume);
+		iv_consume2 = (ImageView) findViewById(R.id.iv_consume2);
 
 		btn_back = (Button) findViewById(R.id.btn_back);
 		btn_back.setOnClickListener(this);
@@ -100,7 +108,7 @@ public class OnlineAccountsInfoActivity extends BaseActivity implements
 
 		tv_can_cost = (TextView) findViewById(R.id.tv_can_cost);
 		tv_balance = (TextView) findViewById(R.id.tv_balance);
-
+		tv_code = (TextView) findViewById(R.id.tv_code);
 	}
 
 	@Override
@@ -128,6 +136,10 @@ public class OnlineAccountsInfoActivity extends BaseActivity implements
 			break;
 
 		case R.id.btn_confirm:
+			BaseActivity.getTopActivity().hideDialog(ADPROGRESS_DIALOG);
+
+			this.showDialog(BaseActivity.PROGRESS_DIALOG, "正在加密请稍候");
+
 			HashMap<String, Object> tempMap = new HashMap<String, Object>();
 			tempMap.put("data", ApplicationEnvironment.getInstance()
 					.getPreferences().getString(Constants.kUSERNAME, "")
@@ -157,10 +169,18 @@ public class OnlineAccountsInfoActivity extends BaseActivity implements
 
 			@Override
 			public void successAction(Object obj) {
+				BaseActivity.getTopActivity().hideDialog(ADPROGRESS_DIALOG);
+
 				HashMap<String, String> map = (HashMap<String, String>) obj;
 				int ret = Integer.parseInt(map.get("ret"));
 				if (ret == 0) {
-					createImage(map.get("token"));
+					try {
+						tv_code.setText(map.get("token"));
+						createOneDCode(map.get("token"));
+					} catch (WriterException e) {
+						e.printStackTrace();
+					}
+					createTwoDCode(map.get("token"));
 					Log.i("token", map.get("token"));
 					isShow = true;
 					lay_consume2.setVisibility(View.VISIBLE);
@@ -179,7 +199,7 @@ public class OnlineAccountsInfoActivity extends BaseActivity implements
 	}
 
 	// 创建二维码
-	private void createImage(String text) {
+	private void createTwoDCode(String text) {
 		try {
 			// 需要引入core包
 			QRCodeWriter writer = new QRCodeWriter();
@@ -213,7 +233,7 @@ public class OnlineAccountsInfoActivity extends BaseActivity implements
 			Bitmap bitmap = Bitmap.createBitmap(450, 450,
 					Bitmap.Config.ARGB_8888);
 			bitmap.setPixels(pixels, 0, 450, 0, 0, 450, 450);
-			iv_consume.setImageBitmap(bitmap);
+			iv_consume2.setImageBitmap(bitmap);
 		} catch (WriterException e) {
 			e.printStackTrace();
 		}
@@ -316,7 +336,8 @@ public class OnlineAccountsInfoActivity extends BaseActivity implements
 					@Override
 					public void onComplete() {
 						super.onComplete();
-
+						BaseActivity.getTopActivity().hideDialog(
+								ADPROGRESS_DIALOG);
 					}
 
 				});
@@ -328,6 +349,7 @@ public class OnlineAccountsInfoActivity extends BaseActivity implements
 		return new LKAsyncHttpResponseHandler() {
 			@Override
 			public void successAction(Object obj) {
+
 				list_balance = (List<AccountInfo>) obj;
 				for (int i = 0; i < list_balance.size(); i++) {
 					total_cash = Integer.parseInt(total_cash
@@ -338,5 +360,27 @@ public class OnlineAccountsInfoActivity extends BaseActivity implements
 			}
 		};
 
+	}
+
+	public void createOneDCode(String content) throws WriterException {
+		// 生成一维条码,编码时指定大小,不要生成了图片以后再进行缩放,这样会模糊导致识别失败
+		BitMatrix matrix = new MultiFormatWriter().encode(content,
+				BarcodeFormat.CODE_128, 800, 400);
+		int width = matrix.getWidth();
+		int height = matrix.getHeight();
+		int[] pixels = new int[width * height];
+		for (int y = 0; y < height; y++) {
+			for (int x = 0; x < width; x++) {
+				if (matrix.get(x, y)) {
+					pixels[y * width + x] = 0xff000000;
+				}
+			}
+		}
+
+		Bitmap bitmap = Bitmap.createBitmap(width, height,
+				Bitmap.Config.ARGB_8888);
+		// 通过像素数组生成bitmap,具体参考api
+		bitmap.setPixels(pixels, 0, width, 0, 0, width, height);
+		iv_consume.setImageBitmap(bitmap);
 	}
 }

@@ -1,8 +1,6 @@
 package com.people.lyy.activity;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 import com.people.lyy.R;
 import com.people.lyy.client.ApplicationEnvironment;
@@ -15,15 +13,11 @@ import com.people.network.LKHttpRequest;
 import com.people.network.LKHttpRequestQueue;
 import com.people.network.LKHttpRequestQueueDone;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences.Editor;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Looper;
-import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.animation.Animation;
@@ -39,7 +33,6 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 	private EditText usernameEdit = null;
 	private EditText passwordEdit = null;
 	private Button btn_login, btn_register = null;
-	private long exitTime = 0;
 
 	private String downloadAPKURL;
 
@@ -50,11 +43,13 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 		setContentView(R.layout.activity_login);
 
 		logoImageView = (ImageView) this.findViewById(R.id.logoImageView);
-		Animation myAnimation = AnimationUtils.loadAnimation(this, R.anim.login_logo_anim);
+		Animation myAnimation = AnimationUtils.loadAnimation(this,
+				R.anim.login_logo_anim);
 		logoImageView.startAnimation(myAnimation);
 
 		usernameEdit = (EditText) this.findViewById(R.id.et_user);
-		usernameEdit.setText(ApplicationEnvironment.getInstance().getPreferences(this).getString(Constants.kUSERNAME, ""));
+		usernameEdit.setText(ApplicationEnvironment.getInstance()
+				.getPreferences(this).getString(Constants.kUSERNAME, ""));
 		usernameEdit.setSelection(usernameEdit.getText().toString().length());
 		passwordEdit = (EditText) this.findViewById(R.id.et_pwd);
 
@@ -73,7 +68,8 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 			}
 			break;
 		case R.id.btn_register:
-			Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
+			Intent intent = new Intent(LoginActivity.this,
+					RegisterActivity.class);
 			startActivityForResult(intent, 0);
 			break;
 		default:
@@ -100,20 +96,25 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 		tempMap.put("username", usernameEdit.getText().toString().trim());
 		tempMap.put("password", passwordEdit.getText().toString().trim());
 
-		LKHttpRequest req1 = new LKHttpRequest(TransferRequestTag.Login, tempMap, getLoginHandler());
+		LKHttpRequest req1 = new LKHttpRequest(TransferRequestTag.Login,
+				tempMap, getLoginHandler());
 
-		new LKHttpRequestQueue().addHttpRequest(req1).executeQueue("正在登录请稍候...", new LKHttpRequestQueueDone() {
-			@Override
-			public void onComplete() {
-				super.onComplete();
-				Editor editor = ApplicationEnvironment.getInstance().getPreferences().edit();
-				editor.putString(Constants.kUSERNAME, usernameEdit.getText().toString().trim());
-				editor.putString(Constants.kPASSWORD, passwordEdit.getText().toString().trim());
-				editor.commit();
+		new LKHttpRequestQueue().addHttpRequest(req1).executeQueue(
+				"正在登录请稍候...", new LKHttpRequestQueueDone() {
+					@Override
+					public void onComplete() {
+						super.onComplete();
+						Editor editor = ApplicationEnvironment.getInstance()
+								.getPreferences().edit();
+						editor.putString(Constants.kUSERNAME, usernameEdit
+								.getText().toString().trim());
+						editor.putString(Constants.kPASSWORD, passwordEdit
+								.getText().toString().trim());
+						editor.commit();
 
-				passwordEdit.setText("");
-			}
-		});
+						passwordEdit.setText("");
+					}
+				});
 	}
 
 	private LKAsyncHttpResponseHandler getLoginHandler() {
@@ -127,32 +128,45 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 				if (rt.equals("0")) { // 登录成功
 					String url = map.get("url");
 					String version = map.get("version");
+					LoginActivity.this
+							.hideDialog(BaseActivity.ADPROGRESS_DIALOG);
 
-					if (ApplicationEnvironment.getInstance().getPreferences().getInt(Constants.kVERSION, 0) == Integer.parseInt(version) && ActivityUtil.isAvilible(LoginActivity.this, Constants.SOTPPACKET)) {
-						Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+					if (ApplicationEnvironment.getInstance().getPreferences()
+							.getInt(Constants.kVERSION, 0) == Integer
+							.parseInt(version)
+							&& ActivityUtil.isAvilible(LoginActivity.this,
+									Constants.SOTPPACKET)) {
+						Intent intent = new Intent(LoginActivity.this,
+								LockScreenSettingActivity.class);
 						LoginActivity.this.startActivity(intent);
 
 					} else {
-						LoginActivity.this.hideDialog(BaseActivity.PROGRESS_DIALOG);
 
 						downloadAPKURL = Constants.IP + url;
 						new DownloadAPKTask().execute();
 
-						Editor editor = ApplicationEnvironment.getInstance().getPreferences().edit();
-						editor.putInt(Constants.kVERSION, Integer.parseInt(version));
+						Editor editor = ApplicationEnvironment.getInstance()
+								.getPreferences().edit();
+						editor.putInt(Constants.kVERSION,
+								Integer.parseInt(version));
 						editor.commit();
 
-						Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+						Intent intent = new Intent(LoginActivity.this,
+								LockScreenSettingActivity.class);
 						LoginActivity.this.startActivity(intent);
 					}
 				} else if (rt.equals("1")) { // 参数不合法
-					LoginActivity.this.showDialog(BaseActivity.MODAL_DIALOG, "参数不合法！");
+					LoginActivity.this.showDialog(BaseActivity.MODAL_DIALOG,
+							"参数不合法！");
 				} else if (rt.equals("3")) {
-					LoginActivity.this.showDialog(BaseActivity.MODAL_DIALOG, "用户名错误！");
+					LoginActivity.this.showDialog(BaseActivity.MODAL_DIALOG,
+							"用户名错误！");
 				} else if (rt.equals("4")) {
-					LoginActivity.this.showDialog(BaseActivity.MODAL_DIALOG, "密码错误！");
+					LoginActivity.this.showDialog(BaseActivity.MODAL_DIALOG,
+							"密码错误！");
 				} else if (rt.equals("5")) {
-					LoginActivity.this.showDialog(BaseActivity.MODAL_DIALOG, "文件不存在！");
+					LoginActivity.this.showDialog(BaseActivity.MODAL_DIALOG,
+							"文件不存在！");
 				}
 			}
 
@@ -176,7 +190,26 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 
 	private void download() {
 		Looper.prepare();
-		DownloadFileRequest.sharedInstance().downloadAndOpen(this, downloadAPKURL, "download.apk");
+		DownloadFileRequest.sharedInstance().downloadAndOpen(this,
+				downloadAPKURL, "download.apk");
 	}
 
+	public class SleepTask extends AsyncTask<Object, Object, Object> {
+
+		@Override
+		protected Object doInBackground(Object... params) {
+			try {
+				Thread.sleep(3000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			return null;
+		}
+
+		@Override
+		protected void onPostExecute(Object result) {
+			super.onPostExecute(result);
+
+		}
+	}
 }
