@@ -46,8 +46,7 @@ import android.widget.TextView;
 
 //10表示用户不存在 11表示二维码超时
 
-public class OnlineAccountsInfoActivity extends BaseActivity implements
-		OnClickListener {
+public class OnlineAccountsInfoActivity extends BaseActivity implements OnClickListener {
 	private LinearLayout lay_consume2 = null;
 	private ImageView iv_consume = null;
 	private boolean isShow = false;
@@ -106,8 +105,7 @@ public class OnlineAccountsInfoActivity extends BaseActivity implements
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if (event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
-			if (event.getAction() == KeyEvent.ACTION_DOWN
-					&& event.getRepeatCount() == 0) {
+			if (event.getAction() == KeyEvent.ACTION_DOWN && event.getRepeatCount() == 0) {
 				if (isShow) {
 					lay_consume2.setVisibility(View.GONE);
 					isShow = false;
@@ -129,21 +127,16 @@ public class OnlineAccountsInfoActivity extends BaseActivity implements
 
 		case R.id.btn_confirm:
 			HashMap<String, Object> tempMap = new HashMap<String, Object>();
-			tempMap.put("data", ApplicationEnvironment.getInstance()
-					.getPreferences().getString(Constants.kUSERNAME, "")
-					+ ":"
-					+ list_balance.get(adapter.getSelectItem()).getBalance());
+			tempMap.put("data", ApplicationEnvironment.getInstance().getPreferences().getString(Constants.kUSERNAME, "") + ":" + list_balance.get(adapter.getSelectItem()).getBalance());
 
-			LKHttpRequest req1 = new LKHttpRequest(TransferRequestTag.Generate,
-					tempMap, getGenerateHandler());
+			LKHttpRequest req1 = new LKHttpRequest(TransferRequestTag.Generate, tempMap, getGenerateHandler());
 
-			new LKHttpRequestQueue().addHttpRequest(req1).executeQueue(
-					"正在处理请稍候...", new LKHttpRequestQueueDone() {
-						@Override
-						public void onComplete() {
-							super.onComplete();
-						}
-					});
+			new LKHttpRequestQueue().addHttpRequest(req1).executeQueue("正在处理请稍候...", new LKHttpRequestQueueDone() {
+				@Override
+				public void onComplete() {
+					super.onComplete();
+				}
+			});
 
 			break;
 
@@ -166,11 +159,9 @@ public class OnlineAccountsInfoActivity extends BaseActivity implements
 					lay_consume2.setVisibility(View.VISIBLE);
 
 				} else if (ret == 10) {
-					OnlineAccountsInfoActivity.this.showDialog(
-							BaseActivity.MODAL_DIALOG, "用户不存在！");
+					OnlineAccountsInfoActivity.this.showDialog(BaseActivity.MODAL_DIALOG, "用户不存在！");
 				} else if (ret == 13) {
-					OnlineAccountsInfoActivity.this.showDialog(
-							BaseActivity.MODAL_DIALOG, "帐号不存在！");
+					OnlineAccountsInfoActivity.this.showDialog(BaseActivity.MODAL_DIALOG, "帐号不存在！");
 				}
 
 			}
@@ -189,16 +180,13 @@ public class OnlineAccountsInfoActivity extends BaseActivity implements
 			}
 
 			// 把输入的文本转为二维码
-			BitMatrix martix = writer.encode(text, BarcodeFormat.QR_CODE, 450,
-					450);
+			BitMatrix martix = writer.encode(text, BarcodeFormat.QR_CODE, 450, 450);
 
-			System.out.println("w:" + martix.getWidth() + "h:"
-					+ martix.getHeight());
+			System.out.println("w:" + martix.getWidth() + "h:" + martix.getHeight());
 
 			Hashtable<EncodeHintType, String> hints = new Hashtable<EncodeHintType, String>();
 			hints.put(EncodeHintType.CHARACTER_SET, "utf-8");
-			BitMatrix bitMatrix = new QRCodeWriter().encode(text,
-					BarcodeFormat.QR_CODE, 450, 450, hints);
+			BitMatrix bitMatrix = new QRCodeWriter().encode(text, BarcodeFormat.QR_CODE, 450, 450, hints);
 			int[] pixels = new int[450 * 450];
 			for (int y = 0; y < 450; y++) {
 				for (int x = 0; x < 450; x++) {
@@ -210,8 +198,7 @@ public class OnlineAccountsInfoActivity extends BaseActivity implements
 
 				}
 			}
-			Bitmap bitmap = Bitmap.createBitmap(450, 450,
-					Bitmap.Config.ARGB_8888);
+			Bitmap bitmap = Bitmap.createBitmap(450, 450, Bitmap.Config.ARGB_8888);
 			bitmap.setPixels(pixels, 0, 450, 0, 0, 450, 450);
 			iv_consume.setImageBitmap(bitmap);
 		} catch (WriterException e) {
@@ -220,8 +207,7 @@ public class OnlineAccountsInfoActivity extends BaseActivity implements
 	}
 
 	AdapterView.OnItemClickListener mLeftListOnItemClick = new AdapterView.OnItemClickListener() {
-		public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
-				long arg3) {
+		public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
 
 			adapter.setSelectItem(arg2);
 			adapter.notifyDataSetChanged();
@@ -262,19 +248,15 @@ public class OnlineAccountsInfoActivity extends BaseActivity implements
 			if (convertView == null) {
 				convertView = mInflater.inflate(R.layout.item_balance, null);
 				holder = new ViewHolder();
-				holder.imageView = (ImageView) convertView
-						.findViewById(R.id.imageView1);
-				holder.tv_cardcode = (TextView) convertView
-						.findViewById(R.id.tv_cardcode);
-				holder.tv_cardbalance = (TextView) convertView
-						.findViewById(R.id.tv_cardbalance);
+				holder.imageView = (ImageView) convertView.findViewById(R.id.imageView1);
+				holder.tv_cardcode = (TextView) convertView.findViewById(R.id.tv_cardcode);
+				holder.tv_cardbalance = (TextView) convertView.findViewById(R.id.tv_cardbalance);
 				convertView.setTag(holder);
 			} else {
 				holder = (ViewHolder) convertView.getTag();
 			}
 			holder.tv_cardcode.setText(list_balance.get(position).getBalance());
-			holder.tv_cardbalance.setText(list_balance.get(position)
-					.getCan_cost());
+			holder.tv_cardbalance.setText(list_balance.get(position).getCan_cost());
 
 			if (position == selectItem) {
 				holder.imageView.setBackgroundResource(R.drawable.remeberpwd_s);
@@ -303,23 +285,19 @@ public class OnlineAccountsInfoActivity extends BaseActivity implements
 
 	private void getAccounts() {
 		HashMap<String, Object> tempMap = new HashMap<String, Object>();
-		tempMap.put("username", ApplicationEnvironment.getInstance()
-				.getPreferences().getString(Constants.kUSERNAME, ""));
-		tempMap.put("password", ApplicationEnvironment.getInstance()
-				.getPreferences().getString(Constants.kPASSWORD, ""));
+		tempMap.put("username", ApplicationEnvironment.getInstance().getPreferences().getString(Constants.kUSERNAME, ""));
+		tempMap.put("password", ApplicationEnvironment.getInstance().getPreferences().getString(Constants.kPASSWORD, ""));
 
-		LKHttpRequest req1 = new LKHttpRequest(TransferRequestTag.Accounts,
-				tempMap, getAccountsHandler());
+		LKHttpRequest req1 = new LKHttpRequest(TransferRequestTag.Accounts, tempMap, getAccountsHandler());
 
-		new LKHttpRequestQueue().addHttpRequest(req1).executeQueue(
-				"正在加载数据请稍候。。。", new LKHttpRequestQueueDone() {
-					@Override
-					public void onComplete() {
-						super.onComplete();
+		new LKHttpRequestQueue().addHttpRequest(req1).executeQueue("正在加载数据请稍候。。。", new LKHttpRequestQueueDone() {
+			@Override
+			public void onComplete() {
+				super.onComplete();
 
-					}
+			}
 
-				});
+		});
 
 	}
 
@@ -329,9 +307,11 @@ public class OnlineAccountsInfoActivity extends BaseActivity implements
 			@Override
 			public void successAction(Object obj) {
 				list_balance = (List<AccountInfo>) obj;
+				
+				adapter.notifyDataSetChanged();
+				
 				for (int i = 0; i < list_balance.size(); i++) {
-					total_cash = Integer.parseInt(total_cash
-							+ list_balance.get(i).getCan_cost());
+					total_cash = Integer.parseInt(total_cash + list_balance.get(i).getCan_cost());
 				}
 				tv_balance.setText(total_cash + "元");
 
