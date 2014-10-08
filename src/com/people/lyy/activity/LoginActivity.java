@@ -7,6 +7,7 @@ import com.people.lyy.client.ApplicationEnvironment;
 import com.people.lyy.client.Constants;
 import com.people.lyy.client.DownloadFileRequest;
 import com.people.lyy.client.TransferRequestTag;
+import com.people.lyy.jababean.AccountInfo;
 import com.people.lyy.util.ActivityUtil;
 import com.people.network.LKAsyncHttpResponseHandler;
 import com.people.network.LKHttpRequest;
@@ -143,6 +144,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 					} else {
 
 						downloadAPKURL = Constants.IP + url;
+
 						new DownloadAPKTask().execute();
 
 						Editor editor = ApplicationEnvironment.getInstance()
@@ -155,6 +157,9 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 								LockScreenSettingActivity.class);
 						LoginActivity.this.startActivity(intent);
 					}
+
+					getAccounts();
+
 				} else if (rt.equals("1")) { // 参数不合法
 					LoginActivity.this.showDialog(BaseActivity.MODAL_DIALOG,
 							"参数不合法！");
@@ -171,6 +176,46 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 			}
 
 		};
+	}
+
+	private void getAccounts() {
+		HashMap<String, Object> tempMap = new HashMap<String, Object>();
+		tempMap.put("username", ApplicationEnvironment.getInstance()
+				.getPreferences().getString(Constants.kUSERNAME, ""));
+		tempMap.put("password", ApplicationEnvironment.getInstance()
+				.getPreferences().getString(Constants.kPASSWORD, ""));
+
+		LKHttpRequest req1 = new LKHttpRequest(
+				TransferRequestTag.getAccountStr, tempMap, getAccountsHandler());
+
+		new LKHttpRequestQueue().addHttpRequest(req1).executeQueue(
+				"正在加载数据请稍候。。。", new LKHttpRequestQueueDone() {
+					@Override
+					public void onComplete() {
+						super.onComplete();
+
+						new DownloadAPKTask().execute();
+
+						Intent intent = new Intent(LoginActivity.this,
+								MainActivity.class);
+						LoginActivity.this.startActivity(intent);
+					}
+				});
+
+	}
+
+	public LKAsyncHttpResponseHandler getAccountsHandler() {
+
+		return new LKAsyncHttpResponseHandler() {
+			@Override
+			public void successAction(Object obj) {
+				Editor editor = ApplicationEnvironment.getInstance()
+						.getPreferences().edit();
+				editor.putString(Constants.kACCOUNTLIST, (String) obj);
+				editor.commit();
+			}
+		};
+
 	}
 
 	public void onBackPressed() {

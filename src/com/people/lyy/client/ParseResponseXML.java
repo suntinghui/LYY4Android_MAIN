@@ -9,6 +9,7 @@ import java.util.List;
 
 import com.people.lyy.jababean.AccountInfo;
 
+import android.content.SharedPreferences.Editor;
 import android.util.Log;
 
 public class ParseResponseXML {
@@ -26,6 +27,9 @@ public class ParseResponseXML {
 
 			case TransferRequestTag.Accounts: // 离线消费
 				return accounts(responseStr);
+				
+			case TransferRequestTag.getAccountStr:
+				return responseStr;
 
 			case TransferRequestTag.Generate: // 在线消费
 				return parseResponse(responseStr);
@@ -55,7 +59,11 @@ public class ParseResponseXML {
 		return map;
 	}
 
-	private static List<AccountInfo> accounts(String str) {
+	public static List<AccountInfo> accounts(String str) {
+		Editor editor = ApplicationEnvironment.getInstance().getPreferences().edit();
+		editor.putString(Constants.kACCOUNTLIST, str);
+		editor.commit();
+		
 		List<AccountInfo> accountList = new ArrayList<AccountInfo>();
 		try {
 			String[] sss = str.split("#");
@@ -76,5 +84,5 @@ public class ParseResponseXML {
 			return accountList;
 		}
 	}
-
+	
 }

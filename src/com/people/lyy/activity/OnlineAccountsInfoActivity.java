@@ -351,6 +351,9 @@ public class OnlineAccountsInfoActivity extends BaseActivity implements
 			public void successAction(Object obj) {
 
 				list_balance = (List<AccountInfo>) obj;
+
+				adapter.notifyDataSetChanged();
+
 				for (int i = 0; i < list_balance.size(); i++) {
 					total_cash = Integer.parseInt(total_cash
 							+ list_balance.get(i).getCan_cost());

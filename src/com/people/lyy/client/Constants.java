@@ -16,17 +16,18 @@ public class Constants {
 
 	public static final String kUSERNAME = "kUSERNAME";
 	public static final String kPASSWORD = "kPASSWORD";
+	public static final String kLOCKKEY = "LockKey";
+	public static final String kGESTRUECLOSE = "GestureClose";
 
-	public static String kVERSION = "VERSION";
+	public static final String kVERSION = "VERSION";
+
+	public static final String kACCOUNTLIST = "kACCOUNTLIST";
 
 	public static final String IP = "http://111.198.29.38:6443";
 
 	public static final int OVERTIME = 20;// 超时时间
 
 	public static boolean HASSETBLUETOOTH = false;
-
-	public static final String kLOCKKEY = "LockKey";
-	public static final String kGESTRUECLOSE = "GestureClose";
 
 	public static String LOGGED = "Logged";
 

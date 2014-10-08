@@ -14,6 +14,7 @@ import com.google.zxing.qrcode.QRCodeWriter;
 import com.people.lyy.R;
 import com.people.lyy.client.ApplicationEnvironment;
 import com.people.lyy.client.Constants;
+import com.people.lyy.client.ParseResponseXML;
 import com.people.lyy.client.TransferRequestTag;
 import com.people.lyy.jababean.AccountInfo;
 import com.people.network.LKAsyncHttpResponseHandler;
@@ -61,10 +62,13 @@ public class AccountsInfoActivity extends BaseActivity implements
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_accountsinfo);
 
+
 		getAccounts();
 
 		initView();
 
+
+		initData();
 	}
 
 	protected void onNewIntent(Intent i) {
@@ -116,12 +120,25 @@ public class AccountsInfoActivity extends BaseActivity implements
 
 		tv_can_cost = (TextView) findViewById(R.id.tv_can_cost);
 		tv_balance = (TextView) findViewById(R.id.tv_balance);
+
 		tv_code = (TextView) findViewById(R.id.tv_code);
+
+	}
+	
+	public void initData(){
+		String tempStr = ApplicationEnvironment.getInstance().getPreferences().getString(Constants.kACCOUNTLIST, "");
+		list_balance = ParseResponseXML.accounts(tempStr);
+		
+		for (int i = 0; i < list_balance.size(); i++) {
+			total_cash = Integer.parseInt(total_cash + list_balance.get(i).getCan_cost());
+		}
+		tv_balance.setText(total_cash + "元");
 	}
 
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if (event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
+
 			if (event.getAction() == KeyEvent.ACTION_DOWN
 					&& event.getRepeatCount() == 0) {
 				if (codeShow) {
@@ -150,16 +167,8 @@ public class AccountsInfoActivity extends BaseActivity implements
 		case R.id.btn_confirm:
 			this.showDialog(BaseActivity.PROGRESS_DIALOG, "正在加密请稍候");
 
-			String selectedAccountNo = list_balance.get(
-					((MyAdapter) lv_balance.getAdapter()).getSelectItem())
-					.getBalance();
-			String tempStr = ApplicationEnvironment.getInstance()
-					.getPreferences().getString(Constants.kUSERNAME, "")
-					+ ":"
-					+ selectedAccountNo
-					+ ":"
-					+ ApplicationEnvironment.getInstance().getPreferences()
-							.getString(Constants.kPASSWORD, "");
+			String selectedAccountNo = list_balance.get(((MyAdapter) lv_balance.getAdapter()).getSelectItem()).getBalance();
+			String tempStr = ApplicationEnvironment.getInstance().getPreferences().getString(Constants.kUSERNAME, "") + ":" + selectedAccountNo + ":" + ApplicationEnvironment.getInstance().getPreferences().getString(Constants.kPASSWORD, "");
 
 			Log.i("token", tempStr);
 			Intent serviceIntent = new Intent("com.people.sotp.lyyservice");
@@ -213,16 +222,13 @@ public class AccountsInfoActivity extends BaseActivity implements
 			}
 
 			// 把输入的文本转为二维码
-			BitMatrix martix = writer.encode(text, BarcodeFormat.QR_CODE, 450,
-					450);
+			BitMatrix martix = writer.encode(text, BarcodeFormat.QR_CODE, 450, 450);
 
-			System.out.println("w:" + martix.getWidth() + "h:"
-					+ martix.getHeight());
+			System.out.println("w:" + martix.getWidth() + "h:" + martix.getHeight());
 
 			Hashtable<EncodeHintType, String> hints = new Hashtable<EncodeHintType, String>();
 			hints.put(EncodeHintType.CHARACTER_SET, "utf-8");
-			BitMatrix bitMatrix = new QRCodeWriter().encode(text,
-					BarcodeFormat.QR_CODE, 450, 450, hints);
+			BitMatrix bitMatrix = new QRCodeWriter().encode(text, BarcodeFormat.QR_CODE, 450, 450, hints);
 			int[] pixels = new int[450 * 450];
 			for (int y = 0; y < 450; y++) {
 				for (int x = 0; x < 450; x++) {
@@ -234,8 +240,7 @@ public class AccountsInfoActivity extends BaseActivity implements
 
 				}
 			}
-			Bitmap bitmap = Bitmap.createBitmap(450, 450,
-					Bitmap.Config.ARGB_8888);
+			Bitmap bitmap = Bitmap.createBitmap(450, 450, Bitmap.Config.ARGB_8888);
 			bitmap.setPixels(pixels, 0, 450, 0, 0, 450, 450);
 			return bitmap;
 			// iv_consume2.setImageBitmap(bitmap);
@@ -246,8 +251,7 @@ public class AccountsInfoActivity extends BaseActivity implements
 	}
 
 	AdapterView.OnItemClickListener mLeftListOnItemClick = new AdapterView.OnItemClickListener() {
-		public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
-				long arg3) {
+		public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
 
 			adapter.setSelectItem(arg2);
 			adapter.notifyDataSetChanged();
@@ -288,19 +292,15 @@ public class AccountsInfoActivity extends BaseActivity implements
 			if (convertView == null) {
 				convertView = mInflater.inflate(R.layout.item_balance, null);
 				holder = new ViewHolder();
-				holder.imageView = (ImageView) convertView
-						.findViewById(R.id.imageView1);
-				holder.tv_cardcode = (TextView) convertView
-						.findViewById(R.id.tv_cardcode);
-				holder.tv_cardbalance = (TextView) convertView
-						.findViewById(R.id.tv_cardbalance);
+				holder.imageView = (ImageView) convertView.findViewById(R.id.imageView1);
+				holder.tv_cardcode = (TextView) convertView.findViewById(R.id.tv_cardcode);
+				holder.tv_cardbalance = (TextView) convertView.findViewById(R.id.tv_cardbalance);
 				convertView.setTag(holder);
 			} else {
 				holder = (ViewHolder) convertView.getTag();
 			}
 			holder.tv_cardcode.setText(list_balance.get(position).getBalance());
-			holder.tv_cardbalance.setText(list_balance.get(position)
-					.getCan_cost());
+			holder.tv_cardbalance.setText(list_balance.get(position).getCan_cost());
 
 			if (position == selectItem) {
 				holder.imageView.setBackgroundResource(R.drawable.remeberpwd_s);
@@ -389,4 +389,5 @@ public class AccountsInfoActivity extends BaseActivity implements
 		bitmap.setPixels(pixels, 0, width, 0, 0, width, height);
 		return bitmap;
 	}
+
 }
