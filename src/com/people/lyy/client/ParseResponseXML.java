@@ -24,10 +24,10 @@ public class ParseResponseXML {
 			case TransferRequestTag.Login: // 登录
 				return parseResponse(responseStr);
 
-			case TransferRequestTag.Accounts: //离线消费
+			case TransferRequestTag.Accounts: // 离线消费
 				return accounts(responseStr);
-				
-			case TransferRequestTag.Generate: //在线消费
+
+			case TransferRequestTag.Generate: // 在线消费
 				return parseResponse(responseStr);
 
 			}
@@ -57,21 +57,22 @@ public class ParseResponseXML {
 
 	private static List<AccountInfo> accounts(String str) {
 		List<AccountInfo> accountList = new ArrayList<AccountInfo>();
-		try{
-			String[] ss = str.trim().split(";");
-			if (ss.length==0) 
+		try {
+			String[] sss = str.split("#");
+			String[] ss = sss[0].trim().split(";");
+			if (ss.length == 0)
 				return accountList;
-			
-			for (String temp : ss){
+
+			for (String temp : ss) {
 				String[] s = temp.split(":");
 				AccountInfo ban2 = new AccountInfo(s[0], s[1]);
 				accountList.add(ban2);
 			}
-			
+
 			return accountList;
-		} catch(Exception e){
+		} catch (Exception e) {
 			e.printStackTrace();
-			
+
 			return accountList;
 		}
 	}

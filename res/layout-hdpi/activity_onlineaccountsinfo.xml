@@ -28,7 +28,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
-                android:text="离线消费" />
+                android:text="在线消费" />
         </RelativeLayout>
 
         <LinearLayout
