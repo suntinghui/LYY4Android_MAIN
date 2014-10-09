@@ -188,17 +188,14 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 		LKHttpRequest req1 = new LKHttpRequest(
 				TransferRequestTag.getAccountStr, tempMap, getAccountsHandler());
 
-		new LKHttpRequestQueue().addHttpRequest(req1).executeQueue(
-				"正在加载数据请稍候。。。", new LKHttpRequestQueueDone() {
+		new LKHttpRequestQueue().addHttpRequest(req1).executeQueue(null,
+				new LKHttpRequestQueueDone() {
 					@Override
 					public void onComplete() {
 						super.onComplete();
 
-						new DownloadAPKTask().execute();
+						// new DownloadAPKTask().execute();
 
-						Intent intent = new Intent(LoginActivity.this,
-								MainActivity.class);
-						LoginActivity.this.startActivity(intent);
 					}
 				});
 
@@ -231,6 +228,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 			download();
 			return null;
 		}
+
 	}
 
 	private void download() {
@@ -239,22 +237,4 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 				downloadAPKURL, "download.apk");
 	}
 
-	public class SleepTask extends AsyncTask<Object, Object, Object> {
-
-		@Override
-		protected Object doInBackground(Object... params) {
-			try {
-				Thread.sleep(3000);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-			return null;
-		}
-
-		@Override
-		protected void onPostExecute(Object result) {
-			super.onPostExecute(result);
-
-		}
-	}
 }

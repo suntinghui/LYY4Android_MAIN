@@ -31,6 +31,7 @@ import android.content.Intent;
 import android.content.SharedPreferences.Editor;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -50,8 +51,8 @@ import android.widget.TextView;
 
 public class OnlineAccountsInfoActivity extends BaseActivity implements
 		OnClickListener {
-	private LinearLayout lay_consume2 = null;
-	private ImageView iv_consume, iv_consume2 = null;
+	private LinearLayout lay_consume2, lay_bigone, lay_bigtwo = null;
+	private ImageView iv_consume, iv_consume2, iv_bigone, iv_bigtwo = null;
 	private boolean isShow = false;
 	private Button btn_back, btn_confirm = null;
 	private ListView lv_balance = null;
@@ -59,6 +60,8 @@ public class OnlineAccountsInfoActivity extends BaseActivity implements
 	private MyAdapter adapter = null;
 	private TextView tv_can_cost, tv_balance, tv_code = null;
 	private int total_cash = 0;
+	private String code = null;
+	private boolean codeShow = false;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -74,8 +77,9 @@ public class OnlineAccountsInfoActivity extends BaseActivity implements
 	protected void onNewIntent(Intent i) {
 
 		try {
-			createOneDCode(i.getStringExtra("token"));
-			createTwoDCode(i.getStringExtra("token"));
+			code = i.getStringExtra("token");
+			createOneDCode(code);
+			createTwoDCode(code);
 		} catch (WriterException e) {
 			e.printStackTrace();
 		}
@@ -86,10 +90,18 @@ public class OnlineAccountsInfoActivity extends BaseActivity implements
 	}
 
 	public void initView() {
+		lay_bigone = (LinearLayout) findViewById(R.id.lay_bigone);
+		iv_bigone = (ImageView) findViewById(R.id.iv_bigone);
+		iv_bigone.setOnClickListener(this);
+		lay_bigtwo = (LinearLayout) findViewById(R.id.lay_bigtwo);
+		iv_bigtwo = (ImageView) findViewById(R.id.iv_bigtwo);
+		iv_bigtwo.setOnClickListener(this);
 
 		lay_consume2 = (LinearLayout) findViewById(R.id.lay_consume2);
 		iv_consume = (ImageView) findViewById(R.id.iv_consume);
+		iv_consume.setOnClickListener(this);
 		iv_consume2 = (ImageView) findViewById(R.id.iv_consume2);
+		iv_consume2.setOnClickListener(this);
 
 		btn_back = (Button) findViewById(R.id.btn_back);
 		btn_back.setOnClickListener(this);
@@ -116,7 +128,11 @@ public class OnlineAccountsInfoActivity extends BaseActivity implements
 		if (event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
 			if (event.getAction() == KeyEvent.ACTION_DOWN
 					&& event.getRepeatCount() == 0) {
-				if (isShow) {
+				if (codeShow) {
+					lay_bigone.setVisibility(View.GONE);
+					lay_bigtwo.setVisibility(View.GONE);
+					codeShow = false;
+				} else if (isShow) {
 					lay_consume2.setVisibility(View.GONE);
 					isShow = false;
 				} else {
@@ -158,7 +174,20 @@ public class OnlineAccountsInfoActivity extends BaseActivity implements
 					});
 
 			break;
-
+		case R.id.iv_consume:
+			lay_bigone.setVisibility(View.VISIBLE);
+			codeShow = true;
+			break;
+		case R.id.iv_consume2:
+			lay_bigtwo.setVisibility(View.VISIBLE);
+			codeShow = true;
+			break;
+		case R.id.iv_bigone:
+			lay_bigone.setVisibility(View.GONE);
+			break;
+		case R.id.iv_bigtwo:
+			lay_bigtwo.setVisibility(View.GONE);
+			break;
 		default:
 			break;
 		}
@@ -175,7 +204,8 @@ public class OnlineAccountsInfoActivity extends BaseActivity implements
 				int ret = Integer.parseInt(map.get("ret"));
 				if (ret == 0) {
 					try {
-						tv_code.setText(map.get("token"));
+						tv_code.setText(map.get("token").substring(0, 10)
+								+ "     " + map.get("token").substring(11, 19));
 						createOneDCode(map.get("token"));
 					} catch (WriterException e) {
 						e.printStackTrace();
@@ -234,6 +264,7 @@ public class OnlineAccountsInfoActivity extends BaseActivity implements
 					Bitmap.Config.ARGB_8888);
 			bitmap.setPixels(pixels, 0, 450, 0, 0, 450, 450);
 			iv_consume2.setImageBitmap(bitmap);
+			iv_bigtwo.setImageBitmap(bitmap);
 		} catch (WriterException e) {
 			e.printStackTrace();
 		}
@@ -384,6 +415,12 @@ public class OnlineAccountsInfoActivity extends BaseActivity implements
 				Bitmap.Config.ARGB_8888);
 		// 通过像素数组生成bitmap,具体参考api
 		bitmap.setPixels(pixels, 0, width, 0, 0, width, height);
+		Matrix matrix2 = new Matrix();
+		matrix2.postRotate(90);
+		matrix2.setRotate(90);
+		Bitmap matrixBitmap = Bitmap.createBitmap(bitmap, 0, 0,
+				bitmap.getWidth(), bitmap.getHeight(), matrix2, true);
 		iv_consume.setImageBitmap(bitmap);
+		iv_bigone.setImageBitmap(matrixBitmap);
 	}
 }

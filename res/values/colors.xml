@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <color name="splash_bg">#3a90e9</color>
     <color name="white">#ffffff</color>
     <color name="black">#000000</color>
@@ -13,14 +14,18 @@
     <color name="blue_0">#0099ff</color>
     <color name="blue_1">#2a95d3</color>
     <color name="lightblack">#ff202020</color>
-    
     <color name="transparent_background">#50000000</color>
     <color name="clear">#00000000</color>
     <color name="instructions">#828282</color>
-    
     <color name="tab_selected">#4691f7</color>
     <color name="tab_unselected">#2973cc</color>
     <color name="center_msg_news_tab_bg">#d8e2ee</color>
     <color name="tab_text_selected">#2d74c7</color>
     <color name="tab_text_unselected">#6f7274</color>
+    <color name="possible_result_points">#c0ffff00</color>
+    <color name="result_view">#b0000000</color>
+    <color name="viewfinder_frame">#ff000000</color>
+    <color name="viewfinder_laser">#ffff0000</color>
+    <color name="viewfinder_mask">#60000000</color>
+
 </resources>

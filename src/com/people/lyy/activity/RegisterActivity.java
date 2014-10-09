@@ -82,6 +82,7 @@ public class RegisterActivity extends BaseActivity implements OnClickListener {
 			@Override
 			public void successAction(Object obj) {
 				HashMap<String, String> map = (HashMap<String, String>) obj;
+				BaseActivity.getTopActivity().hideDialog(ADPROGRESS_DIALOG);
 				String rt = map.get("ret");
 				if (rt.equals("0")) { // 注册成功
 					showDialog("注册成功！", true);

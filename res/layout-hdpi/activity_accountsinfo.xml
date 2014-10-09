@@ -60,7 +60,7 @@
                     android:layout_alignParentRight="true"
                     android:layout_gravity="center_vertical"
                     android:singleLine="true"
-                    android:text="5000.00元"
+                    android:text="0000.00元"
                     android:textColor="@color/red" />
             </RelativeLayout>
 
@@ -188,7 +188,7 @@
             android:layout_height="wrap_content" />
     </LinearLayout>
 
-    <LinearLayout
+   <LinearLayout
         android:id="@+id/lay_bigone"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

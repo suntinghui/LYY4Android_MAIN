@@ -1,5 +1,7 @@
 package com.people.lyy.activity;
 
+import java.util.UUID;
+
 import com.people.lyy.R;
 import com.people.lyy.client.ApplicationEnvironment;
 import com.people.lyy.client.Constants;
@@ -16,6 +18,7 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.widget.TextView;
 
@@ -29,7 +32,10 @@ public class SplashActivity extends BaseActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_splash);
-
+		//取手机的IMEI
+		TelephonyManager TelephonyMgr = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
+		String szImei = TelephonyMgr.getDeviceId();
+		System.out.println(szImei+"长度是"+szImei.length());
 		dao = new DataDao(getApplication());
 		TextView tv_tips = (TextView) findViewById(R.id.tv_tips);
 		PackageManager pm = this.getPackageManager();
@@ -62,6 +68,7 @@ public class SplashActivity extends BaseActivity {
 
 		@Override
 		protected void onPostExecute(Object result) {
+
 			if (dao.find(Constants.LOGGED)) {
 				Intent intent = new Intent(SplashActivity.this,
 						LockScreenActivity.class);

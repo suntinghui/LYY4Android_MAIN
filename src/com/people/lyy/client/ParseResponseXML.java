@@ -1,8 +1,5 @@
 package com.people.lyy.client;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -27,12 +24,15 @@ public class ParseResponseXML {
 
 			case TransferRequestTag.Accounts: // 离线消费
 				return accounts(responseStr);
-				
+
 			case TransferRequestTag.getAccountStr:
 				return responseStr;
 
 			case TransferRequestTag.Generate: // 在线消费
 				return parseResponse(responseStr);
+
+			case TransferRequestTag.OnlineShop: // 在线消费
+				return onLineShop(responseStr);
 
 			}
 
@@ -60,10 +60,11 @@ public class ParseResponseXML {
 	}
 
 	public static List<AccountInfo> accounts(String str) {
-		Editor editor = ApplicationEnvironment.getInstance().getPreferences().edit();
+		Editor editor = ApplicationEnvironment.getInstance().getPreferences()
+				.edit();
 		editor.putString(Constants.kACCOUNTLIST, str);
 		editor.commit();
-		
+
 		List<AccountInfo> accountList = new ArrayList<AccountInfo>();
 		try {
 			String[] sss = str.split("#");
@@ -84,5 +85,20 @@ public class ParseResponseXML {
 			return accountList;
 		}
 	}
-	
+
+	private static HashMap<String, String> onLineShop(String str) {
+		String[] ss = str.split("&");
+		HashMap<String, String> map = new HashMap<String, String>();
+		for (int i = 0; i < ss.length; i++) {
+			String[] tt = ss[i].split("=");
+			if (tt.length == 2) {
+				map.put(tt[0].trim(), tt[1].trim());
+			} else {
+				map.put(tt[0].trim(), "");
+			}
+		}
+
+		return map;
+	}
+
 }

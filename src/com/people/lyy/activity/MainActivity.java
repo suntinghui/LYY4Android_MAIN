@@ -20,9 +20,10 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 public class MainActivity extends BaseActivity implements OnClickListener {
-	
+
 	private DataDao dao = null;
-	private LinearLayout lay_consume,lay_consumeonline, lay_binding, lay_gesture, lay_download = null;
+	private LinearLayout lay_consume, lay_consumeonline, lay_onlineshopconsume,
+			lay_binding, lay_gesture, lay_download = null;
 	public static final int FROM_SETTINGACTIVITY = 1;
 	private long exitTime = 0;
 
@@ -37,7 +38,7 @@ public class MainActivity extends BaseActivity implements OnClickListener {
 		editor.commit();
 
 		initview();
-		
+
 		if (!dao.find(Constants.LOGGED)) {
 			dao.add(Constants.LOGGED, 1);
 		}
@@ -47,18 +48,27 @@ public class MainActivity extends BaseActivity implements OnClickListener {
 	public void onClick(View v) {
 		switch (v.getId()) {
 		case R.id.lay_consumeonline:
-			Intent intent = new Intent(MainActivity.this, OnlineAccountsInfoActivity.class);
+			Intent intent = new Intent(MainActivity.this,
+					OnlineAccountsInfoActivity.class);
 			startActivity(intent);
 			break;
-			
+
+		case R.id.lay_onlineshopconsume:
+			Intent onlineintent = new Intent(MainActivity.this,
+					OnlineShopActivity.class);
+			startActivity(onlineintent);
+			break;
+
 		case R.id.lay_consume:
-			if (ActivityUtil.isAvilible(this, Constants.SOTPPACKET)){
-				Intent intent3 = new Intent(MainActivity.this, AccountsInfoActivity.class);
+			if (ActivityUtil.isAvilible(this, Constants.SOTPPACKET)) {
+				Intent intent3 = new Intent(MainActivity.this,
+						AccountsInfoActivity.class);
 				startActivity(intent3);
 			} else {
-				this.showDialog(BaseActivity.MODAL_DIALOG, "您尚未安装安全插件，请重新登录并选择安装插件。");
+				this.showDialog(BaseActivity.MODAL_DIALOG,
+						"您尚未安装安全插件，请重新登录并选择安装插件。");
 			}
-			
+
 			break;
 
 		case R.id.lay_binding:
@@ -67,7 +77,8 @@ public class MainActivity extends BaseActivity implements OnClickListener {
 			break;
 
 		case R.id.lay_gesture:
-			Intent intent1 = new Intent(MainActivity.this, LockScreenSettingActivity.class);
+			Intent intent1 = new Intent(MainActivity.this,
+					LockScreenSettingActivity.class);
 			MainActivity.this.startActivity(intent1);
 			break;
 		case R.id.lay_download:
@@ -88,6 +99,8 @@ public class MainActivity extends BaseActivity implements OnClickListener {
 		lay_consumeonline.setOnClickListener(this);
 		lay_consume = (LinearLayout) findViewById(R.id.lay_consume);
 		lay_consume.setOnClickListener(this);
+		lay_onlineshopconsume = (LinearLayout) findViewById(R.id.lay_onlineshopconsume);
+		lay_onlineshopconsume.setOnClickListener(this);
 		lay_binding = (LinearLayout) findViewById(R.id.lay_binding);
 		lay_binding.setOnClickListener(this);
 		lay_gesture = (LinearLayout) findViewById(R.id.lay_gesture);
@@ -100,7 +113,8 @@ public class MainActivity extends BaseActivity implements OnClickListener {
 	@Override
 	public boolean dispatchKeyEvent(KeyEvent event) {
 		if (event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
-			if (event.getAction() == KeyEvent.ACTION_DOWN && event.getRepeatCount() == 0) {
+			if (event.getAction() == KeyEvent.ACTION_DOWN
+					&& event.getRepeatCount() == 0) {
 				this.exitApp();
 			}
 			return true;
@@ -114,10 +128,11 @@ public class MainActivity extends BaseActivity implements OnClickListener {
 	private void exitApp() {
 		// 判断2次点击事件时间
 		if ((System.currentTimeMillis() - exitTime) > 2000) {
-			Toast.makeText(MainActivity.this, "再按一次退出程序", Toast.LENGTH_SHORT).show();
+			Toast.makeText(MainActivity.this, "再按一次退出程序", Toast.LENGTH_SHORT)
+					.show();
 			exitTime = System.currentTimeMillis();
 		} else {
-			for (Activity a : BaseActivity.getAllActiveActivity()){
+			for (Activity a : BaseActivity.getAllActiveActivity()) {
 				a.finish();
 			}
 		}
