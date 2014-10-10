@@ -29,7 +29,7 @@
         android:layout_width="90dp"
         android:layout_height="90dp"
         android:layout_marginTop="100dp"
-        android:background="@drawable/success" />
+        android:background="@drawable/sucess" />
 
     <TextView
         android:layout_width="wrap_content"
