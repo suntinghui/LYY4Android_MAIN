@@ -75,19 +75,6 @@ public class OnlineAccountsInfoActivity extends BaseActivity implements
 
 	}
 
-	public void initData() {
-		String tempStr = ApplicationEnvironment.getInstance().getPreferences()
-				.getString(Constants.kACCOUNTLIST, "");
-		list_balance = ParseResponseXML.accounts(tempStr);
-
-		adapter.notifyDataSetChanged();
-		for (int i = 0; i < list_balance.size(); i++) {
-			total_cash = total_cash
-					+ Integer.parseInt(list_balance.get(i).getCan_cost());
-		}
-
-		tv_balance.setText(total_cash + "元");
-	}
 
 	protected void onNewIntent(Intent i) {
 		String[] s = i.getStringExtra("token").split("#");
@@ -188,7 +175,7 @@ public class OnlineAccountsInfoActivity extends BaseActivity implements
 							.getString(Constants.kPASSWORD, "")
 					+ ":"
 					+ Constants.IP.replace("http://", "");
-			showToast(tempStr);
+
 			Intent serviceIntent = new Intent("com.people.sotp.lyyservice");
 			serviceIntent.putExtra("SOTP", "genTOKEN");
 			serviceIntent.putExtra("key", tempStr);
