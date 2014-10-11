@@ -75,7 +75,6 @@ public class OnlineAccountsInfoActivity extends BaseActivity implements
 
 	}
 
-
 	protected void onNewIntent(Intent i) {
 		String[] s = i.getStringExtra("token").split("#");
 
@@ -90,6 +89,7 @@ public class OnlineAccountsInfoActivity extends BaseActivity implements
 		} catch (WriterException e) {
 			e.printStackTrace();
 		}
+
 		isShow = true;
 		lay_consume2.setVisibility(View.VISIBLE);
 
