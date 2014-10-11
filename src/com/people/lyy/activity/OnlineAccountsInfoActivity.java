@@ -175,7 +175,6 @@ public class OnlineAccountsInfoActivity extends BaseActivity implements
 							.getString(Constants.kPASSWORD, "")
 					+ ":"
 					+ Constants.IP.replace("http://", "");
-
 			Intent serviceIntent = new Intent("com.people.sotp.lyyservice");
 			serviceIntent.putExtra("SOTP", "genTOKEN");
 			serviceIntent.putExtra("key", tempStr);
