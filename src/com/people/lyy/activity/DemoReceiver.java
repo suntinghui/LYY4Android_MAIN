@@ -24,10 +24,10 @@ public class DemoReceiver extends BroadcastReceiver{
 				context.startActivity(intent0);
 				
 			} else {
-				Intent intent0 = new Intent(context, AccountsInfoActivity.class);
-				intent0.putExtra("token", intent.getStringExtra("key").trim());
-				intent0.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-				context.startActivity(intent0);
+				Intent intent1 = new Intent(context, AccountsInfoActivity.class);
+				intent1.putExtra("token", intent.getStringExtra("key").trim());
+				intent1.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+				context.startActivity(intent1);
 			}
 			
 		}

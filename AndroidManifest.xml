@@ -54,7 +54,10 @@
         </activity>
         <activity android:name="com.people.lyy.activity.RegisterActivity" >
         </activity>
-        <activity android:name="com.people.lyy.activity.OnlineAccountsInfoActivity" >
+        <activity android:name="com.people.lyy.activity.OnlineAccountsInfoActivity" android:launchMode="singleTask" >
+            <intent-filter>
+                <action android:name="com.people.OnlineAccountsInfoActivity" />
+            </intent-filter>
         </activity>
         <activity android:name="com.people.lyy.activity.OnlineShopActivity" >
         </activity>
