@@ -1,6 +1,7 @@
 package com.people.lyy.activity;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 
@@ -14,15 +15,21 @@ import com.people.lyy.R;
 import com.people.lyy.client.ApplicationEnvironment;
 import com.people.lyy.client.Constants;
 import com.people.lyy.client.ParseResponseXML;
+import com.people.lyy.client.TransferRequestTag;
 import com.people.lyy.jababean.AccountInfo;
 import com.people.network.LKAsyncHttpResponseHandler;
+import com.people.network.LKHttpRequest;
+import com.people.network.LKHttpRequestQueue;
+import com.people.network.LKHttpRequestQueueDone;
 
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Matrix;
+import android.graphics.Paint;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -39,7 +46,6 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
-//10表示用户不存在 11表示二维码超时
 
 public class AccountsInfoActivity extends BaseActivity implements
 		OnClickListener {
@@ -53,7 +59,6 @@ public class AccountsInfoActivity extends BaseActivity implements
 	private TextView tv_can_cost, tv_balance, tv_code, tv_bigone = null;
 	private int total_cash = 0;
 	private String code = null;
-	
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -71,7 +76,8 @@ public class AccountsInfoActivity extends BaseActivity implements
 		try {
 			code = s[0];
 			iv_consume.setImageBitmap(createOneDCode(s[0]));
-			tv_code.setText(code.substring(0, 10) + "     "
+			// tv_code.setText(code);
+			tv_code.setText(code.substring(0, 11) + "    "
 					+ code.substring(11, 19));
 			iv_consume2.setImageBitmap(createTwoDCode(s[0]));
 		} catch (WriterException e) {
@@ -164,6 +170,8 @@ public class AccountsInfoActivity extends BaseActivity implements
 			break;
 
 		case R.id.btn_confirm:
+			Constants.GENTOKEN_ONLINE = false;
+
 			this.showDialog(BaseActivity.PROGRESS_DIALOG, "正在加密请稍候");
 
 			String selectedAccountNo = list_balance.get(
@@ -193,7 +201,7 @@ public class AccountsInfoActivity extends BaseActivity implements
 						0, 0, createOneDCode(code).getWidth(),
 						createOneDCode(code).getHeight(), matrix, true);
 				iv_bigone.setImageBitmap(matrixBitmap);
-				// 使textView竖排显示并赋值
+				// 使textView竖排显示并赋值但是效果不好
 				// tv_bigone.setText(code.substring(0, 10) + "     "
 				// + code.substring(11, 19));
 				// Animation anim = new RotateAnimation(0.0f, 90.0f,
@@ -323,6 +331,8 @@ public class AccountsInfoActivity extends BaseActivity implements
 				holder = (ViewHolder) convertView.getTag();
 			}
 			holder.tv_cardcode.setText(list_balance.get(position).getBalance());
+			holder.tv_cardbalance.getPaint().setFlags(
+					Paint.STRIKE_THRU_TEXT_FLAG);
 			holder.tv_cardbalance.setText(list_balance.get(position)
 					.getCan_cost());
 
@@ -349,25 +359,6 @@ public class AccountsInfoActivity extends BaseActivity implements
 	static class ViewHolder {
 		ImageView imageView;
 		TextView tv_cardcode, tv_cardbalance;
-	}
-
-	public LKAsyncHttpResponseHandler getAccountsHandler() {
-
-		return new LKAsyncHttpResponseHandler() {
-			@Override
-			public void successAction(Object obj) {
-				BaseActivity.getTopActivity().hideDialog(ADPROGRESS_DIALOG);
-
-				list_balance = (List<AccountInfo>) obj;
-				for (int i = 0; i < list_balance.size(); i++) {
-					total_cash = Integer.parseInt(total_cash
-							+ list_balance.get(i).getCan_cost());
-				}
-				tv_balance.setText(total_cash + "元");
-
-			}
-		};
-
 	}
 
 	public Bitmap createOneDCode(String content) throws WriterException {

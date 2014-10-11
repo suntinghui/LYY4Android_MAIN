@@ -24,6 +24,8 @@ public class Constants {
 	public static final String kACCOUNTLIST = "kACCOUNTLIST";
 
 	public static final String IP = "http://111.198.29.38:6443";
+	
+	public static boolean GENTOKEN_ONLINE = true;
 
 	public static final int OVERTIME = 20;// 超时时间
 
@@ -33,4 +35,5 @@ public class Constants {
 
 	public static String SOTPPACKET = "com.people.sotp.service";
 
+	public static String resultString = "";
 }

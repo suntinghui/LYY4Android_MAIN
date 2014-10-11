@@ -32,10 +32,6 @@ public class SplashActivity extends BaseActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_splash);
-		//取手机的IMEI
-		TelephonyManager TelephonyMgr = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
-		String szImei = TelephonyMgr.getDeviceId();
-		System.out.println(szImei+"长度是"+szImei.length());
 		dao = new DataDao(getApplication());
 		TextView tv_tips = (TextView) findViewById(R.id.tv_tips);
 		PackageManager pm = this.getPackageManager();

@@ -60,11 +60,11 @@
         </activity>
         <activity android:name="com.people.lyy.activity.CaptureActivity" >
         </activity>
-        
         <activity android:name="com.people.lyy.activity.SuccessActivity" >
         </activity>
-        
         <activity android:name="com.people.lyy.activity.DefeatedActivity" >
+        </activity>
+        <activity android:name="com.people.lyy.activity.ConfirmOrderActivity" >
         </activity>
 
         <service

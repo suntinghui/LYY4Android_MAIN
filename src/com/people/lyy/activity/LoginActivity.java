@@ -19,6 +19,7 @@ import android.content.SharedPreferences.Editor;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Looper;
+import android.telephony.TelephonyManager;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.animation.Animation;
@@ -36,12 +37,16 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 	private Button btn_login, btn_register = null;
 
 	private String downloadAPKURL;
+	private String szImei = null; // 手机的IMEI
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
 		setContentView(R.layout.activity_login);
+
+		TelephonyManager TelephonyMgr = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
+		szImei = TelephonyMgr.getDeviceId();
 
 		logoImageView = (ImageView) this.findViewById(R.id.logoImageView);
 		Animation myAnimation = AnimationUtils.loadAnimation(this,
@@ -93,9 +98,19 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 
 	// 登录
 	private void login() {
+
+		Editor editor = ApplicationEnvironment.getInstance().getPreferences()
+				.edit();
+		editor.putString(Constants.kUSERNAME, usernameEdit.getText().toString()
+				.trim());
+		editor.putString(Constants.kPASSWORD, passwordEdit.getText().toString()
+				.trim());
+		editor.commit();
+
 		HashMap<String, Object> tempMap = new HashMap<String, Object>();
 		tempMap.put("username", usernameEdit.getText().toString().trim());
 		tempMap.put("password", passwordEdit.getText().toString().trim());
+		tempMap.put("imei", szImei);
 
 		LKHttpRequest req1 = new LKHttpRequest(TransferRequestTag.Login,
 				tempMap, getLoginHandler());
@@ -105,14 +120,6 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 					@Override
 					public void onComplete() {
 						super.onComplete();
-						Editor editor = ApplicationEnvironment.getInstance()
-								.getPreferences().edit();
-						editor.putString(Constants.kUSERNAME, usernameEdit
-								.getText().toString().trim());
-						editor.putString(Constants.kPASSWORD, passwordEdit
-								.getText().toString().trim());
-						editor.commit();
-
 						passwordEdit.setText("");
 					}
 				});
@@ -127,6 +134,8 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 
 				String rt = map.get("ret");
 				if (rt.equals("0")) { // 登录成功
+					getAccounts();
+
 					String url = map.get("url");
 					String version = map.get("version");
 					LoginActivity.this
@@ -157,8 +166,6 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 								LockScreenSettingActivity.class);
 						LoginActivity.this.startActivity(intent);
 					}
-
-					getAccounts();
 
 				} else if (rt.equals("1")) { // 参数不合法
 					LoginActivity.this.showDialog(BaseActivity.MODAL_DIALOG,
@@ -194,8 +201,6 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 					public void onComplete() {
 						super.onComplete();
 
-						// new DownloadAPKTask().execute();
-
 					}
 				});
 
@@ -206,6 +211,10 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 		return new LKAsyncHttpResponseHandler() {
 			@Override
 			public void successAction(Object obj) {
+				if (!ActivityUtil.isAvilible(BaseActivity.getTopActivity(),
+						Constants.SOTPPACKET)) {
+					new DownloadAPKTask().execute();
+				}
 				Editor editor = ApplicationEnvironment.getInstance()
 						.getPreferences().edit();
 				editor.putString(Constants.kACCOUNTLIST, (String) obj);

@@ -1,8 +1,8 @@
 package com.people.lyy.activity;
 
-import java.util.HashMap;
 
 import com.people.lyy.R;
+import com.people.lyy.client.Constants;
 
 import android.os.Bundle;
 import android.view.KeyEvent;
@@ -19,8 +19,8 @@ public class SuccessActivity extends BaseActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_success);
-		initView();
-		setView();
+		 initView();
+		 setView();
 
 	}
 
@@ -31,10 +31,10 @@ public class SuccessActivity extends BaseActivity {
 	}
 
 	public void setView() {
-		HashMap<String, String> map = (HashMap<String, String>) this.getIntent().getSerializableExtra("result");
-		tv_cardcode.setText(map.get("card"));
-		tv_balance.setText(map.get("money"));
-		
+
+		tv_cardcode.setText("订单号：" + Constants.resultString.substring(0, 10));
+		tv_balance.setText(Constants.resultString.substring(11, 18));
+
 		btn_over.setOnClickListener(new OnClickListener() {
 
 			@Override
@@ -49,12 +49,13 @@ public class SuccessActivity extends BaseActivity {
 	@Override
 	public boolean dispatchKeyEvent(KeyEvent event) {
 		if (event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
-			if (event.getAction() == KeyEvent.ACTION_DOWN && event.getRepeatCount() == 0) {
+			if (event.getAction() == KeyEvent.ACTION_DOWN
+					&& event.getRepeatCount() == 0) {
 				finish();
 			}
 			return true;
 		}
 		return false;
 	}
-	
+
 }

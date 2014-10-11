@@ -8,6 +8,7 @@ import com.people.lyy.jababean.AccountInfo;
 
 import android.content.SharedPreferences.Editor;
 import android.util.Log;
+import android.widget.Toast;
 
 public class ParseResponseXML {
 
@@ -100,5 +101,14 @@ public class ParseResponseXML {
 
 		return map;
 	}
+
+	// private static List<String> onLineShop2(String str) {
+	// String[] ss = str.split("=");
+	// List<String> list = new ArrayList<String>();
+	// list.add(ss[1].substring(0, 8));
+	// list.add(ss[1].substring(8, 21));
+	// list.add(ss[1].substring(21, 28));
+	// return list;
+	// }
 
 }

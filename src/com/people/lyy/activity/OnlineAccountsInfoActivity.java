@@ -17,6 +17,7 @@ import com.people.lyy.activity.AccountsInfoActivity.ViewHolder;
 import com.people.lyy.activity.LoginActivity.DownloadAPKTask;
 import com.people.lyy.client.ApplicationEnvironment;
 import com.people.lyy.client.Constants;
+import com.people.lyy.client.ParseResponseXML;
 import com.people.lyy.client.TransferRequestTag;
 import com.people.lyy.jababean.AccountInfo;
 import com.people.lyy.util.ActivityUtil;
@@ -74,12 +75,31 @@ public class OnlineAccountsInfoActivity extends BaseActivity implements
 
 	}
 
+	public void initData() {
+		String tempStr = ApplicationEnvironment.getInstance().getPreferences()
+				.getString(Constants.kACCOUNTLIST, "");
+		list_balance = ParseResponseXML.accounts(tempStr);
+
+		adapter.notifyDataSetChanged();
+		for (int i = 0; i < list_balance.size(); i++) {
+			total_cash = total_cash
+					+ Integer.parseInt(list_balance.get(i).getCan_cost());
+		}
+
+		tv_balance.setText(total_cash + "元");
+	}
+
 	protected void onNewIntent(Intent i) {
+		String[] s = i.getStringExtra("token").split("#");
 
 		try {
-			code = i.getStringExtra("token");
-			createOneDCode(code);
-			createTwoDCode(code);
+			code = s[0];
+			iv_consume.setImageBitmap(createOneDCode(s[0]));
+			// tv_code.setText(code);
+			tv_code.setText(code.substring(0, 11) + "    "
+					+ code.substring(11, 19));
+			iv_consume2.setImageBitmap(createTwoDCode(s[0]));
+
 		} catch (WriterException e) {
 			e.printStackTrace();
 		}
@@ -152,26 +172,27 @@ public class OnlineAccountsInfoActivity extends BaseActivity implements
 			break;
 
 		case R.id.btn_confirm:
-			BaseActivity.getTopActivity().hideDialog(ADPROGRESS_DIALOG);
+			// Constants.GENTOKEN_ONLINE = true;
 
 			this.showDialog(BaseActivity.PROGRESS_DIALOG, "正在加密请稍候");
 
-			HashMap<String, Object> tempMap = new HashMap<String, Object>();
-			tempMap.put("data", ApplicationEnvironment.getInstance()
+			String selectedAccountNo = list_balance.get(
+					((MyAdapter) lv_balance.getAdapter()).getSelectItem())
+					.getBalance();
+			String tempStr = ApplicationEnvironment.getInstance()
 					.getPreferences().getString(Constants.kUSERNAME, "")
 					+ ":"
-					+ list_balance.get(adapter.getSelectItem()).getBalance());
-
-			LKHttpRequest req1 = new LKHttpRequest(TransferRequestTag.Generate,
-					tempMap, getGenerateHandler());
-
-			new LKHttpRequestQueue().addHttpRequest(req1).executeQueue(
-					"正在处理请稍候...", new LKHttpRequestQueueDone() {
-						@Override
-						public void onComplete() {
-							super.onComplete();
-						}
-					});
+					+ selectedAccountNo
+					+ ":"
+					+ ApplicationEnvironment.getInstance().getPreferences()
+							.getString(Constants.kPASSWORD, "")
+					+ ":"
+					+ Constants.IP.replace("http://", "");
+			showToast(tempStr);
+			Intent serviceIntent = new Intent("com.people.sotp.lyyservice");
+			serviceIntent.putExtra("SOTP", "genTOKEN");
+			serviceIntent.putExtra("key", tempStr);
+			startService(serviceIntent);
 
 			break;
 		case R.id.iv_consume:
@@ -204,7 +225,7 @@ public class OnlineAccountsInfoActivity extends BaseActivity implements
 				int ret = Integer.parseInt(map.get("ret"));
 				if (ret == 0) {
 					try {
-						tv_code.setText(map.get("token").substring(0, 10)
+						tv_code.setText(map.get("token").substring(0, 11)
 								+ "     " + map.get("token").substring(11, 19));
 						createOneDCode(map.get("token"));
 					} catch (WriterException e) {
@@ -229,13 +250,13 @@ public class OnlineAccountsInfoActivity extends BaseActivity implements
 	}
 
 	// 创建二维码
-	private void createTwoDCode(String text) {
+	private Bitmap createTwoDCode(String text) {
 		try {
 			// 需要引入core包
 			QRCodeWriter writer = new QRCodeWriter();
 
 			if (text == null || "".equals(text) || text.length() < 1) {
-				return;
+				return null;
 			}
 
 			// 把输入的文本转为二维码
@@ -263,16 +284,19 @@ public class OnlineAccountsInfoActivity extends BaseActivity implements
 			Bitmap bitmap = Bitmap.createBitmap(450, 450,
 					Bitmap.Config.ARGB_8888);
 			bitmap.setPixels(pixels, 0, 450, 0, 0, 450, 450);
-			iv_consume2.setImageBitmap(bitmap);
 			iv_bigtwo.setImageBitmap(bitmap);
+			return bitmap;
 		} catch (WriterException e) {
 			e.printStackTrace();
 		}
+		return null;
 	}
 
 	AdapterView.OnItemClickListener mLeftListOnItemClick = new AdapterView.OnItemClickListener() {
 		public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
 				long arg3) {
+
+			Constants.GENTOKEN_ONLINE = true;
 
 			adapter.setSelectItem(arg2);
 			adapter.notifyDataSetChanged();
@@ -396,7 +420,7 @@ public class OnlineAccountsInfoActivity extends BaseActivity implements
 
 	}
 
-	public void createOneDCode(String content) throws WriterException {
+	public Bitmap createOneDCode(String content) throws WriterException {
 		// 生成一维条码,编码时指定大小,不要生成了图片以后再进行缩放,这样会模糊导致识别失败
 		BitMatrix matrix = new MultiFormatWriter().encode(content,
 				BarcodeFormat.CODE_128, 800, 400);
@@ -420,7 +444,7 @@ public class OnlineAccountsInfoActivity extends BaseActivity implements
 		matrix2.setRotate(90);
 		Bitmap matrixBitmap = Bitmap.createBitmap(bitmap, 0, 0,
 				bitmap.getWidth(), bitmap.getHeight(), matrix2, true);
-		iv_consume.setImageBitmap(bitmap);
 		iv_bigone.setImageBitmap(matrixBitmap);
+		return bitmap;
 	}
 }

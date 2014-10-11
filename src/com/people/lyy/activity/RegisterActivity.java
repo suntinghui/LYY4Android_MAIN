@@ -12,6 +12,7 @@ import com.people.network.LKHttpRequestQueueDone;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.telephony.TelephonyManager;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -22,6 +23,7 @@ public class RegisterActivity extends BaseActivity implements OnClickListener {
 
 	private EditText usernameEdit = null;
 	private EditText passwordEdit = null;
+	private String szImei = null;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +35,8 @@ public class RegisterActivity extends BaseActivity implements OnClickListener {
 	}
 
 	public void initview() {
+		TelephonyManager TelephonyMgr = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
+		szImei = TelephonyMgr.getDeviceId();
 		btn_back = (Button) findViewById(R.id.btn_back);
 		btn_confirm = (Button) findViewById(R.id.btn_confirm);
 		usernameEdit = (EditText) findViewById(R.id.et_username);
@@ -63,7 +67,7 @@ public class RegisterActivity extends BaseActivity implements OnClickListener {
 		HashMap<String, Object> tempMap = new HashMap<String, Object>();
 		tempMap.put("username", usernameEdit.getText().toString().trim());
 		tempMap.put("password", passwordEdit.getText().toString().trim());
-
+		tempMap.put("imei", szImei);
 		LKHttpRequest req1 = new LKHttpRequest(TransferRequestTag.SignUp,
 				tempMap, getLoginHandler());
 

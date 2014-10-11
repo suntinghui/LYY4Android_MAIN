@@ -1,5 +1,7 @@
 package com.people.lyy.activity;
 
+import com.people.lyy.client.Constants;
+
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -15,10 +17,19 @@ public class DemoReceiver extends BroadcastReceiver{
 		if (type.equals("genTOKEN")){
 			Log.e("SOTP", intent.getStringExtra("key").trim());
 			
-			Intent intent0 = new Intent(context, AccountsInfoActivity.class);
-			intent0.putExtra("token", intent.getStringExtra("key").trim());
-			intent0.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-			context.startActivity(intent0);
+			if (Constants.GENTOKEN_ONLINE){
+				Intent intent0 = new Intent(context, OnlineAccountsInfoActivity.class);
+				intent0.putExtra("token", intent.getStringExtra("key").trim());
+				intent0.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+				context.startActivity(intent0);
+				
+			} else {
+				Intent intent0 = new Intent(context, AccountsInfoActivity.class);
+				intent0.putExtra("token", intent.getStringExtra("key").trim());
+				intent0.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+				context.startActivity(intent0);
+			}
+			
 		}
 		
 		
