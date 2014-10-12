@@ -35,6 +35,7 @@
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="18dip"
             android:background="@null"
+            android:inputType="phone"
             android:hint="@string/str_user_hint"
             android:singleLine="true"
             android:textColor="@color/white"
