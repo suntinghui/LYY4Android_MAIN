@@ -46,18 +46,19 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
-public class AccountsInfoActivity extends BaseActivity implements
-		OnClickListener {
+public class AccountsInfoActivity extends BaseActivity implements OnClickListener {
 	private LinearLayout lay_consume2, lay_bigtwo, lay_bigone = null;
 	private ImageView iv_consume, iv_consume2, iv_bigone, iv_bigtwo = null;
-	private boolean isShow, codeShow = false;
+	private boolean codeShow = false;
 	private Button btn_back, btn_confirm = null;
 	private ListView lv_balance = null;
 	private List<AccountInfo> list_balance = null;
 	private MyAdapter adapter = null;
 	private TextView tv_can_cost, tv_balance, tv_code, tv_bigone = null;
 	private int total_cash = 0;
-	private String code = null;
+	
+	public static boolean isShow = false;
+	public static String code = null;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -76,8 +77,7 @@ public class AccountsInfoActivity extends BaseActivity implements
 			code = s[0];
 			iv_consume.setImageBitmap(createOneDCode(s[0]));
 			// tv_code.setText(code);
-			tv_code.setText(code.substring(0, 11) + "    "
-					+ code.substring(11, 19));
+			tv_code.setText(code.substring(0, 11) + "    " + code.substring(11, 19));
 			iv_consume2.setImageBitmap(createTwoDCode(s[0]));
 		} catch (WriterException e) {
 			e.printStackTrace();
@@ -126,14 +126,12 @@ public class AccountsInfoActivity extends BaseActivity implements
 	}
 
 	public void initData() {
-		String tempStr = ApplicationEnvironment.getInstance().getPreferences()
-				.getString(Constants.kACCOUNTLIST, "");
+		String tempStr = ApplicationEnvironment.getInstance().getPreferences().getString(Constants.kACCOUNTLIST, "");
 		list_balance = ParseResponseXML.accounts(tempStr);
 
 		adapter.notifyDataSetChanged();
 		for (int i = 0; i < list_balance.size(); i++) {
-			total_cash = total_cash
-					+ Integer.parseInt(list_balance.get(i).getCan_cost());
+			total_cash = total_cash + Integer.parseInt(list_balance.get(i).getCan_cost());
 		}
 
 		tv_balance.setText(total_cash + "元");
@@ -143,8 +141,7 @@ public class AccountsInfoActivity extends BaseActivity implements
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if (event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
 
-			if (event.getAction() == KeyEvent.ACTION_DOWN
-					&& event.getRepeatCount() == 0) {
+			if (event.getAction() == KeyEvent.ACTION_DOWN && event.getRepeatCount() == 0) {
 				if (codeShow) {
 					lay_bigone.setVisibility(View.GONE);
 					lay_bigtwo.setVisibility(View.GONE);
@@ -173,16 +170,8 @@ public class AccountsInfoActivity extends BaseActivity implements
 
 			this.showDialog(BaseActivity.PROGRESS_DIALOG, "正在加密请稍候");
 
-			String selectedAccountNo = list_balance.get(
-					((MyAdapter) lv_balance.getAdapter()).getSelectItem())
-					.getBalance();
-			String tempStr = ApplicationEnvironment.getInstance()
-					.getPreferences().getString(Constants.kUSERNAME, "")
-					+ ":"
-					+ selectedAccountNo
-					+ ":"
-					+ ApplicationEnvironment.getInstance().getPreferences()
-							.getString(Constants.kPASSWORD, "");
+			String selectedAccountNo = list_balance.get(((MyAdapter) lv_balance.getAdapter()).getSelectItem()).getBalance();
+			String tempStr = ApplicationEnvironment.getInstance().getPreferences().getString(Constants.kUSERNAME, "") + ":" + selectedAccountNo + ":" + ApplicationEnvironment.getInstance().getPreferences().getString(Constants.kPASSWORD, "");
 
 			Intent serviceIntent = new Intent("com.people.sotp.lyyservice");
 			serviceIntent.putExtra("SOTP", "genTOKEN");
@@ -196,9 +185,7 @@ public class AccountsInfoActivity extends BaseActivity implements
 				Matrix matrix = new Matrix();
 				matrix.postRotate(90);
 				matrix.setRotate(90);
-				Bitmap matrixBitmap = Bitmap.createBitmap(createOneDCode(code),
-						0, 0, createOneDCode(code).getWidth(),
-						createOneDCode(code).getHeight(), matrix, true);
+				Bitmap matrixBitmap = Bitmap.createBitmap(createOneDCode(code), 0, 0, createOneDCode(code).getWidth(), createOneDCode(code).getHeight(), matrix, true);
 				iv_bigone.setImageBitmap(matrixBitmap);
 				// 使textView竖排显示并赋值但是效果不好
 				// tv_bigone.setText(code.substring(0, 10) + "     "
@@ -218,11 +205,13 @@ public class AccountsInfoActivity extends BaseActivity implements
 		case R.id.iv_bigone:
 			lay_bigone.setVisibility(View.GONE);
 			break;
+			
 		case R.id.iv_consume2:
 			lay_bigtwo.setVisibility(View.VISIBLE);
 			iv_bigtwo.setImageBitmap(createTwoDCode(code));
 			codeShow = true;
 			break;
+			
 		case R.id.iv_bigtwo:
 			lay_bigtwo.setVisibility(View.GONE);
 			break;
@@ -244,16 +233,13 @@ public class AccountsInfoActivity extends BaseActivity implements
 			}
 
 			// 把输入的文本转为二维码
-			BitMatrix martix = writer.encode(text, BarcodeFormat.QR_CODE, 450,
-					450);
+			BitMatrix martix = writer.encode(text, BarcodeFormat.QR_CODE, 450, 450);
 
-			System.out.println("w:" + martix.getWidth() + "h:"
-					+ martix.getHeight());
+			System.out.println("w:" + martix.getWidth() + "h:" + martix.getHeight());
 
 			Hashtable<EncodeHintType, String> hints = new Hashtable<EncodeHintType, String>();
 			hints.put(EncodeHintType.CHARACTER_SET, "utf-8");
-			BitMatrix bitMatrix = new QRCodeWriter().encode(text,
-					BarcodeFormat.QR_CODE, 450, 450, hints);
+			BitMatrix bitMatrix = new QRCodeWriter().encode(text, BarcodeFormat.QR_CODE, 450, 450, hints);
 			int[] pixels = new int[450 * 450];
 			for (int y = 0; y < 450; y++) {
 				for (int x = 0; x < 450; x++) {
@@ -265,8 +251,7 @@ public class AccountsInfoActivity extends BaseActivity implements
 
 				}
 			}
-			Bitmap bitmap = Bitmap.createBitmap(450, 450,
-					Bitmap.Config.ARGB_8888);
+			Bitmap bitmap = Bitmap.createBitmap(450, 450, Bitmap.Config.ARGB_8888);
 			bitmap.setPixels(pixels, 0, 450, 0, 0, 450, 450);
 			return bitmap;
 			// iv_consume2.setImageBitmap(bitmap);
@@ -277,8 +262,7 @@ public class AccountsInfoActivity extends BaseActivity implements
 	}
 
 	AdapterView.OnItemClickListener mLeftListOnItemClick = new AdapterView.OnItemClickListener() {
-		public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
-				long arg3) {
+		public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
 
 			adapter.setSelectItem(arg2);
 			adapter.notifyDataSetChanged();
@@ -319,24 +303,17 @@ public class AccountsInfoActivity extends BaseActivity implements
 			if (convertView == null) {
 				convertView = mInflater.inflate(R.layout.item_balance, null);
 				holder = new ViewHolder();
-				holder.imageView = (ImageView) convertView
-						.findViewById(R.id.imageView1);
-				holder.tv_cardcode = (TextView) convertView
-						.findViewById(R.id.tv_cardcode);
-				holder.tv_cardbalance = (TextView) convertView
-						.findViewById(R.id.tv_cardbalance);
+				holder.imageView = (ImageView) convertView.findViewById(R.id.imageView1);
+				holder.tv_cardcode = (TextView) convertView.findViewById(R.id.tv_cardcode);
+				holder.tv_cardbalance = (TextView) convertView.findViewById(R.id.tv_cardbalance);
 				convertView.setTag(holder);
 			} else {
 				holder = (ViewHolder) convertView.getTag();
 			}
 			String cardCode = list_balance.get(position).getBalance();
-			holder.tv_cardcode.setText("(尾号)"
-					+ cardCode.substring(cardCode.length() - 6,
-							cardCode.length()));
-			holder.tv_cardbalance.getPaint().setFlags(
-					Paint.STRIKE_THRU_TEXT_FLAG);
-			holder.tv_cardbalance.setText(list_balance.get(position)
-					.getCan_cost());
+			holder.tv_cardcode.setText("(尾号)" + cardCode.substring(cardCode.length() - 6, cardCode.length()));
+			holder.tv_cardbalance.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG);
+			holder.tv_cardbalance.setText(list_balance.get(position).getCan_cost());
 
 			if (position == selectItem) {
 				holder.imageView.setBackgroundResource(R.drawable.remeberpwd_s);
@@ -365,8 +342,7 @@ public class AccountsInfoActivity extends BaseActivity implements
 
 	public Bitmap createOneDCode(String content) throws WriterException {
 		// 生成一维条码,编码时指定大小,不要生成了图片以后再进行缩放,这样会模糊导致识别失败
-		BitMatrix matrix = new MultiFormatWriter().encode(content,
-				BarcodeFormat.CODE_128, 800, 400);
+		BitMatrix matrix = new MultiFormatWriter().encode(content, BarcodeFormat.CODE_128, 800, 400);
 		int width = matrix.getWidth();
 		int height = matrix.getHeight();
 		int[] pixels = new int[width * height];
@@ -378,8 +354,7 @@ public class AccountsInfoActivity extends BaseActivity implements
 			}
 		}
 
-		Bitmap bitmap = Bitmap.createBitmap(width, height,
-				Bitmap.Config.ARGB_8888);
+		Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
 		// 通过像素数组生成bitmap,具体参考api
 		bitmap.setPixels(pixels, 0, width, 0, 0, width, height);
 		return bitmap;

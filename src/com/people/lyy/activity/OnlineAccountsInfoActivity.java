@@ -54,15 +54,16 @@ public class OnlineAccountsInfoActivity extends BaseActivity implements
 		OnClickListener {
 	private LinearLayout lay_consume2, lay_bigone, lay_bigtwo = null;
 	private ImageView iv_consume, iv_consume2, iv_bigone, iv_bigtwo = null;
-	private boolean isShow = false;
 	private Button btn_back, btn_confirm = null;
 	private ListView lv_balance = null;
 	private List<AccountInfo> list_balance = null;
 	private MyAdapter adapter = null;
 	private TextView tv_can_cost, tv_balance, tv_code = null;
 	private int total_cash = 0;
-	private String code = null;
 	private boolean codeShow = false;
+	
+	public static boolean isShow = false;
+	public static String code = null;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {

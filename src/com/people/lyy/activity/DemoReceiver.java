@@ -18,8 +18,7 @@ public class DemoReceiver extends BroadcastReceiver {
 			Log.e("SOTP", intent.getStringExtra("key").trim());
 
 			if (Constants.GENTOKEN_ONLINE) {
-				Intent intent0 = new Intent(context,
-						OnlineAccountsInfoActivity.class);
+				Intent intent0 = new Intent(context, OnlineAccountsInfoActivity.class);
 				intent0.putExtra("token", intent.getStringExtra("key").trim());
 				intent0.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 				context.startActivity(intent0);
