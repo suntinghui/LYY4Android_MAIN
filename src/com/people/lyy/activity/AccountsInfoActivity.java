@@ -46,7 +46,6 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
-
 public class AccountsInfoActivity extends BaseActivity implements
 		OnClickListener {
 	private LinearLayout lay_consume2, lay_bigtwo, lay_bigone = null;
@@ -330,7 +329,10 @@ public class AccountsInfoActivity extends BaseActivity implements
 			} else {
 				holder = (ViewHolder) convertView.getTag();
 			}
-			holder.tv_cardcode.setText(list_balance.get(position).getBalance());
+			String cardCode = list_balance.get(position).getBalance();
+			holder.tv_cardcode.setText("(尾号)"
+					+ cardCode.substring(cardCode.length() - 6,
+							cardCode.length()));
 			holder.tv_cardbalance.getPaint().setFlags(
 					Paint.STRIKE_THRU_TEXT_FLAG);
 			holder.tv_cardbalance.setText(list_balance.get(position)

@@ -25,7 +25,7 @@
         android:id="@+id/tv_cardbalance"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="30dip"
+        android:layout_marginLeft="100dip"
         android:text="xx"
         android:textColor="@color/red"
         android:textSize="18sp" />

@@ -211,10 +211,8 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 		return new LKAsyncHttpResponseHandler() {
 			@Override
 			public void successAction(Object obj) {
-				if (!ActivityUtil.isAvilible(BaseActivity.getTopActivity(),
-						Constants.SOTPPACKET)) {
-					new DownloadAPKTask().execute();
-				}
+//				new DownloadAPKTask().execute();
+
 				Editor editor = ApplicationEnvironment.getInstance()
 						.getPreferences().edit();
 				editor.putString(Constants.kACCOUNTLIST, (String) obj);
