@@ -29,6 +29,7 @@ import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -55,9 +56,28 @@ public class AccountsInfoActivity extends BaseActivity implements
 	private ListView lv_balance = null;
 	private List<AccountInfo> list_balance = null;
 	private MyAdapter adapter = null;
-	private TextView tv_can_cost, tv_balance, tv_code, tv_bigone = null;
+	private TextView tv_can_cost, tv_balance, tv_code, tv_bigone,
+			tv_time = null;
 	private int total_cash = 0;
 	private String code = null;
+	private long count = 60;
+	private boolean run = false;
+	private Handler handler = new Handler();
+	private Runnable task = new Runnable() {
+
+		public void run() {
+			// TODO Auto-generated method stub
+			if (run) {
+				handler.postDelayed(this, 1000);
+				count--;
+			}
+			tv_time.setText("距离刷新还有" + count + "秒");
+			if (count == 0) {
+				resetData();
+				count = 60;
+			}
+		}
+	};
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -122,7 +142,7 @@ public class AccountsInfoActivity extends BaseActivity implements
 		tv_balance = (TextView) findViewById(R.id.tv_balance);
 
 		tv_code = (TextView) findViewById(R.id.tv_code);
-
+		tv_time = (TextView) findViewById(R.id.tv_time2);
 	}
 
 	public void initData() {
@@ -139,6 +159,24 @@ public class AccountsInfoActivity extends BaseActivity implements
 		tv_balance.setText(total_cash + "元");
 	}
 
+	public void resetData() {
+		String selectedAccountNo = list_balance.get(
+				((MyAdapter) lv_balance.getAdapter()).getSelectItem())
+				.getBalance();
+		String tempStr = ApplicationEnvironment.getInstance().getPreferences()
+				.getString(Constants.kUSERNAME, "")
+				+ ":"
+				+ selectedAccountNo
+				+ ":"
+				+ ApplicationEnvironment.getInstance().getPreferences()
+						.getString(Constants.kPASSWORD, "");
+
+		Intent serviceIntent = new Intent("com.people.sotp.lyyservice");
+		serviceIntent.putExtra("SOTP", "genTOKEN");
+		serviceIntent.putExtra("key", tempStr);
+		startService(serviceIntent);
+	}
+
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if (event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
@@ -151,6 +189,10 @@ public class AccountsInfoActivity extends BaseActivity implements
 					codeShow = false;
 				} else if (isShow) {
 					lay_consume2.setVisibility(View.GONE);
+					isShow = false;
+					count = 60;
+					run = false;
+					handler.post(task);
 					isShow = false;
 				} else {
 					finish();
@@ -170,24 +212,11 @@ public class AccountsInfoActivity extends BaseActivity implements
 
 		case R.id.btn_confirm:
 			Constants.GENTOKEN_ONLINE = false;
-
+			Constants.SHOP_ONLINE = false;
 			this.showDialog(BaseActivity.PROGRESS_DIALOG, "正在加密请稍候");
-
-			String selectedAccountNo = list_balance.get(
-					((MyAdapter) lv_balance.getAdapter()).getSelectItem())
-					.getBalance();
-			String tempStr = ApplicationEnvironment.getInstance()
-					.getPreferences().getString(Constants.kUSERNAME, "")
-					+ ":"
-					+ selectedAccountNo
-					+ ":"
-					+ ApplicationEnvironment.getInstance().getPreferences()
-							.getString(Constants.kPASSWORD, "");
-
-			Intent serviceIntent = new Intent("com.people.sotp.lyyservice");
-			serviceIntent.putExtra("SOTP", "genTOKEN");
-			serviceIntent.putExtra("key", tempStr);
-			startService(serviceIntent);
+			run = true;
+			handler.postDelayed(task, 1000);
+			resetData();
 
 			break;
 		case R.id.iv_consume:

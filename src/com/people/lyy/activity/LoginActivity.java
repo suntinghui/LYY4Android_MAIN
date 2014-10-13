@@ -7,7 +7,6 @@ import com.people.lyy.client.ApplicationEnvironment;
 import com.people.lyy.client.Constants;
 import com.people.lyy.client.DownloadFileRequest;
 import com.people.lyy.client.TransferRequestTag;
-import com.people.lyy.jababean.AccountInfo;
 import com.people.lyy.util.ActivityUtil;
 import com.people.network.LKAsyncHttpResponseHandler;
 import com.people.network.LKHttpRequest;
@@ -153,7 +152,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 					} else {
 
 						downloadAPKURL = Constants.IP + url;
-
+						Constants.URL = downloadAPKURL;
 						new DownloadAPKTask().execute();
 
 						Editor editor = ApplicationEnvironment.getInstance()
@@ -211,7 +210,7 @@ public class LoginActivity extends BaseActivity implements OnClickListener {
 		return new LKAsyncHttpResponseHandler() {
 			@Override
 			public void successAction(Object obj) {
-//				new DownloadAPKTask().execute();
+				// new DownloadAPKTask().execute();
 
 				Editor editor = ApplicationEnvironment.getInstance()
 						.getPreferences().edit();

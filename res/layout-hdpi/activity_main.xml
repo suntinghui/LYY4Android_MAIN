@@ -100,7 +100,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="10dp"
-                        android:text="网上商城"
+                        android:text="扫描二维码消费"
                         android:textColor="@color/black"
                         android:textSize="20sp" />
                 </LinearLayout>
@@ -181,6 +181,33 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="10dp"
                         android:text="测试"
+                        android:textColor="@color/black"
+                        android:textSize="20sp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/lay_unload"
+                    android:layout_width="match_parent"
+                    android:layout_height="80dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:background="@drawable/title"
+                    android:clickable="true"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal" >
+
+                    <ImageView
+                        android:layout_width="38dp"
+                        android:layout_height="38dp"
+                        android:layout_marginLeft="10dp"
+                        android:background="@drawable/gesture" />
+
+                    <TextView
+                        android:id="@+id/tv_down"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:text="卸载SOTP插件"
                         android:textColor="@color/black"
                         android:textSize="20sp" />
                 </LinearLayout>

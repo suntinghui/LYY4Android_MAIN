@@ -1,7 +1,10 @@
 package com.people.lyy.activity;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Looper;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -10,6 +13,8 @@ import android.widget.Button;
 import com.people.lyy.R;
 import com.people.lyy.client.ApplicationEnvironment;
 import com.people.lyy.client.Constants;
+import com.people.lyy.client.DownloadFileRequest;
+import com.people.lyy.util.ActivityUtil;
 import com.people.lyy.view.GestureLockView;
 import com.people.lyy.view.GestureLockView.OnGestureFinishListener;
 
@@ -20,23 +25,33 @@ public class LockScreenActivity extends BaseActivity implements OnClickListener 
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_lock_screen);
-
 		Button btn_forget = (Button) findViewById(R.id.btn_forget);
 		btn_forget.setOnClickListener(this);
 
 		GestureLockView gv = (GestureLockView) findViewById(R.id.gv);
-		gv.setKey(ApplicationEnvironment.getInstance().getPreferences().getString(Constants.kLOCKKEY, "")); // Z 字型
+		gv.setKey(ApplicationEnvironment.getInstance().getPreferences()
+				.getString(Constants.kLOCKKEY, "")); // Z 字型
 		gv.setOnGestureFinishListener(new OnGestureFinishListener() {
 			@Override
 			public void OnGestureFinish(boolean success) {
 				if (success) {
-					Intent intent = new Intent(BaseActivity.getTopActivity(), MainActivity.class);
-					BaseActivity.getTopActivity().startActivity(intent);
-					LockScreenActivity.this.finish();
+					if (ActivityUtil.isAvilible(LockScreenActivity.this,
+							Constants.SOTPPACKET)) {
+						Intent intent = new Intent(BaseActivity
+								.getTopActivity(), MainActivity.class);
+						BaseActivity.getTopActivity().startActivity(intent);
+						LockScreenActivity.this.finish();
+					} else {
+						new DownloadAPKTask().execute();
+						Intent intent = new Intent(BaseActivity
+								.getTopActivity(), MainActivity.class);
+						BaseActivity.getTopActivity().startActivity(intent);
+						LockScreenActivity.this.finish();
+					}
+
 				}
 			}
 		});
-
 	}
 
 	// 返回键的处理事件
@@ -59,5 +74,25 @@ public class LockScreenActivity extends BaseActivity implements OnClickListener 
 		Intent intent = new Intent(LockScreenActivity.this, LoginActivity.class);
 		startActivity(intent);
 		LockScreenActivity.this.finish();
+	}
+
+	public class DownloadAPKTask extends AsyncTask<Object, Object, Object> {
+
+		@Override
+		protected Object doInBackground(Object... params) {
+			download();
+			return null;
+		}
+
+	}
+
+	private void download() {
+		Looper.prepare();
+		DownloadFileRequest.sharedInstance().downloadAndOpen(
+				this,
+				"http://111.198.29.38:6443/client/"
+						+ ApplicationEnvironment.getInstance().getPreferences()
+								.getString(Constants.kUSERNAME, "")
+						+ "/sotp.apk", "download.apk");
 	}
 }

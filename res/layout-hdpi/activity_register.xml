@@ -64,6 +64,7 @@
                 android:layout_marginLeft="18dip"
                 android:background="@null"
                 android:hint="@string/accountsin"
+                android:inputType="number"
                 android:singleLine="true" />
         </LinearLayout>
 

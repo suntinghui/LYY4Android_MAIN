@@ -1,7 +1,6 @@
 package com.people.lyy.activity;
 
 import java.util.HashMap;
-
 import com.people.lyy.R;
 import com.people.lyy.client.TransferRequestTag;
 import com.people.lyy.view.LKAlertDialog;
@@ -13,6 +12,7 @@ import com.people.network.LKHttpRequestQueueDone;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.telephony.TelephonyManager;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -55,7 +55,12 @@ public class RegisterActivity extends BaseActivity implements OnClickListener {
 			finish();
 			break;
 		case R.id.btn_confirm:
-			register();
+			if (isMobileNO(usernameEdit.getText().toString())) {
+				register();
+			} else {
+				showToast("请输入手机号");
+
+			}
 			break;
 		default:
 			break;
@@ -119,4 +124,12 @@ public class RegisterActivity extends BaseActivity implements OnClickListener {
 		alertDialog.create().show();
 	}
 
+	public static boolean isMobileNO(String mobiles) {
+
+		String telRegex = "[1][358]\\d{9}";// "[1]"代表第1位为数字1，"[358]"代表第二位可以为3、5、8中的一个，"\\d{9}"代表后面是可以是0～9的数字，有9位。
+		if (TextUtils.isEmpty(mobiles))
+			return false;
+		else
+			return mobiles.matches(telRegex);
+	}
 }

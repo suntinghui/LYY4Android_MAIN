@@ -6,6 +6,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
+import android.widget.Toast;
 
 public class DemoReceiver extends BroadcastReceiver {
 
@@ -16,8 +17,13 @@ public class DemoReceiver extends BroadcastReceiver {
 		String type = intent.getStringExtra("SOTP");
 		if (type.equals("genTOKEN")) {
 			Log.e("SOTP", intent.getStringExtra("key").trim());
+			if (Constants.SHOP_ONLINE) {
+				Intent intent2 = new Intent(context, ConfirmOrderActivity.class);
+				intent2.putExtra("token", intent.getStringExtra("key").trim());
+				intent2.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
-			if (Constants.GENTOKEN_ONLINE) {
+				context.startActivity(intent2);
+			} else if (Constants.GENTOKEN_ONLINE) {
 				Intent intent0 = new Intent(context,
 						OnlineAccountsInfoActivity.class);
 				intent0.putExtra("token", intent.getStringExtra("key").trim());

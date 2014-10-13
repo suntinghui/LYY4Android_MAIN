@@ -1,9 +1,7 @@
 package com.people.lyy.activity;
 
 import com.people.lyy.R;
-import com.people.lyy.client.ApplicationEnvironment;
 import com.people.lyy.client.Constants;
-import com.people.lyy.client.DownloadFileRequest;
 import com.people.lyy.sqlite.DataDao;
 import com.people.lyy.util.ActivityUtil;
 
@@ -12,6 +10,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
@@ -23,7 +22,7 @@ public class MainActivity extends BaseActivity implements OnClickListener {
 
 	private DataDao dao = null;
 	private LinearLayout lay_consume, lay_consumeonline, lay_onlineshopconsume,
-			lay_binding, lay_gesture, lay_download = null;
+			lay_binding, lay_gesture, lay_download, lay_unload = null;
 	public static final int FROM_SETTINGACTIVITY = 1;
 	private long exitTime = 0;
 
@@ -87,6 +86,12 @@ public class MainActivity extends BaseActivity implements OnClickListener {
 			startService(serviceIntent);
 			break;
 
+		case R.id.lay_unload:
+			Uri uri = Uri.parse("package:com.people.sotp.service");
+			Intent intent2 = new Intent(Intent.ACTION_DELETE, uri);
+			MainActivity.this.startActivity(intent2);
+
+			break;
 		default:
 			break;
 		}
@@ -108,6 +113,8 @@ public class MainActivity extends BaseActivity implements OnClickListener {
 		lay_download = (LinearLayout) findViewById(R.id.lay_download);
 		lay_download.setOnClickListener(this);
 		lay_download.setVisibility(View.GONE);
+		lay_unload = (LinearLayout) findViewById(R.id.lay_unload);
+		lay_unload.setOnClickListener(this);
 	}
 
 	@Override

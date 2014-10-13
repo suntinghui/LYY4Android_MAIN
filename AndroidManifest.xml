@@ -32,6 +32,18 @@
             </intent-filter>
         </activity>
         <activity android:name="com.people.lyy.activity.LoginActivity" >
+            <action android:name="android.intent.action.VIEW" />
+
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="my.com"
+                    android:scheme="m" />
+            </intent-filter>
         </activity>
         <activity
             android:name="com.people.lyy.activity.AccountsInfoActivity"
@@ -69,7 +81,12 @@
         </activity>
         <activity android:name="com.people.lyy.activity.DefeatedActivity" >
         </activity>
-        <activity android:name="com.people.lyy.activity.ConfirmOrderActivity" >
+        <activity
+            android:name="com.people.lyy.activity.ConfirmOrderActivity"
+            android:launchMode="singleTask" >
+            <intent-filter>
+                <action android:name="com.people.ConfirmOrderActivity" />
+            </intent-filter>
         </activity>
 
         <service

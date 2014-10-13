@@ -1,6 +1,5 @@
 package com.people.lyy.activity;
 
-
 import com.people.lyy.R;
 import com.people.lyy.client.Constants;
 
@@ -19,8 +18,8 @@ public class SuccessActivity extends BaseActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_success);
-		 initView();
-		 setView();
+		initView();
+		setView();
 
 	}
 
@@ -32,13 +31,14 @@ public class SuccessActivity extends BaseActivity {
 
 	public void setView() {
 
-		tv_cardcode.setText("订单号：" + Constants.resultString.substring(0, 10));
-		tv_balance.setText(Constants.resultString.substring(11, 18));
+		tv_cardcode.setText(Constants.resultCode);
+		tv_balance.setText(Constants.resultBalance);
 
 		btn_over.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
+				setResult(RESULT_OK);
 				finish();
 
 			}

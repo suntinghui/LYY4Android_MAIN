@@ -12,7 +12,7 @@ public class TransferRequestTag {
 	public static final int Generate = 3; // 生成TOKEN
 
 	public static final int getAccountStr = 4;
-	public static final int OnlineShop = 5;
+	public static final int OnlineShop = 5;// 网上商城
 
 	private static HashMap<Integer, String> requestTagMap = null;
 
@@ -27,7 +27,7 @@ public class TransferRequestTag {
 			requestTagMap.put(Accounts, Constants.IP + "/list");
 			requestTagMap.put(getAccountStr, Constants.IP + "/list");
 			requestTagMap.put(Generate, Constants.IP + "/Generate/");
-			requestTagMap.put(OnlineShop, Constants.IP + "/verify/");
+			requestTagMap.put(OnlineShop, Constants.IP + "/online/");
 		}
 
 		return requestTagMap;

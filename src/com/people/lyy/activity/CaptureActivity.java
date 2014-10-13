@@ -153,7 +153,7 @@ public class CaptureActivity extends BaseActivity implements Callback {
 	public void handleDecode(Result result, Bitmap barcode) {
 		inactivityTimer.onActivity();
 		playBeepSoundAndVibrate();
-		Constants.resultString = result.getText();
+		Constants.resultString = result.getText().split("=")[1];
 		if (Constants.resultString.equals("")) {
 			Toast.makeText(CaptureActivity.this, "Scan failed!",
 					Toast.LENGTH_SHORT).show();
@@ -166,7 +166,7 @@ public class CaptureActivity extends BaseActivity implements Callback {
 			Intent intent = new Intent(CaptureActivity.this,
 					ConfirmOrderActivity.class);
 			startActivity(intent);
-
+			finish();
 		}
 	}
 

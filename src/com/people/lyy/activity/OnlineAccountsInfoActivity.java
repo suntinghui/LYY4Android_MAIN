@@ -12,28 +12,21 @@ import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 import com.people.lyy.R;
-import com.people.lyy.activity.AccountsInfoActivity.MyAdapter;
-import com.people.lyy.activity.AccountsInfoActivity.ViewHolder;
-import com.people.lyy.activity.LoginActivity.DownloadAPKTask;
 import com.people.lyy.client.ApplicationEnvironment;
 import com.people.lyy.client.Constants;
-import com.people.lyy.client.ParseResponseXML;
 import com.people.lyy.client.TransferRequestTag;
 import com.people.lyy.jababean.AccountInfo;
-import com.people.lyy.util.ActivityUtil;
-import com.people.lyy.view.ADProgressDialog;
 import com.people.network.LKAsyncHttpResponseHandler;
 import com.people.network.LKHttpRequest;
 import com.people.network.LKHttpRequestQueue;
 import com.people.network.LKHttpRequestQueueDone;
-
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences.Editor;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -59,10 +52,29 @@ public class OnlineAccountsInfoActivity extends BaseActivity implements
 	private ListView lv_balance = null;
 	private List<AccountInfo> list_balance = null;
 	private MyAdapter adapter = null;
-	private TextView tv_can_cost, tv_balance, tv_code = null;
+	private TextView tv_can_cost, tv_balance, tv_code, tv_time = null;
 	private int total_cash = 0;
 	private String code = null;
 	private boolean codeShow = false;
+	private long count = 60;
+	private boolean run = false;
+	private Handler handler = new Handler();
+
+	private Runnable task = new Runnable() {
+
+		public void run() {
+			// TODO Auto-generated method stub
+			if (run) {
+				handler.postDelayed(this, 1000);
+				count--;
+			}
+			tv_time.setText("距离刷新还有" + count + "秒");
+			if (count == 0) {
+				setData();
+				count = 60;
+			}
+		}
+	};
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -76,6 +88,8 @@ public class OnlineAccountsInfoActivity extends BaseActivity implements
 	}
 
 	protected void onNewIntent(Intent i) {
+
+
 		String[] s = i.getStringExtra("token").split("#");
 
 		try {
@@ -128,6 +142,7 @@ public class OnlineAccountsInfoActivity extends BaseActivity implements
 		tv_can_cost = (TextView) findViewById(R.id.tv_can_cost);
 		tv_balance = (TextView) findViewById(R.id.tv_balance);
 		tv_code = (TextView) findViewById(R.id.tv_code);
+		tv_time = (TextView) findViewById(R.id.tv_time);
 	}
 
 	@Override
@@ -141,6 +156,9 @@ public class OnlineAccountsInfoActivity extends BaseActivity implements
 					codeShow = false;
 				} else if (isShow) {
 					lay_consume2.setVisibility(View.GONE);
+					count = 60;
+					run = false;
+					handler.post(task);
 					isShow = false;
 				} else {
 					finish();
@@ -159,26 +177,13 @@ public class OnlineAccountsInfoActivity extends BaseActivity implements
 			break;
 
 		case R.id.btn_confirm:
-			// Constants.GENTOKEN_ONLINE = true;
+			run = true;
+			handler.postDelayed(task, 1000);
+			// handler.post(task);
 
+			Constants.SHOP_ONLINE = false;
 			this.showDialog(BaseActivity.PROGRESS_DIALOG, "正在加密请稍候");
-
-			String selectedAccountNo = list_balance.get(
-					((MyAdapter) lv_balance.getAdapter()).getSelectItem())
-					.getBalance();
-			String tempStr = ApplicationEnvironment.getInstance()
-					.getPreferences().getString(Constants.kUSERNAME, "")
-					+ ":"
-					+ selectedAccountNo
-					+ ":"
-					+ ApplicationEnvironment.getInstance().getPreferences()
-							.getString(Constants.kPASSWORD, "")
-					+ ":"
-					+ Constants.IP.replace("http://", "");
-			Intent serviceIntent = new Intent("com.people.sotp.lyyservice");
-			serviceIntent.putExtra("SOTP", "genTOKEN");
-			serviceIntent.putExtra("key", tempStr);
-			startService(serviceIntent);
+			setData();
 
 			break;
 		case R.id.iv_consume:
@@ -210,6 +215,8 @@ public class OnlineAccountsInfoActivity extends BaseActivity implements
 				HashMap<String, String> map = (HashMap<String, String>) obj;
 				int ret = Integer.parseInt(map.get("ret"));
 				if (ret == 0) {
+					run = true;
+					handler.postDelayed(task, 1000);
 					try {
 						tv_code.setText(map.get("token").substring(0, 11)
 								+ "     " + map.get("token").substring(11, 19));
@@ -233,6 +240,25 @@ public class OnlineAccountsInfoActivity extends BaseActivity implements
 			}
 
 		};
+	}
+
+	public void setData() {
+		String selectedAccountNo = list_balance.get(
+				((MyAdapter) lv_balance.getAdapter()).getSelectItem())
+				.getBalance();
+		String tempStr = ApplicationEnvironment.getInstance().getPreferences()
+				.getString(Constants.kUSERNAME, "")
+				+ ":"
+				+ selectedAccountNo
+				+ ":"
+				+ ApplicationEnvironment.getInstance().getPreferences()
+						.getString(Constants.kPASSWORD, "")
+				+ ":"
+				+ Constants.IP.replace("http://", "");
+		Intent serviceIntent = new Intent("com.people.sotp.lyyservice");
+		serviceIntent.putExtra("SOTP", "genTOKEN");
+		serviceIntent.putExtra("key", tempStr);
+		startService(serviceIntent);
 	}
 
 	// 创建二维码
