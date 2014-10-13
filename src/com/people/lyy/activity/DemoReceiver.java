@@ -21,7 +21,6 @@ public class DemoReceiver extends BroadcastReceiver {
 				Intent intent2 = new Intent(context, ConfirmOrderActivity.class);
 				intent2.putExtra("token", intent.getStringExtra("key").trim());
 				intent2.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-
 				context.startActivity(intent2);
 			} else if (Constants.GENTOKEN_ONLINE) {
 				Intent intent0 = new Intent(context,
