@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.EncodeHintType;
@@ -12,6 +14,7 @@ import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 import com.people.lyy.R;
+import com.people.lyy.activity.ConfirmOrderActivity.MyAdapter;
 import com.people.lyy.client.ApplicationEnvironment;
 import com.people.lyy.client.Constants;
 import com.people.lyy.client.ParseResponseXML;
@@ -22,7 +25,9 @@ import com.people.network.LKHttpRequest;
 import com.people.network.LKHttpRequestQueue;
 import com.people.network.LKHttpRequestQueueDone;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -41,13 +46,15 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
-public class AccountsInfoActivity extends BaseActivity implements OnClickListener {
+public class AccountsInfoActivity extends BaseActivity implements
+		OnClickListener {
 	private LinearLayout lay_consume2, lay_bigtwo, lay_bigone = null;
 	private ImageView iv_consume, iv_consume2, iv_bigone, iv_bigtwo = null;
 	private boolean codeShow = false;
@@ -59,25 +66,11 @@ public class AccountsInfoActivity extends BaseActivity implements OnClickListene
 			tv_time = null;
 	private int total_cash = 0;
 	private long count = 60;
-	private boolean run = false;
-	private Handler handler = new Handler();
-	private Runnable task = new Runnable() {
-
-		public void run() {
-			// TODO Auto-generated method stub
-			if (run) {
-				handler.postDelayed(this, 1000);
-				count--;
-			}
-			tv_time.setText("距离刷新还有" + count + "秒");
-			if (count == 0) {
-				resetData();
-				count = 60;
-			}
-		}
-	};
+	private Timer timer = null;
+	private TimerTask task = null;
 	public static boolean isShow = false;
 	public static String code = null;
+	public boolean toast = true;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -90,21 +83,31 @@ public class AccountsInfoActivity extends BaseActivity implements OnClickListene
 	}
 
 	protected void onNewIntent(Intent i) {
+		Log.e("sss", i.getStringExtra("token"));
 		String[] s = i.getStringExtra("token").split("#");
+		if (s[0].charAt(0) == '[') {
+			if (toast) {
+				showToast("非授权手机");
+				hideDialog(PROGRESS_DIALOG);
+				toast = false;
+			}
+		} else {
+			try {
+				code = s[0];
 
-		try {
-			code = s[0];
-			iv_consume.setImageBitmap(createOneDCode(s[0]));
-			// tv_code.setText(code);
-			tv_code.setText(code.substring(0, 11) + "    " + code.substring(11, 19));
-			iv_consume2.setImageBitmap(createTwoDCode(s[0]));
-		} catch (WriterException e) {
-			e.printStackTrace();
+				iv_consume.setImageBitmap(createOneDCode(s[0]));
+				// tv_code.setText(code);
+				tv_code.setText(code.substring(0, 11) + "    "
+						+ code.substring(11, 19));
+				iv_consume2.setImageBitmap(createTwoDCode(s[0]));
+			} catch (WriterException e) {
+				e.printStackTrace();
+			}
+			isShow = true;
+			lay_consume2.setVisibility(View.VISIBLE);
+
+			this.hideDialog(BaseActivity.PROGRESS_DIALOG);
 		}
-		isShow = true;
-		lay_consume2.setVisibility(View.VISIBLE);
-
-		this.hideDialog(BaseActivity.PROGRESS_DIALOG);
 	}
 
 	public void initView() {
@@ -142,15 +145,18 @@ public class AccountsInfoActivity extends BaseActivity implements OnClickListene
 
 		tv_code = (TextView) findViewById(R.id.tv_code);
 		tv_time = (TextView) findViewById(R.id.tv_time2);
+
 	}
 
 	public void initData() {
-		String tempStr = ApplicationEnvironment.getInstance().getPreferences().getString(Constants.kACCOUNTLIST, "");
+		String tempStr = ApplicationEnvironment.getInstance().getPreferences()
+				.getString(Constants.kACCOUNTLIST, "");
 		list_balance = ParseResponseXML.accounts(tempStr);
 
 		adapter.notifyDataSetChanged();
 		for (int i = 0; i < list_balance.size(); i++) {
-			total_cash = total_cash + Integer.parseInt(list_balance.get(i).getCan_cost());
+			total_cash = total_cash
+					+ Integer.parseInt(list_balance.get(i).getCan_cost());
 		}
 
 		tv_balance.setText(total_cash + "元");
@@ -178,7 +184,8 @@ public class AccountsInfoActivity extends BaseActivity implements OnClickListene
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if (event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
 
-			if (event.getAction() == KeyEvent.ACTION_DOWN && event.getRepeatCount() == 0) {
+			if (event.getAction() == KeyEvent.ACTION_DOWN
+					&& event.getRepeatCount() == 0) {
 				if (codeShow) {
 					lay_bigone.setVisibility(View.GONE);
 					lay_bigtwo.setVisibility(View.GONE);
@@ -187,9 +194,7 @@ public class AccountsInfoActivity extends BaseActivity implements OnClickListene
 					lay_consume2.setVisibility(View.GONE);
 					isShow = false;
 					count = 60;
-					run = false;
-					handler.post(task);
-					isShow = false;
+					timer.cancel();
 				} else {
 					finish();
 				}
@@ -207,12 +212,69 @@ public class AccountsInfoActivity extends BaseActivity implements OnClickListene
 			break;
 
 		case R.id.btn_confirm:
-			Constants.GENTOKEN_ONLINE = false;
-			Constants.SHOP_ONLINE = false;
-			this.showDialog(BaseActivity.PROGRESS_DIALOG, "正在加密请稍候");
-			run = true;
-			handler.postDelayed(task, 1000);
-			resetData();
+			AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+			View view2 = LayoutInflater.from(AccountsInfoActivity.this)
+					.inflate(R.layout.dialog_psw, null);
+
+			final EditText editText_pwd = (EditText) view2
+					.findViewById(R.id.password);
+			dialog.setView(view2);
+			dialog.setPositiveButton("确定",
+					new DialogInterface.OnClickListener() {
+
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							String password = editText_pwd.getText().toString()
+									.trim();
+							if (password.equals(ApplicationEnvironment
+									.getInstance().getPreferences()
+									.getString(Constants.kPASSWORD, ""))) {
+								timer = new Timer();
+								task = new TimerTask() {
+									@Override
+									public void run() {
+
+										runOnUiThread(new Runnable() { // UI
+											// thread
+											@Override
+											public void run() {
+												count--;
+												tv_time.setText("距离刷新还有"
+														+ count + "秒");
+												if (count == 0) {
+													resetData();
+													count = 60;
+												}
+											}
+										});
+									}
+								};
+								timer.schedule(task, 1000, 1000);
+
+								Constants.GENTOKEN_ONLINE = false;
+								Constants.SHOP_ONLINE = false;
+								AccountsInfoActivity.this
+										.showDialog(
+												BaseActivity.PROGRESS_DIALOG,
+												"正在加密请稍候");
+								resetData();
+							} else {
+								showToast("密码错误请重新输入");
+							}
+						}
+					});
+			dialog.setNegativeButton("取消",
+					new DialogInterface.OnClickListener() {
+
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							dialog.dismiss();
+
+						}
+
+					});
+			dialog.create();
+			dialog.show();
 
 			break;
 		case R.id.iv_consume:
@@ -221,7 +283,9 @@ public class AccountsInfoActivity extends BaseActivity implements OnClickListene
 				Matrix matrix = new Matrix();
 				matrix.postRotate(90);
 				matrix.setRotate(90);
-				Bitmap matrixBitmap = Bitmap.createBitmap(createOneDCode(code), 0, 0, createOneDCode(code).getWidth(), createOneDCode(code).getHeight(), matrix, true);
+				Bitmap matrixBitmap = Bitmap.createBitmap(createOneDCode(code),
+						0, 0, createOneDCode(code).getWidth(),
+						createOneDCode(code).getHeight(), matrix, true);
 				iv_bigone.setImageBitmap(matrixBitmap);
 				// 使textView竖排显示并赋值但是效果不好
 				// tv_bigone.setText(code.substring(0, 10) + "     "
@@ -241,13 +305,13 @@ public class AccountsInfoActivity extends BaseActivity implements OnClickListene
 		case R.id.iv_bigone:
 			lay_bigone.setVisibility(View.GONE);
 			break;
-			
+
 		case R.id.iv_consume2:
 			lay_bigtwo.setVisibility(View.VISIBLE);
 			iv_bigtwo.setImageBitmap(createTwoDCode(code));
 			codeShow = true;
 			break;
-			
+
 		case R.id.iv_bigtwo:
 			lay_bigtwo.setVisibility(View.GONE);
 			break;
@@ -269,13 +333,16 @@ public class AccountsInfoActivity extends BaseActivity implements OnClickListene
 			}
 
 			// 把输入的文本转为二维码
-			BitMatrix martix = writer.encode(text, BarcodeFormat.QR_CODE, 450, 450);
+			BitMatrix martix = writer.encode(text, BarcodeFormat.QR_CODE, 450,
+					450);
 
-			System.out.println("w:" + martix.getWidth() + "h:" + martix.getHeight());
+			System.out.println("w:" + martix.getWidth() + "h:"
+					+ martix.getHeight());
 
 			Hashtable<EncodeHintType, String> hints = new Hashtable<EncodeHintType, String>();
 			hints.put(EncodeHintType.CHARACTER_SET, "utf-8");
-			BitMatrix bitMatrix = new QRCodeWriter().encode(text, BarcodeFormat.QR_CODE, 450, 450, hints);
+			BitMatrix bitMatrix = new QRCodeWriter().encode(text,
+					BarcodeFormat.QR_CODE, 450, 450, hints);
 			int[] pixels = new int[450 * 450];
 			for (int y = 0; y < 450; y++) {
 				for (int x = 0; x < 450; x++) {
@@ -287,7 +354,8 @@ public class AccountsInfoActivity extends BaseActivity implements OnClickListene
 
 				}
 			}
-			Bitmap bitmap = Bitmap.createBitmap(450, 450, Bitmap.Config.ARGB_8888);
+			Bitmap bitmap = Bitmap.createBitmap(450, 450,
+					Bitmap.Config.ARGB_8888);
 			bitmap.setPixels(pixels, 0, 450, 0, 0, 450, 450);
 			return bitmap;
 			// iv_consume2.setImageBitmap(bitmap);
@@ -298,7 +366,8 @@ public class AccountsInfoActivity extends BaseActivity implements OnClickListene
 	}
 
 	AdapterView.OnItemClickListener mLeftListOnItemClick = new AdapterView.OnItemClickListener() {
-		public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
+		public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
+				long arg3) {
 
 			adapter.setSelectItem(arg2);
 			adapter.notifyDataSetChanged();
@@ -339,17 +408,24 @@ public class AccountsInfoActivity extends BaseActivity implements OnClickListene
 			if (convertView == null) {
 				convertView = mInflater.inflate(R.layout.item_balance, null);
 				holder = new ViewHolder();
-				holder.imageView = (ImageView) convertView.findViewById(R.id.imageView1);
-				holder.tv_cardcode = (TextView) convertView.findViewById(R.id.tv_cardcode);
-				holder.tv_cardbalance = (TextView) convertView.findViewById(R.id.tv_cardbalance);
+				holder.imageView = (ImageView) convertView
+						.findViewById(R.id.imageView1);
+				holder.tv_cardcode = (TextView) convertView
+						.findViewById(R.id.tv_cardcode);
+				holder.tv_cardbalance = (TextView) convertView
+						.findViewById(R.id.tv_cardbalance);
 				convertView.setTag(holder);
 			} else {
 				holder = (ViewHolder) convertView.getTag();
 			}
 			String cardCode = list_balance.get(position).getBalance();
-			holder.tv_cardcode.setText("(尾号)" + cardCode.substring(cardCode.length() - 6, cardCode.length()));
-			holder.tv_cardbalance.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG);
-			holder.tv_cardbalance.setText(list_balance.get(position).getCan_cost());
+			holder.tv_cardcode.setText("(尾号)"
+					+ cardCode.substring(cardCode.length() - 6,
+							cardCode.length()));
+			holder.tv_cardbalance.getPaint().setFlags(
+					Paint.STRIKE_THRU_TEXT_FLAG);
+			holder.tv_cardbalance.setText(list_balance.get(position)
+					.getCan_cost());
 
 			if (position == selectItem) {
 				holder.imageView.setBackgroundResource(R.drawable.remeberpwd_s);
@@ -378,7 +454,8 @@ public class AccountsInfoActivity extends BaseActivity implements OnClickListene
 
 	public Bitmap createOneDCode(String content) throws WriterException {
 		// 生成一维条码,编码时指定大小,不要生成了图片以后再进行缩放,这样会模糊导致识别失败
-		BitMatrix matrix = new MultiFormatWriter().encode(content, BarcodeFormat.CODE_128, 800, 400);
+		BitMatrix matrix = new MultiFormatWriter().encode(content,
+				BarcodeFormat.CODE_128, 800, 400);
 		int width = matrix.getWidth();
 		int height = matrix.getHeight();
 		int[] pixels = new int[width * height];
@@ -390,7 +467,8 @@ public class AccountsInfoActivity extends BaseActivity implements OnClickListene
 			}
 		}
 
-		Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+		Bitmap bitmap = Bitmap.createBitmap(width, height,
+				Bitmap.Config.ARGB_8888);
 		// 通过像素数组生成bitmap,具体参考api
 		bitmap.setPixels(pixels, 0, width, 0, 0, width, height);
 		return bitmap;

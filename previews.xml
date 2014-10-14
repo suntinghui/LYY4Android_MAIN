@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<previews>
+
+    <preview
+        name="Config1"
+        activity="com.people.lyy.activity.MainActivity"
+        config="layout-sw320dp-w320dp-h533dp-normal-long-port-notnight-hdpi-finger-keyssoft-nokeys-navexposed-trackball-800x480-v19"
+        device="3.7in WVGA (Nexus One)"
+        devicestate="Portrait"
+        target="Android 4.4"
+        theme="@android:style/Theme.Light.NoTitleBar" >
+    </preview>
+
+</previews>

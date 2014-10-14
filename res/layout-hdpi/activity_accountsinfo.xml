@@ -178,6 +178,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_launcher" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dip"
+            android:text="给收银员扫一扫完成购物"
+            android:textColor="@color/white"
+            android:textSize="20sp" />
     </LinearLayout>
 
     <LinearLayout

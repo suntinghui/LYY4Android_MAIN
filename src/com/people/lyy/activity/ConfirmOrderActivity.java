@@ -4,9 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import com.google.zxing.WriterException;
 import com.people.lyy.R;
-import com.people.lyy.activity.OnlineAccountsInfoActivity.MyAdapter;
 import com.people.lyy.client.ApplicationEnvironment;
 import com.people.lyy.client.Constants;
 import com.people.lyy.client.ParseResponseXML;
@@ -22,7 +20,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,7 +31,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class ConfirmOrderActivity extends BaseActivity implements
 		OnClickListener {
@@ -47,6 +43,7 @@ public class ConfirmOrderActivity extends BaseActivity implements
 	private MyAdapter adapter = null;
 	private ListView lv_balance = null;
 	private String token = null;
+	private boolean toast = true;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -98,64 +95,7 @@ public class ConfirmOrderActivity extends BaseActivity implements
 	public void onClick(View v) {
 		switch (v.getId()) {
 		case R.id.btn_confirm:
-			AlertDialog.Builder dialog = new AlertDialog.Builder(this);
-			View view2 = LayoutInflater.from(ConfirmOrderActivity.this)
-					.inflate(R.layout.dialog_psw, null);
-
-			final EditText editText_pwd = (EditText) view2
-					.findViewById(R.id.password);
-			dialog.setView(view2);
-			dialog.setPositiveButton("确定",
-					new DialogInterface.OnClickListener() {
-
-						@Override
-						public void onClick(DialogInterface dialog, int which) {
-							String password = editText_pwd.getText().toString()
-									.trim();
-							if (password.equals(ApplicationEnvironment
-									.getInstance().getPreferences()
-									.getString(Constants.kPASSWORD, ""))) {
-								Constants.GENTOKEN_ONLINE = false;
-								Constants.SHOP_ONLINE = true;
-								String selectedAccountNo = list_balance.get(
-										((MyAdapter) lv_balance.getAdapter())
-												.getSelectItem()).getBalance();
-								String tempStr = ApplicationEnvironment
-										.getInstance().getPreferences()
-										.getString(Constants.kUSERNAME, "")
-										+ ":"
-										+ selectedAccountNo
-										+ ":"
-										+ ApplicationEnvironment
-												.getInstance()
-												.getPreferences()
-												.getString(Constants.kPASSWORD,
-														"");
-
-								Intent serviceIntent = new Intent(
-										"com.people.sotp.lyyservice");
-								serviceIntent.putExtra("SOTP", "genTOKEN");
-								serviceIntent.putExtra("key", tempStr);
-
-								startService(serviceIntent);
-							} else {
-								showToast("密码错误请重新输入");
-							}
-						}
-					});
-			dialog.setNegativeButton("取消",
-					new DialogInterface.OnClickListener() {
-
-						@Override
-						public void onClick(DialogInterface dialog, int which) {
-							dialog.dismiss();
-
-						}
-
-					});
-			dialog.create();
-			dialog.show();
-
+			pswDialog();
 			break;
 
 		default:
@@ -165,7 +105,16 @@ public class ConfirmOrderActivity extends BaseActivity implements
 
 	protected void onNewIntent(Intent i) {
 		token = i.getStringExtra("token");
-		upLoading(token);
+
+		if (token.charAt(0) == '[') {
+			if (toast) {
+				showToast("非授权手机");
+				hideDialog(PROGRESS_DIALOG);
+				toast = false;
+			}
+		} else {
+			upLoading(token);
+		}
 	}
 
 	private void upLoading(String token) {
@@ -223,30 +172,11 @@ public class ConfirmOrderActivity extends BaseActivity implements
 					resultIntent.putExtra("result", msg);
 					startActivityForResult(resultIntent, 101);
 				}
-				// ConfirmOrderActivity.this.finish();
+
 			}
 		};
 
 	}
-
-	// private boolean checkValue() {
-	//
-	// if ("".equals(et_psw.getText().toString().trim())) {
-	// showToast("请输入密码");
-	// return false;
-	// } else if (!ApplicationEnvironment.getInstance().getPreferences()
-	// .getString(Constants.kPASSWORD, "")
-	// .equals(et_psw.getText().toString().trim())) {
-	// showToast("密码错误请重新输入");
-	// return false;
-	// } else if (ApplicationEnvironment.getInstance().getPreferences()
-	// .getString(Constants.kPASSWORD, "")
-	// .equals(et_psw.getText().toString().trim())) {
-	// return true;
-	// }
-	//
-	// return false;
-	// }
 
 	private void getAccounts() {
 		HashMap<String, Object> tempMap = new HashMap<String, Object>();
@@ -383,4 +313,59 @@ public class ConfirmOrderActivity extends BaseActivity implements
 			finish();
 		}
 	};
+
+	public void pswDialog() {
+		AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+		View view2 = LayoutInflater.from(ConfirmOrderActivity.this).inflate(
+				R.layout.dialog_psw, null);
+
+		final EditText editText_pwd = (EditText) view2
+				.findViewById(R.id.password);
+		dialog.setView(view2);
+		dialog.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				String password = editText_pwd.getText().toString().trim();
+				if (password.equals(ApplicationEnvironment.getInstance()
+						.getPreferences().getString(Constants.kPASSWORD, ""))) {
+					Constants.GENTOKEN_ONLINE = false;
+					Constants.SHOP_ONLINE = true;
+					String selectedAccountNo = list_balance.get(
+							((MyAdapter) lv_balance.getAdapter())
+									.getSelectItem()).getBalance();
+					String tempStr = ApplicationEnvironment.getInstance()
+							.getPreferences()
+							.getString(Constants.kUSERNAME, "")
+							+ ":"
+							+ selectedAccountNo
+							+ ":"
+							+ ApplicationEnvironment.getInstance()
+									.getPreferences()
+									.getString(Constants.kPASSWORD, "");
+
+					Intent serviceIntent = new Intent(
+							"com.people.sotp.lyyservice");
+					serviceIntent.putExtra("SOTP", "genTOKEN");
+					serviceIntent.putExtra("key", tempStr);
+
+					startService(serviceIntent);
+				} else {
+					showToast("密码错误请重新输入");
+				}
+			}
+		});
+		dialog.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				dialog.dismiss();
+
+			}
+
+		});
+		dialog.create();
+		dialog.show();
+
+	}
 }

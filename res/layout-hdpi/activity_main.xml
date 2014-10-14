@@ -65,7 +65,7 @@
                         android:layout_width="38dp"
                         android:layout_height="38dp"
                         android:layout_marginLeft="10dp"
-                        android:background="@drawable/consume" />
+                        android:background="@drawable/lixian" />
 
                     <TextView
                         android:id="@+id/tv_consume"
@@ -93,7 +93,7 @@
                         android:layout_width="38dp"
                         android:layout_height="38dp"
                         android:layout_marginLeft="10dp"
-                        android:background="@drawable/consume" />
+                        android:background="@drawable/twocode" />
 
                     <TextView
                         android:id="@+id/tv_consume3"
@@ -200,7 +200,7 @@
                         android:layout_width="38dp"
                         android:layout_height="38dp"
                         android:layout_marginLeft="10dp"
-                        android:background="@drawable/gesture" />
+                        android:background="@drawable/deleteapp" />
 
                     <TextView
                         android:id="@+id/tv_down"

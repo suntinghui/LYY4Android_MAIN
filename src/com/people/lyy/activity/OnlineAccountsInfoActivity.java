@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.EncodeHintType;
@@ -40,9 +42,9 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 //10表示用户不存在 11表示二维码超时
-
 public class OnlineAccountsInfoActivity extends BaseActivity implements
 		OnClickListener {
 	private LinearLayout lay_consume2, lay_bigone, lay_bigtwo = null;
@@ -56,26 +58,12 @@ public class OnlineAccountsInfoActivity extends BaseActivity implements
 	private boolean codeShow = false;
 
 	private long count = 60;
-	private boolean run = false;
-	private Handler handler = new Handler();
+	private Timer timer = null;
+	private TimerTask task = null;
 
-	private Runnable task = new Runnable() {
-
-		public void run() {
-			// TODO Auto-generated method stub
-			if (run) {
-				handler.postDelayed(this, 1000);
-				count--;
-			}
-			tv_time.setText("距离刷新还有" + count + "秒");
-			if (count == 0) {
-				setData();
-				count = 60;
-			}
-		}
-	};
 	public static boolean isShow = false;
 	public static String code = null;
+	public boolean toast = true;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -90,25 +78,32 @@ public class OnlineAccountsInfoActivity extends BaseActivity implements
 
 	protected void onNewIntent(Intent i) {
 
-
 		String[] s = i.getStringExtra("token").split("#");
+		Log.i("return", s[0]);
+		if (s[0].charAt(0) == '[') {
+			if (toast) {
+				showToast("非授权手机");
+				hideDialog(PROGRESS_DIALOG);
+				toast = false;
+			}
+		} else {
+			try {
+				code = s[0];
+				iv_consume.setImageBitmap(createOneDCode(s[0]));
+				// tv_code.setText(code);
+				tv_code.setText(code.substring(0, 11) + "    "
+						+ code.substring(11, 19));
+				iv_consume2.setImageBitmap(createTwoDCode(s[0]));
 
-		try {
-			code = s[0];
-			iv_consume.setImageBitmap(createOneDCode(s[0]));
-			// tv_code.setText(code);
-			tv_code.setText(code.substring(0, 11) + "    "
-					+ code.substring(11, 19));
-			iv_consume2.setImageBitmap(createTwoDCode(s[0]));
+			} catch (WriterException e) {
+				e.printStackTrace();
+			}
 
-		} catch (WriterException e) {
-			e.printStackTrace();
+			isShow = true;
+			lay_consume2.setVisibility(View.VISIBLE);
+
+			this.hideDialog(BaseActivity.PROGRESS_DIALOG);
 		}
-
-		isShow = true;
-		lay_consume2.setVisibility(View.VISIBLE);
-
-		this.hideDialog(BaseActivity.PROGRESS_DIALOG);
 	}
 
 	public void initView() {
@@ -158,8 +153,8 @@ public class OnlineAccountsInfoActivity extends BaseActivity implements
 				} else if (isShow) {
 					lay_consume2.setVisibility(View.GONE);
 					count = 60;
-					run = false;
-					handler.post(task);
+					count = 60;
+					timer.cancel();
 					isShow = false;
 				} else {
 					finish();
@@ -178,9 +173,25 @@ public class OnlineAccountsInfoActivity extends BaseActivity implements
 			break;
 
 		case R.id.btn_confirm:
-			run = true;
-			handler.postDelayed(task, 1000);
-			// handler.post(task);
+			timer = new Timer();
+			task = new TimerTask() {
+				@Override
+				public void run() {
+
+					runOnUiThread(new Runnable() { // UI thread
+						@Override
+						public void run() {
+							count--;
+							tv_time.setText("距离刷新还有" + count + "秒");
+							if (count == 0) {
+								setData();
+								count = 60;
+							}
+						}
+					});
+				}
+			};
+			timer.schedule(task, 1000, 1000);
 
 			Constants.SHOP_ONLINE = false;
 			this.showDialog(BaseActivity.PROGRESS_DIALOG, "正在加密请稍候");
@@ -216,8 +227,6 @@ public class OnlineAccountsInfoActivity extends BaseActivity implements
 				HashMap<String, String> map = (HashMap<String, String>) obj;
 				int ret = Integer.parseInt(map.get("ret"));
 				if (ret == 0) {
-					run = true;
-					handler.postDelayed(task, 1000);
 					try {
 						tv_code.setText(map.get("token").substring(0, 11)
 								+ "     " + map.get("token").substring(11, 19));

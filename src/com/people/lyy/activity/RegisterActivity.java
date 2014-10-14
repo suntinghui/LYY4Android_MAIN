@@ -55,10 +55,12 @@ public class RegisterActivity extends BaseActivity implements OnClickListener {
 			finish();
 			break;
 		case R.id.btn_confirm:
-			if (isMobileNO(usernameEdit.getText().toString())) {
+			if (passwordEdit.getText().toString().length() == 0) {
+				showToast("密码不能为空");
+			} else if (isMobileNO(usernameEdit.getText().toString())) {
 				register();
 			} else {
-				showToast("请输入手机号");
+				showToast("请输入手机号作为用户名");
 
 			}
 			break;

@@ -12,7 +12,7 @@
         android:layout_margin="4dp"
         android:hint="请输入密码"
         android:textColor="@color/white"
-        android:textSize="16sp" />
+        android:textSize="22sp" />
 
     <EditText
         android:id="@+id/password"
