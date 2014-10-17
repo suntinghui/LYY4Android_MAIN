@@ -7,10 +7,6 @@
         android:minSdkVersion="10"
         android:targetSdkVersion="19" />
 
-    <uses-feature
-        android:name="android.hardware.nfc.hce"
-        android:required="true" />
-
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -82,6 +78,13 @@
         <activity android:name="com.people.lyy.activity.SuccessActivity" >
         </activity>
         <activity android:name="com.people.lyy.activity.DefeatedActivity" >
+        </activity>
+        <activity
+            android:name="com.people.lyy.activity.BothAccountsInfoActivity"
+            android:launchMode="singleTask" >
+            <intent-filter>
+                <action android:name="com.people.BothAccountsInfoActivity" />
+            </intent-filter>
         </activity>
         <activity
             android:name="com.people.lyy.activity.ConfirmOrderActivity"

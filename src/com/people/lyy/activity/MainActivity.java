@@ -22,7 +22,7 @@ public class MainActivity extends BaseActivity implements OnClickListener {
 
 	private DataDao dao = null;
 	private LinearLayout lay_consume, lay_consumeonline, lay_onlineshopconsume,
-			lay_binding, lay_gesture, lay_download, lay_unload = null;
+			lay_binding, lay_gesture, lay_download, lay_unload;
 	public static final int FROM_SETTINGACTIVITY = 1;
 	private long exitTime = 0;
 
@@ -92,6 +92,7 @@ public class MainActivity extends BaseActivity implements OnClickListener {
 			MainActivity.this.startActivity(intent2);
 
 			break;
+
 		default:
 			break;
 		}
@@ -115,6 +116,7 @@ public class MainActivity extends BaseActivity implements OnClickListener {
 		lay_download.setVisibility(View.GONE);
 		lay_unload = (LinearLayout) findViewById(R.id.lay_unload);
 		lay_unload.setOnClickListener(this);
+
 	}
 
 	@Override

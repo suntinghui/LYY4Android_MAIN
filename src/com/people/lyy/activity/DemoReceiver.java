@@ -36,6 +36,7 @@ public class DemoReceiver extends BroadcastReceiver {
 				intent1.putExtra("token", intent.getStringExtra("key").trim());
 				intent1.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 				context.startActivity(intent1);
+
 			}
 
 		}

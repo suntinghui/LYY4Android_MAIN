@@ -39,7 +39,7 @@ public class SuccessActivity extends BaseActivity {
 			@Override
 			public void onClick(View v) {
 				setResult(RESULT_OK);
-				finish();
+				SuccessActivity.this.finish();
 
 			}
 		});
@@ -51,7 +51,8 @@ public class SuccessActivity extends BaseActivity {
 		if (event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
 			if (event.getAction() == KeyEvent.ACTION_DOWN
 					&& event.getRepeatCount() == 0) {
-				finish();
+				setResult(RESULT_OK);
+				SuccessActivity.this.finish();
 			}
 			return true;
 		}
