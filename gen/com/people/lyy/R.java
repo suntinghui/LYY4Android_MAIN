@@ -276,25 +276,26 @@ public final class R {
     public static final class layout {
         public static final int activity_accountsinfo=0x7f030000;
         public static final int activity_bind=0x7f030001;
-        public static final int activity_confirmorder=0x7f030002;
-        public static final int activity_defeated=0x7f030003;
-        public static final int activity_details=0x7f030004;
-        public static final int activity_lock_screen=0x7f030005;
-        public static final int activity_lock_screen_setting=0x7f030006;
-        public static final int activity_login=0x7f030007;
-        public static final int activity_main=0x7f030008;
-        public static final int activity_onlineaccountsinfo=0x7f030009;
-        public static final int activity_onlineshop=0x7f03000a;
-        public static final int activity_register=0x7f03000b;
-        public static final int activity_splash=0x7f03000c;
-        public static final int activity_success=0x7f03000d;
-        public static final int alert_dialog_layout=0x7f03000e;
-        public static final int camera_diy=0x7f03000f;
-        public static final int dialog_psw=0x7f030010;
-        public static final int item_balance=0x7f030011;
-        public static final int progress_addialog_layout=0x7f030012;
-        public static final int progress_dialog_layout=0x7f030013;
-        public static final int schedule_dialog_layout=0x7f030014;
+        public static final int activity_bothaccountsinfo=0x7f030002;
+        public static final int activity_confirmorder=0x7f030003;
+        public static final int activity_defeated=0x7f030004;
+        public static final int activity_details=0x7f030005;
+        public static final int activity_lock_screen=0x7f030006;
+        public static final int activity_lock_screen_setting=0x7f030007;
+        public static final int activity_login=0x7f030008;
+        public static final int activity_main=0x7f030009;
+        public static final int activity_onlineaccountsinfo=0x7f03000a;
+        public static final int activity_onlineshop=0x7f03000b;
+        public static final int activity_register=0x7f03000c;
+        public static final int activity_splash=0x7f03000d;
+        public static final int activity_success=0x7f03000e;
+        public static final int alert_dialog_layout=0x7f03000f;
+        public static final int camera_diy=0x7f030010;
+        public static final int dialog_psw=0x7f030011;
+        public static final int item_balance=0x7f030012;
+        public static final int progress_addialog_layout=0x7f030013;
+        public static final int progress_dialog_layout=0x7f030014;
+        public static final int schedule_dialog_layout=0x7f030015;
     }
     public static final class raw {
         public static final int beep=0x7f050000;

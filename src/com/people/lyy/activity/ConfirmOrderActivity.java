@@ -49,9 +49,9 @@ public class ConfirmOrderActivity extends BaseActivity implements
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_confirmorder);
-		// getAccounts();
+		getAccounts();
 		initView();
-		initData();
+		// initData();
 	}
 
 	private void initView() {

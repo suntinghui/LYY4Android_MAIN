@@ -22,12 +22,13 @@
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="15dip"
                 android:background="@drawable/btn_back" />
-            <TextView
+
+            <TextView
                 style="@style/white_20"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
-                android:text="离线消费" />
+                android:text="综合消费" />
         </RelativeLayout>
 
         <LinearLayout

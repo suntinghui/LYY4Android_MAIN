@@ -83,7 +83,6 @@ public class AccountsInfoActivity extends BaseActivity implements
 	}
 
 	protected void onNewIntent(Intent i) {
-		Log.e("sss", i.getStringExtra("token"));
 		String[] s = i.getStringExtra("token").split("#");
 		if (s[0].charAt(0) == '[') {
 			if (toast) {
@@ -177,6 +176,7 @@ public class AccountsInfoActivity extends BaseActivity implements
 		Intent serviceIntent = new Intent("com.people.sotp.lyyservice");
 		serviceIntent.putExtra("SOTP", "genTOKEN");
 		serviceIntent.putExtra("key", tempStr);
+		Log.e("开启服务", "这里走了");
 		startService(serviceIntent);
 	}
 
