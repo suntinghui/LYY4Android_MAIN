@@ -7,88 +7,79 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.view.KeyEvent;
+import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.people.lyy.R;
 import com.people.lyy.client.ApplicationEnvironment;
 import com.people.lyy.client.Constants;
 import com.people.lyy.sqlite.DataDao;
+import com.people.lyy.util.StringUtil;
 import com.people.lyy.view.GestureLockView;
 import com.people.lyy.view.GestureLockView.OnGestureFinishListener;
+import com.people.lyy.view.LocusPassWordView;
+import com.people.lyy.view.LocusPassWordView.OnCompleteListener;
 
 // 锁屏 设置
 @SuppressLint("ResourceAsColor")
 public class LockScreenSettingActivity extends BaseActivity {
-	private TextView tv_tips;
-	private GestureLockView gv;
-	private int drawCount = 0;
-	private String firstKey = "";
-	private String secondKey = "";
+	private LocusPassWordView lpwv;
+	private String password;
+	private boolean needverify = true;
+
+	private String password2;
+	private boolean isfirst = true;
 
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
+	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_lock_screen_setting);
-
-		tv_tips = (TextView) findViewById(R.id.tv_tips);
-		tv_tips.setText("请绘制新手势");
-
-		tv_tips = (TextView) findViewById(R.id.tv_tips);
-		gv = (GestureLockView) findViewById(R.id.gv);
-		gv.isSetting = true;
-		gv.setOnGestureFinishListener(new OnGestureFinishListener() {
+		setContentView(R.layout.setpassword_activity);
+		lpwv = (LocusPassWordView) this.findViewById(R.id.mLocusPassWordView);
+		lpwv.setOnCompleteListener(new OnCompleteListener() {
 			@Override
-			public void OnGestureFinish(boolean success) {
-				if (drawCount++ == 0) {
-					firstKey = gv.getCurrentKey();
-					tv_tips.setText("请再次绘制新手势");
+			public void onComplete(String mPassword) {
+				if (isfirst) {
+					password = mPassword;
+					showToast("请再次输入密码");
+					isfirst = false;
+					lpwv.clearPassword();
 				} else {
-					secondKey = gv.getCurrentKey();
-					if (firstKey.equals(secondKey)) {
-						// 手势设置成功
-						SharedPreferences pre = ApplicationEnvironment.getInstance().getPreferences();
-						Editor editor = pre.edit();
-						editor.putString(Constants.kLOCKKEY, secondKey);
-						editor.putBoolean(Constants.kGESTRUECLOSE, true);
-						editor.commit();
-						gv.setKey(secondKey);
-						tv_tips.setText("修改成功");
-						tv_tips.setTextColor(LockScreenSettingActivity.this.getResources().getColor(R.color.white));
-
-						// 启动超时退出服务
-						Intent intent = new Intent(BaseActivity.getTopActivity(), TimeoutService.class);
-						BaseActivity.getTopActivity().startService(intent);
-						showToast("手势设置成功");
-						Intent it = new Intent(LockScreenSettingActivity.this, MainActivity.class);
-						it.putExtra("isOpen", true);
-						startActivity(it);
-						LockScreenSettingActivity.this.finish();
-
+					password2 = mPassword;
+					if (password.equals(password2)) {
+						lpwv.resetPassWord(password);
+						lpwv.clearPassword();
+						showToast("密码修改成功,请记住密码.");
+						startActivity(new Intent(
+								LockScreenSettingActivity.this,
+								MainActivity.class));
+						finish();
 					} else {
-						// 手势设置失败
-						tv_tips.setText("与上一次绘制不一致，请重新绘制");
-						tv_tips.setTextColor(LockScreenSettingActivity.this.getResources().getColor(R.color.red));
-						Animation shakeAnim = AnimationUtils.loadAnimation(LockScreenSettingActivity.this, R.anim.shake_x);
-						shakeAnim.setDuration(700);
-						tv_tips.startAnimation(shakeAnim);
+						showToast("两次的密码不符请重新输入");
+						lpwv.clearPassword();
 					}
+
 				}
 
 			}
 		});
-
 	}
 
 	// 获取返回键的响应事件
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
-		if (keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN) {
+		if (keyCode == KeyEvent.KEYCODE_BACK
+				&& event.getAction() == KeyEvent.ACTION_DOWN) {
 			Intent it = new Intent();
 			DataDao dao = new DataDao(getApplication());
 			dao.add(Constants.kGESTRUECLOSE, 0);
-			it.putExtra("isOpen", ApplicationEnvironment.getInstance().getPreferences(this).getBoolean(Constants.kGESTRUECLOSE, false));
+			it.putExtra("isOpen",
+					ApplicationEnvironment.getInstance().getPreferences(this)
+							.getBoolean(Constants.kGESTRUECLOSE, false));
 			setResult(Activity.RESULT_OK, it);
 			LockScreenSettingActivity.this.finish();
 			return true;

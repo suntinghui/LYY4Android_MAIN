@@ -4,54 +4,94 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Looper;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.people.lyy.R;
 import com.people.lyy.client.ApplicationEnvironment;
 import com.people.lyy.client.Constants;
 import com.people.lyy.client.DownloadFileRequest;
-import com.people.lyy.util.ActivityUtil;
-import com.people.lyy.view.GestureLockView;
-import com.people.lyy.view.GestureLockView.OnGestureFinishListener;
+import com.people.lyy.view.LocusPassWordView;
+import com.people.lyy.view.LocusPassWordView.OnCompleteListener;
 
 // 锁屏
 public class LockScreenActivity extends BaseActivity implements OnClickListener {
+	private LocusPassWordView lpwv;
+	private Button forget_psw;
+	private int error = 1;
 
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
+	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_lock_screen);
-		Button btn_forget = (Button) findViewById(R.id.btn_forget);
-		btn_forget.setOnClickListener(this);
-
-		GestureLockView gv = (GestureLockView) findViewById(R.id.gv);
-		gv.setKey(ApplicationEnvironment.getInstance().getPreferences()
-				.getString(Constants.kLOCKKEY, "")); // Z 字型
-		gv.setOnGestureFinishListener(new OnGestureFinishListener() {
+		setContentView(R.layout.llll_activity);
+		forget_psw = (Button) findViewById(R.id.forget_psw);
+		forget_psw.setOnClickListener(this);
+		lpwv = (LocusPassWordView) this.findViewById(R.id.mLocusPassWordView);
+		lpwv.setOnCompleteListener(new OnCompleteListener() {
 			@Override
-			public void OnGestureFinish(boolean success) {
-				if (success) {
-					if (ActivityUtil.isAvilible(LockScreenActivity.this,
-							Constants.SOTPPACKET)) {
-						Intent intent = new Intent(BaseActivity
-								.getTopActivity(), MainActivity.class);
-						BaseActivity.getTopActivity().startActivity(intent);
-						LockScreenActivity.this.finish();
+			public void onComplete(String mPassword) {
+				// 如果密码正确,则进入主页面。
+				if (lpwv.verifyPassword(mPassword)) {
+					showToast("登陆成功！");
+					Intent intent = new Intent(LockScreenActivity.this,
+							MainActivity.class);
+					// 打开新的Activity
+					startActivity(intent);
+					finish();
+				} else {
+					if (error != 3) {
+						showToast("密码输入错误,请重新输入");
+						lpwv.markError();
+						error++;
 					} else {
-						new DownloadAPKTask().execute();
-						Intent intent = new Intent(BaseActivity
-								.getTopActivity(), MainActivity.class);
-						BaseActivity.getTopActivity().startActivity(intent);
-						LockScreenActivity.this.finish();
+						showToast("密码三次输入错误请重新登录");
+						Intent intent = new Intent(LockScreenActivity.this,
+								LoginActivity.class);
+						// 打开新的Activity
+						startActivity(intent);
+						finish();
 					}
-
 				}
 			}
 		});
+
+	}
+
+	@Override
+	protected void onStart() {
+		super.onStart();
+		// 如果密码为空,则进入设置密码的界面
+		View noSetPassword = (View) this.findViewById(R.id.tvNoSetPassword);
+		TextView toastTv = (TextView) findViewById(R.id.login_toast);
+		if (lpwv.isPasswordEmpty()) {
+			showToast("?????");
+			lpwv.setVisibility(View.GONE);
+			noSetPassword.setVisibility(View.VISIBLE);
+			toastTv.setText("请先绘制手势密码");
+			noSetPassword.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					Intent intent = new Intent(LockScreenActivity.this,
+							LoginActivity.class);
+					// 打开新的Activity
+					startActivity(intent);
+					finish();
+				}
+
+			});
+		} else {
+			toastTv.setText("请输入手势密码");
+			lpwv.setVisibility(View.VISIBLE);
+			noSetPassword.setVisibility(View.GONE);
+		}
+	}
+
+	@Override
+	protected void onStop() {
+		super.onStop();
 	}
 
 	// 返回键的处理事件
@@ -95,4 +135,5 @@ public class LockScreenActivity extends BaseActivity implements OnClickListener 
 								.getString(Constants.kUSERNAME, "")
 						+ "/sotp.apk", "download.apk");
 	}
+
 }
